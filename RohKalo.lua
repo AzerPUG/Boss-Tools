@@ -11,7 +11,7 @@ local AZPRTRohKaloBetaFrame = nil
 
 function AZP.BossTools.RohKalo:OnLoad()
     AZPRTRohKaloAlphaFrame = CreateFrame("FRAME", nil, UIPanel, "BackdropTemplate")
-    AZPRTRohKaloAlphaFrame:SetSize(300, 200)
+    AZPRTRohKaloAlphaFrame:SetSize(175, 150)
     AZPRTRohKaloAlphaFrame:SetPoint("TOPLEFT", 100, -200)
     AZPRTRohKaloAlphaFrame:SetBackdrop({
         bgFile = "Interface/Tooltips/UI-Tooltip-Background",
@@ -26,36 +26,33 @@ function AZP.BossTools.RohKalo:OnLoad()
     AZPRTRohKaloAlphaFrame.Header:SetText("Alpha XXX")
 
     AZPRTRohKaloAlphaFrame.HelpButton = CreateFrame("BUTTON", nil, AZPRTRohKaloAlphaFrame, "UIPanelButtonTemplate")
-    AZPRTRohKaloAlphaFrame.HelpButton:SetSize(100, 20)
-    AZPRTRohKaloAlphaFrame.HelpButton:SetPoint("TOPLEFT", 10, -30)
+    AZPRTRohKaloAlphaFrame.HelpButton:SetSize(75, 20)
+    AZPRTRohKaloAlphaFrame.HelpButton:SetPoint("TOP", -40, -30)
     AZPRTRohKaloAlphaFrame.HelpButton:SetText("I Need Help!")
     AZPRTRohKaloAlphaFrame.HelpButton:SetScript("OnClick", function()  end)
 
     AZPRTRohKaloAlphaFrame.SafeButton = CreateFrame("BUTTON", nil, AZPRTRohKaloAlphaFrame, "UIPanelButtonTemplate")
-    AZPRTRohKaloAlphaFrame.SafeButton:SetSize(100, 20)
-    AZPRTRohKaloAlphaFrame.SafeButton:SetPoint("LEFT", AZPRTRohKaloAlphaFrame.HelpButton, "RIGHT", 25, 0)
+    AZPRTRohKaloAlphaFrame.SafeButton:SetSize(75, 20)
+    AZPRTRohKaloAlphaFrame.SafeButton:SetPoint("TOP", 40, -30)
     AZPRTRohKaloAlphaFrame.SafeButton:SetText("I Can Solo!")
     AZPRTRohKaloAlphaFrame.SafeButton:SetScript("OnClick", function()  end)
 
-    AZPRTRohKaloAlphaFrame.LeftLabel = AZPRTRohKaloAlphaFrame:CreateFontString("AZPRTRohKaloAlphaFrame", "ARTWORK", "GameFontNormal")
-    AZPRTRohKaloAlphaFrame.LeftLabel:SetSize(100, 25)
-    AZPRTRohKaloAlphaFrame.LeftLabel:SetPoint("TOP", AZPRTRohKaloAlphaFrame.HelpButton, "BOTTOM", 25, 0)
-    AZPRTRohKaloAlphaFrame.LeftLabel:SetText("Alpha XXX")
-    -- Something that makes it align to right
+    AZPRTRohKaloAlphaFrame.LeftLabels = {}
+    AZPRTRohKaloAlphaFrame.RightLabels = {}
 
-    AZPRTRohKaloAlphaFrame.RightLabel = AZPRTRohKaloAlphaFrame:CreateFontString("AZPRTRohKaloAlphaFrame", "ARTWORK", "GameFontNormal")
-    AZPRTRohKaloAlphaFrame.RightLabel:SetSize(100, 25)
-    AZPRTRohKaloAlphaFrame.RightLabel:SetPoint("TOP", AZPRTRohKaloAlphaFrame.SafeButton, "BOTTOM", 25, 0)
-    AZPRTRohKaloAlphaFrame.RightLabel:SetText("Alpha XXX")
-    -- Something that makes it align to left
+    for i = 1, 6 do
+        AZPRTRohKaloAlphaFrame.LeftLabels[i] = AZPRTRohKaloAlphaFrame:CreateFontString("AZPRTRohKaloAlphaFrame", "ARTWORK", "GameFontNormal")
+        AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetSize(100, 25)
+        AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetPoint("TOP", -55, ((i - 1) * -15) -50)
+        AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetText("Alpha" .. i)
+        AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetJustifyH("RIGHT")
+
+        AZPRTRohKaloAlphaFrame.RightLabels[i] = AZPRTRohKaloAlphaFrame:CreateFontString("AZPRTRohKaloAlphaFrame", "ARTWORK", "GameFontNormal")
+        AZPRTRohKaloAlphaFrame.RightLabels[i]:SetSize(100, 25)
+        AZPRTRohKaloAlphaFrame.RightLabels[i]:SetPoint("TOP", 55, ((i - 1) * -15) -50)
+        AZPRTRohKaloAlphaFrame.RightLabels[i]:SetText("Beta" .. i)
+        AZPRTRohKaloAlphaFrame.RightLabels[i]:SetJustifyH("LEFT")
+    end
 end
 
 AZP.BossTools.RohKalo:OnLoad()
-
-
---[[
-
-    Order of the people based on raid#
-    Should be the same for all individual AddOns, as th raid# does not change.
-
---]]
