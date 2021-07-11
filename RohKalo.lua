@@ -9,7 +9,7 @@ if AZP.BossTools.Events == nil then AZP.BossTools.Events = {} end
 local AZPRTRohKaloAlphaFrame = nil
 local AZPRTRohKaloOptionPanel = nil
 local AZPRTRohKaloAsigneesAndBackUps, AZPRTRohKaloAsigneesEditBoxes, AZPRTRohKaloBackUpEditBoxes  = {}, {}, {}
-local assignedRing, assignedRole =  "0", "Not Assigned"
+local assignedRing, assignedRole =  "", "Not Assigned"
 local PopUpFrame = nil
 local soundID = 8959
 local soundChannel = 1
@@ -65,6 +65,11 @@ function AZP.BossTools.RohKalo:OnLoadSelf()
         edgeSize = 10,
         insets = {left = 3, right = 3, top = 3, bottom = 3},
     })
+    AZPRTRohKaloAlphaFrame:EnableMouse(true)
+    AZPRTRohKaloAlphaFrame:SetMovable(true)
+    AZPRTRohKaloAlphaFrame:RegisterForDrag("LeftButton")
+    AZPRTRohKaloAlphaFrame:SetScript("OnDragStart", AZPRTRohKaloAlphaFrame.StartMoving)
+    AZPRTRohKaloAlphaFrame:SetScript("OnDragStop", function() AZPRTRohKaloAlphaFrame:StopMovingOrSizing() end)
 
     AZPRTRohKaloAlphaFrame.Header = AZPRTRohKaloAlphaFrame:CreateFontString("AZPRTRohKaloAlphaFrame", "ARTWORK", "GameFontNormalHuge")
     AZPRTRohKaloAlphaFrame.Header:SetSize(AZPRTRohKaloAlphaFrame:GetWidth(), 25)
@@ -98,9 +103,24 @@ function AZP.BossTools.RohKalo:OnLoadSelf()
         AZPRTRohKaloAlphaFrame.RightLabels[i]:SetJustifyH("LEFT")
     end
 
+    AZPRTRohKaloAlphaFrame.closeButton = CreateFrame("Button", nil, AZPRTRohKaloAlphaFrame, "UIPanelCloseButton")
+    AZPRTRohKaloAlphaFrame.closeButton:SetSize(20, 21)
+    AZPRTRohKaloAlphaFrame.closeButton:SetPoint("TOPRIGHT", AZPRTRohKaloAlphaFrame, "TOPRIGHT", 2, 2)
+    AZPRTRohKaloAlphaFrame.closeButton:SetScript("OnClick", function() AZP.BossTools.RohKalo:ShowHideFrame() end )
+
     AZP.BossTools.RohKalo:CreatePopUpFrame()
     AZPRTRohKaloAlphaFrame.Header:SetText(string.format("%s %s", assignedRole, assignedRing))
     C_ChatInfo.RegisterAddonMessagePrefix("AZPRKHData")
+end
+
+function AZP.BossTools.RohKalo:ShowHideFrame()
+    if AZPRTRohKaloAlphaFrame:IsShown() then
+        AZPRTRohKaloAlphaFrame:Hide()
+        AZPRTRohKaloOptionPanel.ShowHideButton:SetText("Show Interrupts!")
+    else
+        AZPRTRohKaloAlphaFrame:Show()
+        AZPRTRohKaloOptionPanel.ShowHideButton:SetText("Hide Interrupts!")
+    end
 end
 
 function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
@@ -125,6 +145,12 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
             frameToFill.LockMoveButton:SetText("Lock Frame")
         end
     end)
+
+    frameToFill.ShowHideButton = CreateFrame("Button", nil, frameToFill, "UIPanelButtonTemplate")
+    frameToFill.ShowHideButton:SetSize(100, 25)
+    frameToFill.ShowHideButton:SetPoint("TOP", 100, -150)
+    frameToFill.ShowHideButton:SetText("Hide Frame!")
+    frameToFill.ShowHideButton:SetScript("OnClick", function () AZP.BossTools.RohKalo:ShowHideFrame() end)
 
     frameToFill:Hide()
 
@@ -297,7 +323,7 @@ end
 function AZP.BossTools.RohKalo:UpdatePlayerList()
     local playerGUID = UnitGUID("player")
 
-    assignedRing = "0"
+    assignedRing = ""
     assignedRole = Roles.Not
 
     local alphaAssignment = AZP.BossTools.RohKalo:GetIndex(playerList[Roles.A], playerGUID)
@@ -356,3 +382,9 @@ function AZP.BossTools.RohKalo:OnEvent(self, event, ...)
 end
 
 AZP.BossTools.RohKalo:OnLoadSelf()
+
+AZP.SlashCommands["RKH"] = function()
+    AZP.BossTools.RohKalo:ShowHideFrame()
+end
+
+AZP.SlashCommands["rkh"] = AZP.SlashCommands["RKH"]
