@@ -13,6 +13,7 @@ local assignedRing, assignedRole =  "0", "Not Assigned"
 local PopUpFrame = nil
 local soundID = 8959
 local soundChannel = 1
+local EventFrame = nil
 
 local Roles = {
     ["A"] = "Alpha",
@@ -32,6 +33,12 @@ local playerList = {
 
 
 function AZP.BossTools.RohKalo:OnLoadSelf()
+
+
+    EventFrame = CreateFrame("FRAME", nil)
+    EventFrame:RegisterEvent("CHAT_MSG_ADDON")
+    EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.RohKalo:OnEvent(...) end)
+
 
     AZPRTRohKaloOptionPanel = CreateFrame("FRAME", nil)
     AZPRTRohKaloOptionPanel.name = "|cFF00FFFFAzerPUG's Interrupt Helper|r"
@@ -98,6 +105,7 @@ function AZP.BossTools.RohKalo:OnLoadSelf()
 
     AZP.BossTools.RohKalo:CreatePopUpFrame()
     AZPRTRohKaloAlphaFrame.Header:SetText(string.format("%s %s", assignedRole, assignedRing))
+    C_ChatInfo.RegisterAddonMessagePrefix("AZPRKHData")
 end
 
 
@@ -198,7 +206,7 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
                             if curName == AZPRTRohKaloBackUpEditBoxes[j].editbox:GetText() then
                                 local curGUID = UnitGUID("raid" .. k)
                                 local ring = AZPRTRohKaloAsigneesAndBackUps[j];
-                                if ring == nil then ring = {} AZPRTRohKaloAsigneesAndBackUps[ji] = ring end
+                                if ring == nil then ring = {} AZPRTRohKaloAsigneesAndBackUps[j] = ring end
                                 ring[Roles.B] = { curGUID, curName }
                             end
                         end
@@ -221,15 +229,17 @@ function AZP.BossTools.RohKalo:ShareList()
     local assignBetaMessage = "1|Assignments|B"
 
     for _,v in ipairs(AZPRTRohKaloAsigneesAndBackUps) do
-        DevTools_Dump(v)
         assignAlphaMessage = assignAlphaMessage .. "|" .. v[Roles.A][1]
         assignBetaMessage = assignBetaMessage .. "|" .. v[Roles.B][1]
     end
 
     print(assignAlphaMessage, assignBetaMessage)
 
-    AZP.BossTools.Events:AddonMessage(nil, "AZPRKHData", assignAlphaMessage)
-    AZP.BossTools.Events:AddonMessage(nil, "AZPRKHData", assignBetaMessage)
+    -- AZP.BossTools.Events:AddonMessage(nil, "AZPRKHData", assignAlphaMessage)
+    -- AZP.BossTools.Events:AddonMessage(nil, "AZPRKHData", assignBetaMessage)
+    C_ChatInfo.SendAddonMessage("AZPRKHData", assignAlphaMessage ,"RAID", 1)
+    C_ChatInfo.SendAddonMessage("AZPRKHData", assignBetaMessage ,"RAID", 1)
+
 
 end
 
@@ -239,10 +249,9 @@ function AZP.BossTools.RohKalo:ShareHelpRequest()
     -- version|Assignments|role|{player-guid * n players}
 
     local message = string.format("1|HelpRequest|%s|%s", UnitGUID("player"), assignedRing)
-    print(message)
-    AZP.BossTools.Events:AddonMessage(nil, "AZPRKHData", message)
+    -- AZP.BossTools.Events:AddonMessage(nil, "AZPRKHData", message)
+    C_ChatInfo.SendAddonMessage("AZPRKHData", message ,"RAID", 1)
 
-    local assignMessage = string.format("1|Assignments")
 end
 
 function AZP.BossTools.RohKalo:CreatePopUpFrame()
@@ -273,7 +282,9 @@ function AZP.BossTools.RohKalo:WarnPlayer(text)
     
 end
 
-function AZP.BossTools.Events:AddonMessage(sender, prefix, payload)
+function AZP.BossTools.Events:AddonMessage(...)
+    local prefix, payload, _, sender = ...
+
     if prefix == "AZPRKHData" then
         local protocolVersion = string.match(payload, "(%d)|.*")
         if protocolVersion == "1" then
@@ -327,7 +338,7 @@ function AZP.BossTools.RohKalo:UpdatePlayerList()
         local betaAssignment = AZP.BossTools.RohKalo:GetIndex(playerList[Roles.B], playerGUID)
         if betaAssignment ~= nil then
             assignedRole = Roles.B
-            headerText =string.format("%s %s", Roles.B, betaAssignment)
+            headerText = string.format("%s %s", Roles.B, betaAssignment)
             assignedRing = betaAssignment
         end
     end
@@ -340,10 +351,12 @@ function AZP.BossTools.RohKalo:UpdatePlayerList()
         if alpha ~= nil then
             local name = select(6, GetPlayerInfoByGUID(alpha))
             AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetText(name)
+            AZPRTRohKaloAsigneesEditBoxes[i].editbox:SetText(name)
         end
         if beta ~= nil then
             local name = select(6, GetPlayerInfoByGUID(beta))
             AZPRTRohKaloAlphaFrame.RightLabels[i]:SetText(name)
+            AZPRTRohKaloBackUpEditBoxes[i].editbox:SetText(name)
         end
     end
 end
@@ -354,6 +367,12 @@ function AZP.BossTools.RohKalo:GetIndex(table, targetGUID)
         end
     end
     return nil
+end
+
+function AZP.BossTools.RohKalo:OnEvent(self, event, ...)
+    if event == "CHAT_MSG_ADDON" then
+        AZP.BossTools.Events:AddonMessage(...)
+    end
 end
 
 AZP.BossTools.RohKalo:OnLoadSelf()
