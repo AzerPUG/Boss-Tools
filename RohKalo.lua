@@ -283,6 +283,7 @@ function AZP.BossTools.Events:AddonMessage(...)
     local prefix, payload, _, sender = ...
 
     if prefix == "AZPRKHData" then
+        print(payload)
         local protocolVersion = string.match(payload, "(%d):.*")
         if protocolVersion == "1" then
             local _, requestType, data = string.match(payload, "(%d):([^:]*):(.*)")
