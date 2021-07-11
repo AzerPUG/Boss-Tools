@@ -34,6 +34,7 @@ local playerList = {
 function AZP.BossTools.RohKalo:OnLoadSelf()
     EventFrame = CreateFrame("FRAME", nil)
     EventFrame:RegisterEvent("CHAT_MSG_ADDON")
+    EventFrame:RegisterEvent("VARIABLES_LOADED")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.RohKalo:OnEvent(...) end)
 
     AZPRTRohKaloOptionPanel = CreateFrame("FRAME", nil)
@@ -221,12 +222,12 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
 end
 
 function AZP.BossTools.RohKalo:ShareList()
-    local assignAlphaMessage = "1|Assignments|A"
-    local assignBetaMessage = "1|Assignments|B"
+    local assignAlphaMessage = "1:Assignments:A"
+    local assignBetaMessage = "1:Assignments:B"
 
     for _,v in ipairs(AZPRTRohKaloAsigneesAndBackUps) do
-        assignAlphaMessage = assignAlphaMessage .. "|" .. v[Roles.A][1]
-        assignBetaMessage = assignBetaMessage .. "|" .. v[Roles.B][1]
+        assignAlphaMessage = assignAlphaMessage .. ":" .. v[Roles.A][1]
+        assignBetaMessage = assignBetaMessage .. ":" .. v[Roles.B][1]
     end
 
     print(assignAlphaMessage, assignBetaMessage)
@@ -244,7 +245,7 @@ function AZP.BossTools.RohKalo:ShareHelpRequest()
     -- version|HelpRequest|player-guid|assignedRing|
     -- version|Assignments|role|{player-guid * n players}
 
-    local message = string.format("1|HelpRequest|%s|%s", UnitGUID("player"), assignedRing)
+    local message = string.format("1:HelpRequest:%s:%s", UnitGUID("player"), assignedRing)
     -- AZP.BossTools.Events:AddonMessage(nil, "AZPRKHData", message)
     C_ChatInfo.SendAddonMessage("AZPRKHData", message ,"RAID", 1)
 
@@ -282,20 +283,20 @@ function AZP.BossTools.Events:AddonMessage(...)
     local prefix, payload, _, sender = ...
 
     if prefix == "AZPRKHData" then
-        local protocolVersion = string.match(payload, "(%d)|.*")
+        local protocolVersion = string.match(payload, "(%d):.*")
         if protocolVersion == "1" then
-            local _, requestType, data = string.match(payload, "(%d)|([^|]*)|(.*)")
+            local _, requestType, data = string.match(payload, "(%d):([^:]*):(.*)")
             if requestType == "HelpRequest" then
-                local requestOrigin, ring = string.match(data, "([^|]*)|(.*)")
+                local requestOrigin, ring = string.match(data, "([^:]*):(.*)")
                 if ring == assignedRing then
                     print("Yo! Your help was requested!")
                     local name, realm = select(6, GetPlayerInfoByGUID(requestOrigin))
                     AZP.BossTools.RohKalo:WarnPlayer(string.format("|cFFFF0000Help on ring %d!|r", assignedRing))
                 end
             elseif requestType == "Assignments" then
-                local role, players = string.match(data, "([^|]*)|(.*)")
+                local role, players = string.match(data, "([^:]*):(.*)")
 
-                local pattern = "([^|]+)"
+                local pattern = "([^:]+)"
                 local stringIndex = 1
                 local index = 0
                 while stringIndex < #players do
@@ -365,6 +366,8 @@ end
 function AZP.BossTools.RohKalo:OnEvent(self, event, ...)
     if event == "CHAT_MSG_ADDON" then
         AZP.BossTools.Events:AddonMessage(...)
+    elseif event == "VARIABLES_LOADED" then
+        
     end
 end
 
