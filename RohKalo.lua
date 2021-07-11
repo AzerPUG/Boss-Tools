@@ -80,7 +80,7 @@ function AZP.BossTools.RohKalo:OnLoadSelf()
     AZPRTRohKaloAlphaFrame.HelpButton:SetSize(75, 20)
     AZPRTRohKaloAlphaFrame.HelpButton:SetPoint("TOP", -40, -30)
     AZPRTRohKaloAlphaFrame.HelpButton:SetText("I Need Help!")
-    AZPRTRohKaloAlphaFrame.HelpButton:SetScript("OnClick", function() AZP.BossTools.RohKalo:ShareHelpRequest() end)
+    AZPRTRohKaloAlphaFrame.HelpButton:SetScript("OnClick", function() if assignedRole == Roles.A then AZP.BossTools.RohKalo:ShareHelpRequest() end end)
 
     AZPRTRohKaloAlphaFrame.SafeButton = CreateFrame("BUTTON", nil, AZPRTRohKaloAlphaFrame, "UIPanelButtonTemplate")
     AZPRTRohKaloAlphaFrame.SafeButton:SetSize(75, 20)
