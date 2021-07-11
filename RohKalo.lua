@@ -288,7 +288,7 @@ function AZP.BossTools.Events:AddonMessage(...)
             local _, requestType, data = string.match(payload, "(%d):([^:]*):(.*)")
             if requestType == "HelpRequest" then
                 local requestOrigin, ring = string.match(data, "([^:]*):(.*)")
-                if tonumber(ring) == tonumber(assignedRing) then
+                if tonumber(ring) == tonumber(assignedRing) and assignedRole == Roles.B then
                     print("Yo! Your help was requested!")
                     local name, realm = select(6, GetPlayerInfoByGUID(requestOrigin))
                     AZP.BossTools.RohKalo:WarnPlayer(string.format("|cFFFF0000Help on ring %d!|r", assignedRing))
