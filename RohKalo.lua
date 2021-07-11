@@ -38,14 +38,14 @@ function AZP.BossTools.RohKalo:OnLoadSelf()
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.RohKalo:OnEvent(...) end)
 
     AZPRTRohKaloOptionPanel = CreateFrame("FRAME", nil)
-    AZPRTRohKaloOptionPanel.name = "|cFF00FFFFAzerPUG's Interrupt Helper|r"
+    AZPRTRohKaloOptionPanel.name = "|cFF00FFFFAzerPUG's BossTools|r"
     InterfaceOptions_AddCategory(AZPRTRohKaloOptionPanel)
 
-    AZPRTRohKaloOptionPanel.header = AZPRTRohKaloOptionPanel:CreateFontString("AZPInterruptHelperOptionPanel", "ARTWORK", "GameFontNormalHuge")
+    AZPRTRohKaloOptionPanel.header = AZPRTRohKaloOptionPanel:CreateFontString("AZPRTRohKaloOptionPanel", "ARTWORK", "GameFontNormalHuge")
     AZPRTRohKaloOptionPanel.header:SetPoint("TOP", 0, -10)
-    AZPRTRohKaloOptionPanel.header:SetText("|cFF00FFFFAzerPUG's Interrupt Helper Options!|r")
+    AZPRTRohKaloOptionPanel.header:SetText("|cFF00FFFFAzerPUG's BossTools Options!|r")
 
-    AZPRTRohKaloOptionPanel.footer = AZPRTRohKaloOptionPanel:CreateFontString("AZPInterruptHelperOptionPanel", "ARTWORK", "GameFontNormalLarge")
+    AZPRTRohKaloOptionPanel.footer = AZPRTRohKaloOptionPanel:CreateFontString("AZPRTRohKaloOptionPanel", "ARTWORK", "GameFontNormalLarge")
     AZPRTRohKaloOptionPanel.footer:SetPoint("TOP", 0, -400)
     AZPRTRohKaloOptionPanel.footer:SetText(
         "|cFF00FFFFAzerPUG Links:\n" ..
@@ -90,13 +90,11 @@ function AZP.BossTools.RohKalo:OnLoadSelf()
         AZPRTRohKaloAlphaFrame.LeftLabels[i] = AZPRTRohKaloAlphaFrame:CreateFontString("AZPRTRohKaloAlphaFrame", "ARTWORK", "GameFontNormal")
         AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetSize(100, 25)
         AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetPoint("TOP", -55, ((i - 1) * -15) -50)
-        AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetText("Alpha" .. i)
         AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetJustifyH("RIGHT")
 
         AZPRTRohKaloAlphaFrame.RightLabels[i] = AZPRTRohKaloAlphaFrame:CreateFontString("AZPRTRohKaloAlphaFrame", "ARTWORK", "GameFontNormal")
         AZPRTRohKaloAlphaFrame.RightLabels[i]:SetSize(100, 25)
         AZPRTRohKaloAlphaFrame.RightLabels[i]:SetPoint("TOP", 55, ((i - 1) * -15) -50)
-        AZPRTRohKaloAlphaFrame.RightLabels[i]:SetText("Beta" .. i)
         AZPRTRohKaloAlphaFrame.RightLabels[i]:SetJustifyH("LEFT")
     end
 
@@ -127,12 +125,6 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
             frameToFill.LockMoveButton:SetText("Lock Frame")
         end
     end)
-
-    frameToFill.ShowHideButton = CreateFrame("Button", nil, frameToFill, "UIPanelButtonTemplate")
-    frameToFill.ShowHideButton:SetSize(100, 25)
-    frameToFill.ShowHideButton:SetPoint("TOPRIGHT", -75, -150)
-    frameToFill.ShowHideButton:SetText("Hide Frame!")
-    frameToFill.ShowHideButton:SetScript("OnClick", function () AZP.RohKaloHelper:ShowHideFrame() end)
 
     frameToFill:Hide()
 
@@ -334,6 +326,7 @@ function AZP.BossTools.RohKalo:UpdatePlayerList()
             AZPRTRohKaloAsigneesEditBoxes[i].editbox:SetText(name)
         else
             AZPRTRohKaloAsigneesEditBoxes[i].editbox:SetText("")
+            AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetText("")
         end
         if beta ~= nil then
             local name = select(6, GetPlayerInfoByGUID(beta))
@@ -341,6 +334,7 @@ function AZP.BossTools.RohKalo:UpdatePlayerList()
             AZPRTRohKaloBackUpEditBoxes[i].editbox:SetText(name)
         else
             AZPRTRohKaloBackUpEditBoxes[i].editbox:SetText("")
+            AZPRTRohKaloAlphaFrame.RightLabels[i]:SetText("")
         end
     end
 end
