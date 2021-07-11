@@ -30,9 +30,7 @@ local playerList = {
     }
 }
 
-
 function AZP.BossTools.RohKalo:OnLoadSelf()
-
     AZPRTRohKaloOptionPanel = CreateFrame("FRAME", nil)
     AZPRTRohKaloOptionPanel.name = "|cFF00FFFFAzerPUG's Interrupt Helper|r"
     InterfaceOptions_AddCategory(AZPRTRohKaloOptionPanel)
@@ -283,12 +281,11 @@ function AZP.BossTools.Events:AddonMessage(sender, prefix, payload)
                 if ring == assignedRing then
                     print("Yo! Your help was requested!")
                     local name, realm = select(6, GetPlayerInfoByGUID(requestOrigin))
-                    -- RaidNotice_AddMessage(RaidWarningFrame, string.format("|cFFFF0000Yo! Your help was requested by %s, on ring %d!|r", name, assignedRing), ChatTypeInfo["RAID_WARNING"])
                     AZP.BossTools.RohKalo:WarnPlayer(string.format("|cFFFF0000Help on ring %d!|r", assignedRing))
                 end
             elseif requestType == "Assignments" then
                 local role, players = string.match(data, "([^|]*)|(.*)")
-                
+
                 local pattern = "([^|]+)"
                 local stringIndex = 1
                 local index = 0
@@ -299,8 +296,6 @@ function AZP.BossTools.Events:AddonMessage(sender, prefix, payload)
                     index = index + 1
                     playerList[Roles[role]][index] = unitGUID
                 end
-
-                
 
                 AZP.BossTools.RohKalo:UpdatePlayerList()
             end
@@ -357,10 +352,3 @@ function AZP.BossTools.RohKalo:GetIndex(table, targetGUID)
 end
 
 AZP.BossTools.RohKalo:OnLoadSelf()
-
---[[
-
-    Order of the people based on raid#
-    Should be the same for all individual AddOns, as th raid# does not change.
-
---]]
