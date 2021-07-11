@@ -105,7 +105,6 @@ function AZP.BossTools.RohKalo:OnLoadSelf()
     C_ChatInfo.RegisterAddonMessagePrefix("AZPRKHData")
 end
 
-
 function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
     frameToFill.LockMoveButton = CreateFrame("Button", nil, frameToFill, "UIPanelButtonTemplate")
     frameToFill.LockMoveButton:SetSize(100, 25)
@@ -230,23 +229,12 @@ function AZP.BossTools.RohKalo:ShareList()
         assignBetaMessage = assignBetaMessage .. ":" .. v[Roles.B][1]
     end
 
-    print(assignAlphaMessage, assignBetaMessage)
-
-    -- AZP.BossTools.Events:AddonMessage(nil, "AZPRKHData", assignAlphaMessage)
-    -- AZP.BossTools.Events:AddonMessage(nil, "AZPRKHData", assignBetaMessage)
     C_ChatInfo.SendAddonMessage("AZPRKHData", assignAlphaMessage ,"RAID", 1)
     C_ChatInfo.SendAddonMessage("AZPRKHData", assignBetaMessage ,"RAID", 1)
-
-
 end
 
 function AZP.BossTools.RohKalo:ShareHelpRequest()
-    -- Format for v1
-    -- version|HelpRequest|player-guid|assignedRing|
-    -- version|Assignments|role|{player-guid * n players}
-
     local message = string.format("1:HelpRequest:%s:%s", UnitGUID("player"), assignedRing)
-    -- AZP.BossTools.Events:AddonMessage(nil, "AZPRKHData", message)
     C_ChatInfo.SendAddonMessage("AZPRKHData", message ,"RAID", 1)
 
 end
@@ -275,8 +263,6 @@ function AZP.BossTools.RohKalo:WarnPlayer(text)
         PopUpFrame.text:SetScale(curScale)
     end,
     35)
-
-    
 end
 
 function AZP.BossTools.Events:AddonMessage(...)
@@ -289,7 +275,6 @@ function AZP.BossTools.Events:AddonMessage(...)
             if requestType == "HelpRequest" then
                 local requestOrigin, ring = string.match(data, "([^:]*):(.*)")
                 if tonumber(ring) == tonumber(assignedRing) and assignedRole == Roles.B then
-                    print("Yo! Your help was requested!")
                     local name, realm = select(6, GetPlayerInfoByGUID(requestOrigin))
                     AZP.BossTools.RohKalo:WarnPlayer(string.format("|cFFFF0000Help on ring %d!|r", assignedRing))
                 end
@@ -309,13 +294,10 @@ function AZP.BossTools.Events:AddonMessage(...)
 
                 AZP.BossTools.RohKalo:UpdatePlayerList()
             end
-
-            if AZP.BossTools.RohKalo.DebugPrint == true then
-                print(protocolVersion, senderGUID, requestType, data)
-            end
         end
     end
 end
+
 function AZP.BossTools.RohKalo:UpdatePlayerList()
     local playerGUID = UnitGUID("player")
 
@@ -354,6 +336,7 @@ function AZP.BossTools.RohKalo:UpdatePlayerList()
         end
     end
 end
+
 function AZP.BossTools.RohKalo:GetIndex(table, targetGUID)
     for i,GUID in ipairs(table) do
         if GUID == targetGUID then
@@ -367,14 +350,7 @@ function AZP.BossTools.RohKalo:OnEvent(self, event, ...)
     if event == "CHAT_MSG_ADDON" then
         AZP.BossTools.Events:AddonMessage(...)
     elseif event == "VARIABLES_LOADED" then
-        
     end
 end
 
---[[
-
-    Order of the people based on raid#
-    Should be the same for all individual AddOns, as th raid# does not change.
-
---]]
 AZP.BossTools.RohKalo:OnLoadSelf()
