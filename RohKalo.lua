@@ -280,7 +280,7 @@ function AZP.BossTools.Events:AddonMessage(...)
                 end
             elseif requestType == "Assignments" then
                 local role, players = string.match(data, "([^:]*):(.*)")
-
+                playerList[Roles[role]] = {}
                 local pattern = "([^:]+)"
                 local stringIndex = 1
                 local index = 0
