@@ -148,7 +148,7 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
 
     frameToFill.ShowHideButton = CreateFrame("Button", nil, frameToFill, "UIPanelButtonTemplate")
     frameToFill.ShowHideButton:SetSize(100, 25)
-    frameToFill.ShowHideButton:SetPoint("TOP", 100, -150)
+    frameToFill.ShowHideButton:SetPoint("TOPRIGHT", -75, -150)
     frameToFill.ShowHideButton:SetText("Hide Frame!")
     frameToFill.ShowHideButton:SetScript("OnClick", function () AZP.BossTools.RohKalo:ShowHideFrame() end)
 
