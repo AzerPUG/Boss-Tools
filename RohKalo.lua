@@ -283,13 +283,12 @@ function AZP.BossTools.Events:AddonMessage(...)
     local prefix, payload, _, sender = ...
 
     if prefix == "AZPRKHData" then
-        print(payload)
         local protocolVersion = string.match(payload, "(%d):.*")
         if protocolVersion == "1" then
             local _, requestType, data = string.match(payload, "(%d):([^:]*):(.*)")
             if requestType == "HelpRequest" then
                 local requestOrigin, ring = string.match(data, "([^:]*):(.*)")
-                if ring == assignedRing then
+                if tonumber(ring) == tonumber(assignedRing) then
                     print("Yo! Your help was requested!")
                     local name, realm = select(6, GetPlayerInfoByGUID(requestOrigin))
                     AZP.BossTools.RohKalo:WarnPlayer(string.format("|cFFFF0000Help on ring %d!|r", assignedRing))
@@ -320,7 +319,7 @@ end
 function AZP.BossTools.RohKalo:UpdatePlayerList()
     local playerGUID = UnitGUID("player")
 
-    assignedRing = 0
+    assignedRing = "0"
     assignedRole = Roles.Not
 
     local alphaAssignment = AZP.BossTools.RohKalo:GetIndex(playerList[Roles.A], playerGUID)
