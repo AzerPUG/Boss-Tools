@@ -181,7 +181,7 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
                             end
                             if curName == AZPRTRohKaloAsigneesEditBoxes[j].editbox:GetText() then
                                 local curGUID = UnitGUID("raid" .. k)
-                                local ring = AZPRTRohKaloAsigneesAndBackUps[j];
+                                local ring = AZPRTRohKaloAsigneesAndBackUps[j]
                                 if ring == nil then ring = {} AZPRTRohKaloAsigneesAndBackUps[j] = ring end
                                 ring[Roles.A] = { curGUID, curName }
                             end
@@ -221,7 +221,7 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
                             end
                             if curName == AZPRTRohKaloBackUpEditBoxes[j].editbox:GetText() then
                                 local curGUID = UnitGUID("raid" .. k)
-                                local ring = AZPRTRohKaloAsigneesAndBackUps[j];
+                                local ring = AZPRTRohKaloAsigneesAndBackUps[j]
                                 if ring == nil then ring = {} AZPRTRohKaloAsigneesAndBackUps[j] = ring end
                                 ring[Roles.B] = { curGUID, curName }
                             end
