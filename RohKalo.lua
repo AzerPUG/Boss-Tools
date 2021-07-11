@@ -169,6 +169,8 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
                             end
                         end
                     end
+                else
+                    AZPRTRohKaloAsigneesAndBackUps[j] = nil
                 end
             end
         end)
@@ -207,6 +209,8 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
                             end
                         end
                     end
+                else
+                    AZPRTRohKaloAsigneesAndBackUps[j] = nil
                 end
             end
         end)
@@ -328,11 +332,15 @@ function AZP.BossTools.RohKalo:UpdatePlayerList()
             local name = select(6, GetPlayerInfoByGUID(alpha))
             AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetText(name)
             AZPRTRohKaloAsigneesEditBoxes[i].editbox:SetText(name)
+        else
+            AZPRTRohKaloAsigneesEditBoxes[i].editbox:SetText("")
         end
         if beta ~= nil then
             local name = select(6, GetPlayerInfoByGUID(beta))
             AZPRTRohKaloAlphaFrame.RightLabels[i]:SetText(name)
             AZPRTRohKaloBackUpEditBoxes[i].editbox:SetText(name)
+        else
+            AZPRTRohKaloBackUpEditBoxes[i].editbox:SetText("")
         end
     end
 end
