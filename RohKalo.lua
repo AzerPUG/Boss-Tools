@@ -21,16 +21,6 @@ local Roles = {
     ["Not"] = "Not Assigned"
 }
 
-local playerList = {
-    [Roles.A] = {
-
-    },
-
-    [Roles.B] = {
-
-    }
-}
-
 function AZP.BossTools.RohKalo:OnLoadSelf()
     EventFrame = CreateFrame("FRAME", nil)
     EventFrame:RegisterEvent("CHAT_MSG_ADDON")
@@ -183,7 +173,8 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
                                 local curGUID = UnitGUID("raid" .. k)
                                 local ring = AZPRTRohKaloAsigneesAndBackUps[j]
                                 if ring == nil then ring = {} AZPRTRohKaloAsigneesAndBackUps[j] = ring end
-                                ring[Roles.A] = { curGUID, curName }
+                                ring[Roles.A] = curGUID
+                                AZP.BossTools.RohKalo:UpdateRohKaloFrame()
                             end
                         end
                     end
@@ -223,7 +214,8 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
                                 local curGUID = UnitGUID("raid" .. k)
                                 local ring = AZPRTRohKaloAsigneesAndBackUps[j]
                                 if ring == nil then ring = {} AZPRTRohKaloAsigneesAndBackUps[j] = ring end
-                                ring[Roles.B] = { curGUID, curName }
+                                ring[Roles.B] = curGUID
+                                AZP.BossTools.RohKalo:UpdateRohKaloFrame()
                             end
                         end
                     end
@@ -246,9 +238,11 @@ function AZP.BossTools.RohKalo:ShareList()
     local assignAlphaMessage = "1:Assignments:A"
     local assignBetaMessage = "1:Assignments:B"
 
-    for _,v in ipairs(AZPRTRohKaloAsigneesAndBackUps) do
-        assignAlphaMessage = assignAlphaMessage .. ":" .. v[Roles.A][1]
-        assignBetaMessage = assignBetaMessage .. ":" .. v[Roles.B][1]
+    for _,ring in ipairs(AZPRTRohKaloAsigneesAndBackUps) do
+        if ring ~= nil then
+            assignAlphaMessage = assignAlphaMessage .. ":" .. ring[Roles.A]
+            assignBetaMessage = assignBetaMessage .. ":" .. ring[Roles.B]
+        end
     end
 
     C_ChatInfo.SendAddonMessage("AZPRKHData", assignAlphaMessage ,"RAID", 1)
@@ -288,63 +282,31 @@ function AZP.BossTools.RohKalo:WarnPlayer(text)
 end
 
 function AZP.BossTools.Events:AddonMessage(...)
-    local prefix, payload, _, sender = ...
+    local prefix, payload = ...
 
     if prefix == "AZPRKHData" then
-        local protocolVersion = string.match(payload, "(%d):.*")
-        if protocolVersion == "1" then
-            local _, requestType, data = string.match(payload, "(%d):([^:]*):(.*)")
-            if requestType == "HelpRequest" then
-                local requestOrigin, ring = string.match(data, "([^:]*):(.*)")
-                if tonumber(ring) == tonumber(assignedRing) and assignedRole == Roles.B then
-                    local name, realm = select(6, GetPlayerInfoByGUID(requestOrigin))
-                    AZP.BossTools.RohKalo:WarnPlayer(string.format("|cFFFF0000Help on ring %d!|r", assignedRing))
-                end
-            elseif requestType == "Assignments" then
-                local role, players = string.match(data, "([^:]*):(.*)")
-                playerList[Roles[role]] = {}
-                local pattern = "([^:]+)"
-                local stringIndex = 1
-                local index = 0
-                while stringIndex < #players do
-                    local _, endPos = string.find(players, pattern, stringIndex)
-                    local unitGUID = string.match(players, pattern, stringIndex)
-                    stringIndex = endPos + 1
-                    index = index + 1
-                    playerList[Roles[role]][index] = unitGUID
-                end
-
-                AZP.BossTools.RohKalo:UpdatePlayerList()
-            end
-        end
+        AZP.BossTools.RohKalo:ReceivedCommand(payload)
     end
 end
 
-function AZP.BossTools.RohKalo:UpdatePlayerList()
+function AZP.BossTools.RohKalo:UpdateRohKaloFrame()
+    if IsInRaid() == false then
+        print("BossTools RohKalo only works in raid.")
+        return
+    end
     local playerGUID = UnitGUID("player")
 
-    assignedRing = ""
-    assignedRole = Roles.Not
-
-    local alphaAssignment = AZP.BossTools.RohKalo:GetIndex(playerList[Roles.A], playerGUID)
+    assignedRole, assignedRing = AZP.BossTools.RohKalo:GetPositionAndRole(playerGUID)
     local headerText = Roles.Not
-    if alphaAssignment ~= nil then
-        headerText = string.format("%s %s", Roles.A, alphaAssignment)
-        assignedRole = Roles.A
-        assignedRing = alphaAssignment
-    else 
-        local betaAssignment = AZP.BossTools.RohKalo:GetIndex(playerList[Roles.B], playerGUID)
-        if betaAssignment ~= nil then
-            assignedRole = Roles.B
-            headerText = string.format("%s %s", Roles.B, betaAssignment)
-            assignedRing = betaAssignment
-        end
+    if assignedRole ~= Roles.Not then
+        headerText = Roles.A .. assignedRing
     end
 
     AZPRTRohKaloAlphaFrame.Header:SetText(headerText)
     for i = 1, 6 do
-        local alpha = playerList[Roles.A][i]
-        local beta = playerList[Roles.B][i]
+        local ring = AZPRTRohKaloAsigneesAndBackUps[i]
+        local alpha = ring[Roles.A]
+        local beta = ring[Roles.B]
 
         if alpha ~= nil then
             local name = select(6, GetPlayerInfoByGUID(alpha))
@@ -365,10 +327,47 @@ function AZP.BossTools.RohKalo:UpdatePlayerList()
     end
 end
 
-function AZP.BossTools.RohKalo:GetIndex(table, targetGUID)
-    for i,GUID in ipairs(table) do
-        if GUID == targetGUID then
-            return i
+function AZP.BossTools.RohKalo:ReceivedCommand(payload)
+    local protocolVersion = string.match(payload, "(%d):.*")
+    if protocolVersion == "1" then
+        local _, requestType, data = string.match(payload, "(%d):([^:]*):(.*)")
+        if requestType == "HelpRequest" then
+            local requestOrigin, ring = string.match(data, "([^:]*):(.*)")
+            if tonumber(ring) == tonumber(assignedRing) and assignedRole == Roles.B then
+                local name, realm = select(6, GetPlayerInfoByGUID(requestOrigin))
+                AZP.BossTools.RohKalo:WarnPlayer(string.format("|cFFFF0000Help on ring %d!|r", assignedRing))
+            end
+        elseif requestType == "Assignments" then
+            local role, players = string.match(data, "([^:]*):(.*)")
+
+            for i=1,6 do
+                if AZPRTRohKaloAsigneesAndBackUps[i] ~= nil then
+                    AZPRTRohKaloAsigneesAndBackUps[i][Roles[role]] = nil
+                end
+            end
+            local pattern = "([^:]+)"
+            local stringIndex = 1
+            local index = 0
+            while stringIndex < #players do
+                local _, endPos = string.find(players, pattern, stringIndex)
+                local unitGUID = string.match(players, pattern, stringIndex)
+                stringIndex = endPos + 1
+                index = index + 1
+                AZPRTRohKaloAsigneesAndBackUps[index][Roles[role]] = unitGUID
+            end
+
+            AZP.BossTools.RohKalo:UpdateRohKaloFrame()
+        end
+    end
+end
+
+function AZP.BossTools.RohKalo:GetPositionAndRole(targetGUID)
+    for i,ring in ipairs(AZPRTRohKaloAsigneesAndBackUps) do
+        if ring[Roles.A] == targetGUID then
+            return Roles.A, i
+        end
+        if ring[Roles.B] == targetGUID then
+            return Roles.B, i
         end
     end
     return nil
