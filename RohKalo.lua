@@ -179,7 +179,9 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
                         end
                     end
                 else
-                    AZPRTRohKaloAsigneesAndBackUps[j] = nil
+                    if AZPRTRohKaloAsigneesAndBackUps[j] ~= nil then
+                        AZPRTRohKaloAsigneesAndBackUps[j][Roles.A] = nil
+                    end
                 end
             end
         end)
@@ -220,7 +222,9 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
                         end
                     end
                 else
-                    AZPRTRohKaloAsigneesAndBackUps[j] = nil
+                    if AZPRTRohKaloAsigneesAndBackUps[j] ~= nil then
+                        AZPRTRohKaloAsigneesAndBackUps[j][Roles.B] = nil
+                    end
                 end
             end
         end)
@@ -240,8 +244,13 @@ function AZP.BossTools.RohKalo:ShareList()
 
     for _,ring in ipairs(AZPRTRohKaloAsigneesAndBackUps) do
         if ring ~= nil then
-            assignAlphaMessage = assignAlphaMessage .. ":" .. ring[Roles.A]
-            assignBetaMessage = assignBetaMessage .. ":" .. ring[Roles.B]
+            GUIDA = ring[Roles.A]
+            GUIDB = ring[Roles.B]
+
+            if GUIDA == nil then GUIDA = "_" end
+            if GUIDB == nil then GUIDB = "_" end
+            assignAlphaMessage = assignAlphaMessage .. ":" .. GUIDA
+            assignBetaMessage = assignBetaMessage .. ":" .. GUIDB
         end
     end
 
@@ -305,6 +314,9 @@ function AZP.BossTools.RohKalo:UpdateRohKaloFrame()
     AZPRTRohKaloAlphaFrame.Header:SetText(headerText)
     for i = 1, 6 do
         local ring = AZPRTRohKaloAsigneesAndBackUps[i]
+        if ring == nil then
+            return
+        end
         local alpha = ring[Roles.A]
         local beta = ring[Roles.B]
 
@@ -353,6 +365,7 @@ function AZP.BossTools.RohKalo:ReceivedCommand(payload)
                 local unitGUID = string.match(players, pattern, stringIndex)
                 stringIndex = endPos + 1
                 index = index + 1
+                if AZPRTRohKaloAsigneesAndBackUps[index] == nil then AZPRTRohKaloAsigneesAndBackUps[index] = {} end
                 AZPRTRohKaloAsigneesAndBackUps[index][Roles[role]] = unitGUID
             end
 
