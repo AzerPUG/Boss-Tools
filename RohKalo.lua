@@ -116,10 +116,10 @@ end
 function AZP.BossTools.RohKalo:ShowHideFrame()
     if AZPRTRohKaloAlphaFrame:IsShown() then
         AZPRTRohKaloAlphaFrame:Hide()
-        AZPRTRohKaloOptionPanel.ShowHideButton:SetText("Show Interrupts!")
+        AZPRTRohKaloOptionPanel.ShowHideButton:SetText("Show Frame!")
     else
         AZPRTRohKaloAlphaFrame:Show()
-        AZPRTRohKaloOptionPanel.ShowHideButton:SetText("Hide Interrupts!")
+        AZPRTRohKaloOptionPanel.ShowHideButton:SetText("Hide Frame!")
     end
 end
 
