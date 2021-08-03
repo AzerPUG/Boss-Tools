@@ -1,116 +1,115 @@
 if AZP == nil then AZP = {} end
 if AZP.VersionControl == nil then AZP.VersionControl = {} end
 
-AZP.VersionControl["BossTools"] = 1
-if AZP.BossTools == nil then AZP.BossTools = {} end
+AZP.VersionControl["BossTools RohKalo"] = 19
 if AZP.BossTools.RohKalo == nil then AZP.BossTools.RohKalo = {} end
-if AZP.BossTools.Events == nil then AZP.BossTools.Events = {} end
+if AZP.BossTools.RohKalo.Events == nil then AZP.BossTools.RohKalo.Events = {} end
 
+local AssignedPlayers = {}
+local AZPRTRohKaloAlphaFrame, AZPBossToolsRohKaloOptionPanel = nil, nil
+local AZPBossToolsRohKaloGUIDs, AZPBossToolsRohKaloAlphaEditBoxes, AZPBossToolsRohKaloBetaEditBoxes = {}, {}, {}
 local AZPRTRohKaloAlphaFrame = nil
-local AZPRTRohKaloOptionPanel = nil
-local AZPRTRohKaloAsigneesAndBackUps, AZPRTRohKaloAsigneesEditBoxes, AZPRTRohKaloBackUpEditBoxes  = {}, {}, {}
-local assignedRing, assignedRole =  "", "Not Assigned"
+if AZPBossToolsRohKaloSettingsList == nil then AZPBossToolsRohKaloSettingsList = {} end
+
+if AZPAZPShownLocked == nil then AZPAZPShownLocked = {false, false} end
+
+local UpdateFrame, EventFrame = nil, nil
+local HaveShowedUpdateNotification = false
+
 local PopUpFrame = nil
+local curScale = 0.75
 local soundID = 8959
 local soundChannel = 1
-local EventFrame = nil
 
-local Roles = {
-    ["A"] = "Alpha",
-    ["B"] = "Beta",
-    ["Not"] = "Not Assigned"
-}
+local blinkingBoolean = false
+local blinkingTicker, cooldownTicker = nil, nil
+
+local optionHeader = "|cFF00FFFFBossTools RohKalo|r"
+
+local AZPRTRohKaloAlphaFrame = nil
+
+function AZP.BossTools.RohKalo:OnLoadBoth()
+    for i = 1, 6 do
+        AssignedPlayers[string.format( "Ring%d",i )] = {}
+    end
+    AZP.BossTools.RohKalo:CreateMainFrame()
+    AZP.BossTools.RohKalo:CreatePopUpFrame()
+    C_ChatInfo.RegisterAddonMessagePrefix("AZPSHAREINFO")
+end
+
+-- function AZP.BossTools.RohKalo:OnLoadCore()
+--     AZP.BossTools.RohKalo:OnLoadBoth()
+--     AZP.Core:RegisterEvents("COMBAT_LOG_EVENT_UNFILTERED", function(...) AZP.BossTools.RohKalo.Events:CombatLogEventUnfiltered(...) end)
+--     AZP.Core:RegisterEvents("VARIABLES_LOADED", function(...) AZP.BossTools.RohKalo.Events:VariablesLoaded(...) end)
+--     AZP.Core:RegisterEvents("CHAT_MSG_ADDON", function(...) AZP.BossTools.RohKalo.Events:ChatMsgAddonInterrupts(...) end)
+--     AZP.Core:RegisterEvents("ENCOUNTER_START", function(...) AZP.BossTools.RohKalo.Events:PlayerEnterCombat(...) end)
+--     AZP.Core:RegisterEvents("ENCOUNTER_END", function(...) AZP.BossTools.RohKalo.Events:PlayerLeaveCombat(...) end)
+
+--     AZP.OptionsPanels:RemovePanel("BossTools RohKalo")
+--     AZP.OptionsPanels:Generic("BossTools RohKalo", optionHeader, function(frame)
+--         AZPBossTools.RohKaloOptionPanel = frame
+--         AZP.BossTools.RohKalo:FillOptionsPanel(frame)
+--     end)
+-- end
 
 function AZP.BossTools.RohKalo:OnLoadSelf()
+    C_ChatInfo.RegisterAddonMessagePrefix("AZPVERSIONS")
+    C_ChatInfo.RegisterAddonMessagePrefix("AZPRKHHelp")
+
     EventFrame = CreateFrame("FRAME", nil)
     EventFrame:RegisterEvent("CHAT_MSG_ADDON")
     EventFrame:RegisterEvent("VARIABLES_LOADED")
+    EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
+    EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    EventFrame:RegisterEvent("ENCOUNTER_START")
+    EventFrame:RegisterEvent("ENCOUNTER_END")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.RohKalo:OnEvent(...) end)
 
-    AZPRTRohKaloOptionPanel = CreateFrame("FRAME", nil)
-    AZPRTRohKaloOptionPanel.name = "|cFF00FFFFAzerPUG's BossTools|r"
-    InterfaceOptions_AddCategory(AZPRTRohKaloOptionPanel)
+    AZPBossToolsRohKaloOptionPanel = CreateFrame("FRAME", nil)
+    AZPBossToolsRohKaloOptionPanel.name = "|cFF00FFFFAzerPUG's BossTools|r"
+    InterfaceOptions_AddCategory(AZPBossToolsRohKaloOptionPanel)
 
-    AZPRTRohKaloOptionPanel.header = AZPRTRohKaloOptionPanel:CreateFontString("AZPRTRohKaloOptionPanel", "ARTWORK", "GameFontNormalHuge")
-    AZPRTRohKaloOptionPanel.header:SetPoint("TOP", 0, -10)
-    AZPRTRohKaloOptionPanel.header:SetText("|cFF00FFFFAzerPUG's BossTools Options!|r")
+    AZPBossToolsRohKaloOptionPanel.header = AZPBossToolsRohKaloOptionPanel:CreateFontString("AZPBossToolsRohKaloOptionPanel", "ARTWORK", "GameFontNormalHuge")
+    AZPBossToolsRohKaloOptionPanel.header:SetPoint("TOP", 0, -10)
+    AZPBossToolsRohKaloOptionPanel.header:SetText("|cFF00FFFFAzerPUG's BossTools Options!|r")
 
-    AZPRTRohKaloOptionPanel.footer = AZPRTRohKaloOptionPanel:CreateFontString("AZPRTRohKaloOptionPanel", "ARTWORK", "GameFontNormalLarge")
-    AZPRTRohKaloOptionPanel.footer:SetPoint("TOP", 0, -400)
-    AZPRTRohKaloOptionPanel.footer:SetText(
+    AZPBossToolsRohKaloOptionPanel.footer = AZPBossToolsRohKaloOptionPanel:CreateFontString("AZPBossToolsRohKaloOptionPanel", "ARTWORK", "GameFontNormalLarge")
+    AZPBossToolsRohKaloOptionPanel.footer:SetPoint("TOP", 0, -400)
+    AZPBossToolsRohKaloOptionPanel.footer:SetText(
         "|cFF00FFFFAzerPUG Links:\n" ..
         "Website: www.azerpug.com\n" ..
         "Discord: www.azerpug.com/discord\n" ..
         "Twitch: www.twitch.tv/azerpug\n|r"
     )
 
-    AZP.BossTools.RohKalo:FillOptionsPanel(AZPRTRohKaloOptionPanel)
+    AZP.BossTools.RohKalo:FillOptionsPanel(AZPBossToolsRohKaloOptionPanel)
+    AZP.BossTools.RohKalo:OnLoadBoth()
 
-    AZPRTRohKaloAlphaFrame = CreateFrame("FRAME", nil, UIPanel, "BackdropTemplate")
-    AZPRTRohKaloAlphaFrame:SetSize(175, 150)
-    AZPRTRohKaloAlphaFrame:SetPoint("TOPLEFT", 100, -200)
-    AZPRTRohKaloAlphaFrame:SetBackdrop({
+    UpdateFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+    UpdateFrame:SetPoint("CENTER", 0, 250)
+    UpdateFrame:SetSize(400, 200)
+    UpdateFrame:SetBackdrop({
         bgFile = "Interface/Tooltips/UI-Tooltip-Background",
         edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-        edgeSize = 10,
-        insets = {left = 3, right = 3, top = 3, bottom = 3},
+        edgeSize = 12,
+        insets = { left = 1, right = 1, top = 1, bottom = 1 },
     })
-    AZPRTRohKaloAlphaFrame:EnableMouse(true)
-    AZPRTRohKaloAlphaFrame:SetMovable(true)
-    AZPRTRohKaloAlphaFrame:RegisterForDrag("LeftButton")
-    AZPRTRohKaloAlphaFrame:SetScript("OnDragStart", AZPRTRohKaloAlphaFrame.StartMoving)
-    AZPRTRohKaloAlphaFrame:SetScript("OnDragStop", function() AZPRTRohKaloAlphaFrame:StopMovingOrSizing() end)
+    UpdateFrame:SetBackdropColor(0.25, 0.25, 0.25, 0.80)
+    UpdateFrame.header = UpdateFrame:CreateFontString("UpdateFrame", "ARTWORK", "GameFontNormalHuge")
+    UpdateFrame.header:SetPoint("TOP", 0, -10)
+    UpdateFrame.header:SetText("|cFFFF0000AzerPUG's BossTools.RohKalo is out of date!|r")
 
-    AZPRTRohKaloAlphaFrame.Header = AZPRTRohKaloAlphaFrame:CreateFontString("AZPRTRohKaloAlphaFrame", "ARTWORK", "GameFontNormalHuge")
-    AZPRTRohKaloAlphaFrame.Header:SetSize(AZPRTRohKaloAlphaFrame:GetWidth(), 25)
-    AZPRTRohKaloAlphaFrame.Header:SetPoint("TOP", 0, -5)
-    AZPRTRohKaloAlphaFrame.Header:SetText("Alpha XXX")
+    UpdateFrame.text = UpdateFrame:CreateFontString("UpdateFrame", "ARTWORK", "GameFontNormalLarge")
+    UpdateFrame.text:SetPoint("TOP", 0, -40)
+    UpdateFrame.text:SetText("Error!")
 
-    AZPRTRohKaloAlphaFrame.HelpButton = CreateFrame("BUTTON", nil, AZPRTRohKaloAlphaFrame, "UIPanelButtonTemplate")
-    AZPRTRohKaloAlphaFrame.HelpButton:SetSize(75, 20)
-    AZPRTRohKaloAlphaFrame.HelpButton:SetPoint("TOP", -40, -30)
-    AZPRTRohKaloAlphaFrame.HelpButton:SetText("I Need Help!")
-    AZPRTRohKaloAlphaFrame.HelpButton:SetScript("OnClick", function() if assignedRole == Roles.A then AZP.BossTools.RohKalo:ShareHelpRequest() end end)
+    local UpdateFrameCloseButton = CreateFrame("Button", nil, UpdateFrame, "UIPanelCloseButton")
+    UpdateFrameCloseButton:SetWidth(25)
+    UpdateFrameCloseButton:SetHeight(25)
+    UpdateFrameCloseButton:SetPoint("TOPRIGHT", UpdateFrame, "TOPRIGHT", 2, 2)
+    UpdateFrameCloseButton:SetScript("OnClick", function() UpdateFrame:Hide() end )
 
-    AZPRTRohKaloAlphaFrame.SafeButton = CreateFrame("BUTTON", nil, AZPRTRohKaloAlphaFrame, "UIPanelButtonTemplate")
-    AZPRTRohKaloAlphaFrame.SafeButton:SetSize(75, 20)
-    AZPRTRohKaloAlphaFrame.SafeButton:SetPoint("TOP", 40, -30)
-    AZPRTRohKaloAlphaFrame.SafeButton:SetText("I Can Solo!")
-    AZPRTRohKaloAlphaFrame.SafeButton:SetScript("OnClick", function()  end)
-
-    AZPRTRohKaloAlphaFrame.LeftLabels = {}
-    AZPRTRohKaloAlphaFrame.RightLabels = {}
-
-    for i = 1, 6 do
-        AZPRTRohKaloAlphaFrame.LeftLabels[i] = AZPRTRohKaloAlphaFrame:CreateFontString("AZPRTRohKaloAlphaFrame", "ARTWORK", "GameFontNormal")
-        AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetSize(100, 25)
-        AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetPoint("TOP", -55, ((i - 1) * -15) -50)
-        AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetJustifyH("RIGHT")
-
-        AZPRTRohKaloAlphaFrame.RightLabels[i] = AZPRTRohKaloAlphaFrame:CreateFontString("AZPRTRohKaloAlphaFrame", "ARTWORK", "GameFontNormal")
-        AZPRTRohKaloAlphaFrame.RightLabels[i]:SetSize(100, 25)
-        AZPRTRohKaloAlphaFrame.RightLabels[i]:SetPoint("TOP", 55, ((i - 1) * -15) -50)
-        AZPRTRohKaloAlphaFrame.RightLabels[i]:SetJustifyH("LEFT")
-    end
-
-    AZPRTRohKaloAlphaFrame.closeButton = CreateFrame("Button", nil, AZPRTRohKaloAlphaFrame, "UIPanelCloseButton")
-    AZPRTRohKaloAlphaFrame.closeButton:SetSize(20, 21)
-    AZPRTRohKaloAlphaFrame.closeButton:SetPoint("TOPRIGHT", AZPRTRohKaloAlphaFrame, "TOPRIGHT", 2, 2)
-    AZPRTRohKaloAlphaFrame.closeButton:SetScript("OnClick", function() AZP.BossTools.RohKalo:ShowHideFrame() end )
-
-    AZP.BossTools.RohKalo:CreatePopUpFrame()
-    AZPRTRohKaloAlphaFrame.Header:SetText(string.format("%s %s", assignedRole, assignedRing))
-    C_ChatInfo.RegisterAddonMessagePrefix("AZPRKHData")
-end
-
-function AZP.BossTools.RohKalo:ShowHideFrame()
-    if AZPRTRohKaloAlphaFrame:IsShown() then
-        AZPRTRohKaloAlphaFrame:Hide()
-        AZPRTRohKaloOptionPanel.ShowHideButton:SetText("Show Interrupts!")
-    else
-        AZPRTRohKaloAlphaFrame:Show()
-        AZPRTRohKaloOptionPanel.ShowHideButton:SetText("Hide Interrupts!")
-    end
+    UpdateFrame:Hide()
 end
 
 function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
@@ -157,111 +156,96 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
         AssigneesFrame.text:SetPoint("LEFT", 0, 0)
         AssigneesFrame.text:SetText("Ring " .. i .. ":")
 
-        AZPRTRohKaloAsigneesEditBoxes[i] = AssigneesFrame
+        AZPBossToolsRohKaloAlphaEditBoxes[i] = AssigneesFrame
 
         AssigneesFrame.editbox:SetScript("OnEditFocusLost",
         function()
-            for j = 1, 6 do
-                if (AZPRTRohKaloAsigneesEditBoxes[j].editbox:GetText() ~= nil and AZPRTRohKaloAsigneesEditBoxes[j].editbox:GetText() ~= "") then
-                    for k = 1, 40 do
-                        local curName = GetRaidRosterInfo(k)
-                        if curName ~= nil then
-                            if string.find(curName, "-") then
-                                curName = string.match(curName, "(.+)-")
-                            end
-                            if curName == AZPRTRohKaloAsigneesEditBoxes[j].editbox:GetText() then
-                                local curGUID = UnitGUID("raid" .. k)
-                                local ring = AZPRTRohKaloAsigneesAndBackUps[j]
-                                if ring == nil then ring = {} AZPRTRohKaloAsigneesAndBackUps[j] = ring end
-                                ring[Roles.A] = curGUID
-                                AZP.BossTools.RohKalo:UpdateRohKaloFrame()
-                            end
-                        end
-                    end
-                else
-                    if AZPRTRohKaloAsigneesAndBackUps[j] ~= nil then
-                        AZPRTRohKaloAsigneesAndBackUps[j][Roles.A] = nil
-                    end
-                end
-            end
+            AZP.BossTools.RohKalo:OnEditFocusLost("Alpha", i)
         end)
     end
 
     frameToFill.assigneeHeader = frameToFill:CreateFontString("AssigneesFrame", "ARTWORK", "GameFontNormalLarge")
     frameToFill.assigneeHeader:SetSize(100, 25)
-    frameToFill.assigneeHeader:SetPoint("BOTTOM", AZPRTRohKaloAsigneesEditBoxes[1].editbox, "TOP", 0, 0)
+    frameToFill.assigneeHeader:SetPoint("BOTTOM", AZPBossToolsRohKaloAlphaEditBoxes[1].editbox, "TOP", 0, 0)
     frameToFill.assigneeHeader:SetText("Alpha")
 
     for i = 1, 6 do
         local BackUpsFrame = CreateFrame("Frame", nil, frameToFill)
         BackUpsFrame:SetSize(100, 25)
-        BackUpsFrame:SetPoint("LEFT", AZPRTRohKaloAsigneesEditBoxes[i], "RIGHT", 5, 0)
+        BackUpsFrame:SetPoint("LEFT", AZPBossToolsRohKaloAlphaEditBoxes[i], "RIGHT", 5, 0)
         BackUpsFrame.editbox = CreateFrame("EditBox", nil, BackUpsFrame, "InputBoxTemplate")
         BackUpsFrame.editbox:SetSize(100, 25)
         BackUpsFrame.editbox:SetPoint("LEFT",0, 0)
         BackUpsFrame.editbox:SetAutoFocus(false)
-        AZPRTRohKaloBackUpEditBoxes[i] = BackUpsFrame
+        AZPBossToolsRohKaloBetaEditBoxes[i] = BackUpsFrame
 
         BackUpsFrame.editbox:SetScript("OnEditFocusLost",
         function()
-            for j = 1,6 do
-                if (AZPRTRohKaloBackUpEditBoxes[j].editbox:GetText() ~= nil and AZPRTRohKaloBackUpEditBoxes[j].editbox:GetText() ~= "") then
-                    for k = 1, 40 do
-                        local curName = GetRaidRosterInfo(k)
-                        if curName ~= nil then
-                            if string.find(curName, "-") then
-                                curName = string.match(curName, "(.+)-")
-                            end
-                            if curName == AZPRTRohKaloBackUpEditBoxes[j].editbox:GetText() then
-                                local curGUID = UnitGUID("raid" .. k)
-                                local ring = AZPRTRohKaloAsigneesAndBackUps[j]
-                                if ring == nil then ring = {} AZPRTRohKaloAsigneesAndBackUps[j] = ring end
-                                ring[Roles.B] = curGUID
-                                AZP.BossTools.RohKalo:UpdateRohKaloFrame()
-                            end
-                        end
-                    end
-                else
-                    if AZPRTRohKaloAsigneesAndBackUps[j] ~= nil then
-                        AZPRTRohKaloAsigneesAndBackUps[j][Roles.B] = nil
-                    end
-                end
-            end
+            AZP.BossTools.RohKalo:OnEditFocusLost("Beta", i)
         end)
     end
 
     frameToFill.backupHeader = frameToFill:CreateFontString("AssigneesFrame", "ARTWORK", "GameFontNormalLarge")
     frameToFill.backupHeader:SetSize(100, 25)
-    frameToFill.backupHeader:SetPoint("BOTTOM", AZPRTRohKaloBackUpEditBoxes[1], "TOP", 0, 0)
+    frameToFill.backupHeader:SetPoint("BOTTOM", AZPBossToolsRohKaloBetaEditBoxes[1], "TOP", 0, 0)
     frameToFill.backupHeader:SetText("Beta")
 
     frameToFill:Hide()
 end
 
-function AZP.BossTools.RohKalo:ShareList()
-    local assignAlphaMessage = "1:Assignments:A"
-    local assignBetaMessage = "1:Assignments:B"
+function AZP.BossTools.RohKalo:CreateMainFrame()
 
-    for _,ring in ipairs(AZPRTRohKaloAsigneesAndBackUps) do
-        if ring ~= nil then
-            GUIDA = ring[Roles.A]
-            GUIDB = ring[Roles.B]
+    AZPRTRohKaloAlphaFrame = CreateFrame("FRAME", nil, UIPanel, "BackdropTemplate")
+    AZPRTRohKaloAlphaFrame:SetSize(175, 150)
+    AZPRTRohKaloAlphaFrame:SetPoint("TOPLEFT", 100, -200)
+    AZPRTRohKaloAlphaFrame:SetBackdrop({
+        bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+        edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+        edgeSize = 10,
+        insets = {left = 3, right = 3, top = 3, bottom = 3},
+    })
+    AZPRTRohKaloAlphaFrame:EnableMouse(true)
+    AZPRTRohKaloAlphaFrame:SetMovable(true)
+    AZPRTRohKaloAlphaFrame:RegisterForDrag("LeftButton")
+    AZPRTRohKaloAlphaFrame:SetScript("OnDragStart", AZPRTRohKaloAlphaFrame.StartMoving)
+    AZPRTRohKaloAlphaFrame:SetScript("OnDragStop", function() AZPRTRohKaloAlphaFrame:StopMovingOrSizing() end)
 
-            if GUIDA == nil then GUIDA = "_" end
-            if GUIDB == nil then GUIDB = "_" end
-            assignAlphaMessage = assignAlphaMessage .. ":" .. GUIDA
-            assignBetaMessage = assignBetaMessage .. ":" .. GUIDB
-        end
+    AZPRTRohKaloAlphaFrame.Header = AZPRTRohKaloAlphaFrame:CreateFontString("AZPRTRohKaloAlphaFrame", "ARTWORK", "GameFontNormalHuge")
+    AZPRTRohKaloAlphaFrame.Header:SetSize(AZPRTRohKaloAlphaFrame:GetWidth(), 25)
+    AZPRTRohKaloAlphaFrame.Header:SetPoint("TOP", 0, -5)
+    AZPRTRohKaloAlphaFrame.Header:SetText("Alpha XXX")
+
+    AZPRTRohKaloAlphaFrame.HelpButton = CreateFrame("BUTTON", nil, AZPRTRohKaloAlphaFrame, "UIPanelButtonTemplate")
+    AZPRTRohKaloAlphaFrame.HelpButton:SetSize(75, 20)
+    AZPRTRohKaloAlphaFrame.HelpButton:SetPoint("TOP", -40, -30)
+    AZPRTRohKaloAlphaFrame.HelpButton:SetText("I Need Help!")
+    AZPRTRohKaloAlphaFrame.HelpButton:SetScript("OnClick", function() AZP.BossTools.RohKalo:RequestHelp() end)
+
+    AZPRTRohKaloAlphaFrame.SafeButton = CreateFrame("BUTTON", nil, AZPRTRohKaloAlphaFrame, "UIPanelButtonTemplate")
+    AZPRTRohKaloAlphaFrame.SafeButton:SetSize(75, 20)
+    AZPRTRohKaloAlphaFrame.SafeButton:SetPoint("TOP", 40, -30)
+    AZPRTRohKaloAlphaFrame.SafeButton:SetText("I Can Solo!")
+    AZPRTRohKaloAlphaFrame.SafeButton:SetScript("OnClick", function()  end)
+
+    AZPRTRohKaloAlphaFrame.LeftLabels = {}
+    AZPRTRohKaloAlphaFrame.RightLabels = {}
+
+    for i = 1, 6 do
+        AZPRTRohKaloAlphaFrame.LeftLabels[i] = AZPRTRohKaloAlphaFrame:CreateFontString("AZPRTRohKaloAlphaFrame", "ARTWORK", "GameFontNormal")
+        AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetSize(100, 25)
+        AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetPoint("TOP", -55, ((i - 1) * -15) -50)
+        AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetJustifyH("RIGHT")
+
+        AZPRTRohKaloAlphaFrame.RightLabels[i] = AZPRTRohKaloAlphaFrame:CreateFontString("AZPRTRohKaloAlphaFrame", "ARTWORK", "GameFontNormal")
+        AZPRTRohKaloAlphaFrame.RightLabels[i]:SetSize(100, 25)
+        AZPRTRohKaloAlphaFrame.RightLabels[i]:SetPoint("TOP", 55, ((i - 1) * -15) -50)
+        AZPRTRohKaloAlphaFrame.RightLabels[i]:SetJustifyH("LEFT")
     end
 
-    C_ChatInfo.SendAddonMessage("AZPRKHData", assignAlphaMessage ,"RAID", 1)
-    C_ChatInfo.SendAddonMessage("AZPRKHData", assignBetaMessage ,"RAID", 1)
-end
-
-function AZP.BossTools.RohKalo:ShareHelpRequest()
-    local message = string.format("1:HelpRequest:%s:%s", UnitGUID("player"), assignedRing)
-    C_ChatInfo.SendAddonMessage("AZPRKHData", message ,"RAID", 1)
-
+    AZPRTRohKaloAlphaFrame.closeButton = CreateFrame("Button", nil, AZPRTRohKaloAlphaFrame, "UIPanelCloseButton")
+    AZPRTRohKaloAlphaFrame.closeButton:SetSize(20, 21)
+    AZPRTRohKaloAlphaFrame.closeButton:SetPoint("TOPRIGHT", AZPRTRohKaloAlphaFrame, "TOPRIGHT", 2, 2)
+    AZPRTRohKaloAlphaFrame.closeButton:SetScript("OnClick", function() AZP.BossTools.RohKalo:ShowHideFrame() end )
 end
 
 function AZP.BossTools.RohKalo:CreatePopUpFrame()
@@ -273,6 +257,137 @@ function AZP.BossTools.RohKalo:CreatePopUpFrame()
     PopUpFrame.text:SetPoint("CENTER", 0, 0)
     PopUpFrame.text:SetScale(0.5)
     PopUpFrame.text:Hide()
+end
+
+function AZP.BossTools.RohKalo.Events:CombatLogEventUnfiltered(...)
+    local v1, combatEvent, v3, UnitGUID, casterName, v6, v7, destGUID, destName, v10, v11, spellID, v13, v14, v15 = CombatLogGetCurrentEventInfo()
+    -- v12 == SpellID, but not always, sometimes several IDs for one spell (when multiple things happen on one spell)
+    if combatEvent == "SPELL_CAST_SUCCESS" then
+        -- local unitName = UnitFullName("PLAYER")
+        -- if AZP.BossTools.RohKalo.interruptSpells[spellID] ~= nil then
+        --     for i = 1, #AZPInterruptOrder do
+        --         local potentialPetGUID = string.match(UnitGUID, "(.*)-")
+        --         if UnitGUID == AZPInterruptOrder[i][1] then
+        --             AZP.BossTools.RohKalo:StructureInterrupts(UnitGUID, spellID)
+        --             break
+        --         end
+        --     end
+        --     if casterName == unitName then      -- Change to GUID.
+        --         if blinkingTicker ~= nil then
+        --             blinkingTicker:Cancel()
+        --         end
+        --         AZP.BossTools.RohKalo:InterruptBlinking(false)
+        --     end
+        -- end
+    elseif combatEvent == "UNIT_DIED" then
+        -- for i = 1, #AZPInterruptOrder do
+        --     if destGUID == AZPInterruptOrder[i][1] then
+        --         AZP.BossTools.RohKalo:StructureInterrupts(destGUID, nil)
+        --         break
+        --     end
+        -- end
+    end
+end
+
+function AZP.BossTools.RohKalo.Events:VariablesLoaded(...)
+    AZP.BossTools.RohKalo:LoadSavedVars()
+    AZP.BossTools.RohKalo:ShareVersion()
+end
+
+function AZP.BossTools.RohKalo.Events:ChatMsgAddonInterrupts(...)
+    local prefix, payload, _, sender = ...
+    if prefix == "AZPSHAREINFO" then
+        AZP.BossTools.RohKalo:ReceiveInterrupters(payload)
+    end
+end
+
+function AZP.BossTools.RohKalo.Events:ChatMsgAddonVersion(...)
+    local prefix, payload, _, sender = ...
+    if prefix == "AZPVERSIONS" then
+        local version = AZP.BossTools.RohKalo:GetSpecificAddonVersion(payload, "IH")
+        if version ~= nil then
+            AZP.BossTools.RohKalo:ReceiveVersion(version)
+        end
+    elseif prefix == "AZPRKHHelp" then
+        AZP.BossTools.RohKalo:HelpRequested(payload)
+    end
+end
+
+function AZP.BossTools.RohKalo.Events:PlayerEnterCombat()
+    cooldownTicker = C_Timer.NewTicker(1, function() AZP.BossTools.RohKalo:TickCoolDowns() end, 1000)
+end
+
+function AZP.BossTools.RohKalo.Events:PlayerLeaveCombat()
+    cooldownTicker:Cancel()
+    -- AZP.BossTools.RohKalo:SaveInterrupts()
+end
+
+function AZP.BossTools.RohKalo:LoadSavedVars()
+    if AZPBossToolsRohKaloLocation == nil then
+        AZPBossToolsRohKaloLocation = {"CENTER", nil, nil, 0, 0}
+    end
+
+    if AZPBTRohKalo ~= nil then
+        AZP.BossTools.RohKalo:CacheRaidNames()
+        AssignedPlayers = AZPBTRohKalo
+        AZP.BossTools.RohKalo:UpdateRohKaloFrame()
+    end
+    AZPRTRohKaloAlphaFrame:SetPoint(AZPBossToolsRohKaloLocation[1], AZPBossToolsRohKaloLocation[4], AZPBossToolsRohKaloLocation[5])
+    -- AZP.BossTools.RohKalo:PutNamesInList()
+    -- -- AZP.BossTools.RohKalo:SaveInterrupts()
+    -- AZP.BossTools.RohKalo:ChangeFrameHeight()
+
+    if AZPAZPShownLocked[1] then
+        AZPBossToolsRohKaloOptionPanel.LockMoveButton:SetText("Move Interrupts!")
+        AZPRTRohKaloAlphaFrame:EnableMouse(false)
+        AZPRTRohKaloAlphaFrame:SetMovable(false)
+    else
+        AZPBossToolsRohKaloOptionPanel.LockMoveButton:SetText("Lock Interrupts!")
+        AZPRTRohKaloAlphaFrame:EnableMouse(true)
+        AZPRTRohKaloAlphaFrame:SetMovable(true)
+    end
+
+    if AZPAZPShownLocked[2] then
+        AZPRTRohKaloAlphaFrame:Hide()
+        AZPBossToolsRohKaloOptionPanel.ShowHideButton:SetText("Show Interrupts!")
+    else
+        AZPRTRohKaloAlphaFrame:Show()
+        AZPBossToolsRohKaloOptionPanel.ShowHideButton:SetText("Hide Interrupts!")
+    end
+end
+
+function AZP.BossTools.RohKalo:ShowHideFrame()
+    if AZPRTRohKaloAlphaFrame:IsShown() then
+        AZPRTRohKaloAlphaFrame:Hide()
+        AZPBossTools.RohKaloOptionPanel.ShowHideButton:SetText("Show Interrupts!")
+        AZPAZPShownLocked[2] = true
+    else
+        AZPRTRohKaloAlphaFrame:Show()
+        AZPBossTools.RohKaloOptionPanel.ShowHideButton:SetText("Hide Interrupts!")
+        AZPAZPShownLocked[2] = false
+    end
+end
+
+function AZP.BossTools.RohKalo:RequestHelp()
+    local ownGUID = UnitGUID("player")
+    for _, players in pairs(AssignedPlayers) do
+        if players.Alpha == ownGUID then
+            C_ChatInfo.SendAddonMessage("AZPRKHHelp", players.Beta ,"RAID", 1)
+        end
+    end
+end
+
+function AZP.BossTools.RohKalo:HelpRequested(requestedGUID)
+    local ownGUID = UnitGUID("player")
+    if requestedGUID == ownGUID then
+        local ringRequested = nil
+        for ring, players in pairs(AssignedPlayers) do
+            if players.Beta == ownGUID then
+                ringRequested = ring
+            end
+        end
+        AZP.BossTools.RohKalo:WarnPlayer(string.format("|cFFFF0000Help on %s!|r", ringRequested))
+    end
 end
 
 function AZP.BossTools.RohKalo:WarnPlayer(text)
@@ -290,11 +405,146 @@ function AZP.BossTools.RohKalo:WarnPlayer(text)
     35)
 end
 
-function AZP.BossTools.Events:AddonMessage(...)
-    local prefix, payload = ...
+-- function AZP.BossTools.RohKalo:PutNamesInList()
+--     for i = 1, 10 do
+--         if AZPBossToolsRohKaloSettingsList[i] ~= nil then
+--             for j = 1, 40 do
+--                 local curName = GetRaidRosterInfo(j)
+--                 local curGUID = UnitGUID("raid" .. j)
+--                 if curName ~= nil then
+--                     if string.find(curName, "-") then
+--                         curName = string.match(curName, "(.+)-")
+--                     end
+--                     if AZPBossTools.RohKaloSettingsList[i] == curGUID then
+--                         AZPBossTools.RohKaloGUIDs[curGUID] = curName
+--                     end
+--                 end
+--             end
+--             if AZPBossTools.RohKaloGUIDs[AZPBossTools.RohKaloSettingsList[i]] ~= nil then
+--                 local temp = AZPBossTools.RohKaloGUIDs[AZPBossTools.RohKaloSettingsList[i]]
+--                 AZPInterruptOrderEditBoxes[i].editbox:SetText(temp)
+--                 AZPInterruptOrder[i][1] = AZPBossTools.RohKaloSettingsList[i]
+--             end
+--         else
+--             AZPInterruptOrderEditBoxes[i].editbox:SetText("")
+--         end
+--     end
+-- end
 
-    if prefix == "AZPRKHData" then
-        AZP.BossTools.RohKalo:ReceivedCommand(payload)
+function AZP.BossTools.RohKalo:SaveLocation()
+    local temp = {}
+    temp[1], temp[2], temp[3], temp[4], temp[5] = AZPRTRohKaloAlphaFrame:GetPoint()
+    AZPBossToolsRohKaloLocation = temp
+end
+
+function AZP.BossTools.RohKalo:ChangeFrameHeight()
+    local countGUID = 0
+    for i = 1, 10 do
+        if AZPInterruptOrder[i] ~= nil then
+            if AZPInterruptOrder[i][1] ~= nil then countGUID = countGUID + 1 end
+        end
+    end
+    AZPRTRohKaloAlphaFrame:SetHeight(countGUID * 20 + 50)
+end
+
+function AZP.BossTools.RohKalo:TickCoolDowns()
+    for i = 1, #AZPInterruptOrder do
+        if AZPInterruptOrder[i][3] ~= nil then
+            if AZPInterruptOrder[i][3] <= 0 then
+                AZPInterruptOrder[i][3] = nil
+                AZPInterruptOrder[i][2].cooldown:SetText("-")
+                AZPInterruptOrder[i][2]:SetMinMaxValues(0, 100)
+                AZPInterruptOrder[i][2]:SetValue(100)
+            else
+                AZPInterruptOrder[i][3] = AZPInterruptOrder[i][3] - 1
+                AZPInterruptOrder[i][2].cooldown:SetText(AZPInterruptOrder[i][3])
+                AZPInterruptOrder[i][2]:SetValue(AZPInterruptOrder[i][3])
+            end
+        end
+    end
+end
+
+function AZP.BossTools.RohKalo:GetClassColor(classIndex)
+    if classIndex ==  0 then return 0.00, 0.00, 0.00          -- None
+    elseif classIndex ==  1 then return 0.78, 0.61, 0.43      -- Warrior
+    elseif classIndex ==  2 then return 0.96, 0.55, 0.73      -- Paladin
+    elseif classIndex ==  3 then return 0.67, 0.83, 0.45      -- Hunter
+    elseif classIndex ==  4 then return 1.00, 0.96, 0.41      -- Rogue
+    elseif classIndex ==  5 then return 1.00, 1.00, 1.00      -- Priest
+    elseif classIndex ==  6 then return 0.77, 0.12, 0.23      -- Death Knight
+    elseif classIndex ==  7 then return 0.00, 0.44, 0.87      -- Shaman
+    elseif classIndex ==  8 then return 0.25, 0.78, 0.92      -- Mage
+    elseif classIndex ==  9 then return 0.53, 0.53, 0.93      -- Warlock
+    elseif classIndex == 10 then return 0.00, 1.00, 0.60      -- Monk
+    elseif classIndex == 11 then return 1.00, 0.49, 0.04      -- Druid
+    elseif classIndex == 12 then return 0.64, 0.19, 0.79      -- Demon Hunter
+    end
+end
+
+function AZP.BossTools.RohKalo:CheckIfDead(playerGUID)
+    local deathStatus
+    for i = 1, 40 do
+        local curGUID = UnitGUID("Raid" .. i)
+        if curGUID ~= nil then
+            if curGUID == playerGUID then
+                deathStatus = UnitIsDeadOrGhost("Raid" .. i)
+            end
+        end
+    end
+    return deathStatus
+end
+
+function AZP.BossTools.RohKalo:CacheRaidNames()
+    for k = 1, 40 do
+        local curName = GetRaidRosterInfo(k)
+        if curName ~= nil then
+            if string.find(curName, "-") then
+                curName = string.match(curName, "(.+)-")
+            end
+            local curGUID = UnitGUID("raid" .. k)
+            AZPBossToolsRohKaloGUIDs[curGUID] = curName
+        end
+
+    end
+    
+end
+
+function AZP.BossTools.RohKalo:OnEditFocusLost(role, ring)
+    local editBoxFrame = nil
+    local ringName = string.format( "Ring%d", ring )
+    if role == "Alpha" then 
+        editBoxFrame = AZPBossToolsRohKaloAlphaEditBoxes[ring]
+    else
+        editBoxFrame = AZPBossToolsRohKaloBetaEditBoxes[ring]
+    end
+    if (editBoxFrame.editbox:GetText() ~= nil and editBoxFrame.editbox:GetText() ~= "") then
+        for k = 1, 40 do
+            local curName = GetRaidRosterInfo(k)
+            if curName ~= nil then
+                if string.find(curName, "-") then
+                    curName = string.match(curName, "(.+)-")
+                end
+                if curName == editBoxFrame.editbox:GetText() then
+                    local curGUID = UnitGUID("raid" .. k)
+                    AZPBossToolsRohKaloGUIDs[curGUID] = curName
+                    AssignedPlayers[ringName][role] = curGUID
+                    AZP.BossTools.RohKalo:UpdateRohKaloFrame()
+                end
+            end
+        end
+    else
+        if AssignedPlayers[ringName] ~= nil then
+            AssignedPlayers[ringName][role] = nil
+        end
+    end
+
+    AZPBTRohKalo = AssignedPlayers
+end
+
+function AZP.BossTools.RohKalo:ShareAssignees()
+    for ring, players in pairs(AssignedPlayers) do
+        local message = string.format( "%s:%s:%s", ring, players.Alpha, players.Beta )
+        C_ChatInfo.SendAddonMessage("AZPSHAREINFO", message ,"RAID", 1)
     end
 end
 
@@ -304,99 +554,129 @@ function AZP.BossTools.RohKalo:UpdateRohKaloFrame()
         return
     end
     local playerGUID = UnitGUID("player")
+    local headerText = "Not Assigned"
 
-    assignedRole, assignedRing = AZP.BossTools.RohKalo:GetPositionAndRole(playerGUID)
-    local headerText = Roles.Not
-    if assignedRole ~= Roles.Not then
-        headerText = Roles.A .. assignedRing
-    end
 
     AZPRTRohKaloAlphaFrame.Header:SetText(headerText)
     for i = 1, 6 do
-        local ring = AZPRTRohKaloAsigneesAndBackUps[i]
-        if ring == nil then
-            return
-        end
-        local alpha = ring[Roles.A]
-        local beta = ring[Roles.B]
+        local ring = AssignedPlayers[string.format( "Ring%d", i)]
+        local alpha = ring.Alpha
+        local beta = ring.Beta
 
         if alpha ~= nil then
-            local name = select(6, GetPlayerInfoByGUID(alpha))
+            local name = AZPBossToolsRohKaloGUIDs[alpha]
             AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetText(name)
-            AZPRTRohKaloAsigneesEditBoxes[i].editbox:SetText(name)
+            AZPBossToolsRohKaloAlphaEditBoxes[i].editbox:SetText(name)
         else
-            AZPRTRohKaloAsigneesEditBoxes[i].editbox:SetText("")
+            AZPBossToolsRohKaloAlphaEditBoxes[i].editbox:SetText("")
             AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetText("")
         end
         if beta ~= nil then
-            local name = select(6, GetPlayerInfoByGUID(beta))
+            local name = AZPBossToolsRohKaloGUIDs[beta]
             AZPRTRohKaloAlphaFrame.RightLabels[i]:SetText(name)
-            AZPRTRohKaloBackUpEditBoxes[i].editbox:SetText(name)
+            AZPBossToolsRohKaloBetaEditBoxes[i].editbox:SetText(name)
         else
-            AZPRTRohKaloBackUpEditBoxes[i].editbox:SetText("")
+            AZPBossToolsRohKaloBetaEditBoxes[i].editbox:SetText("")
             AZPRTRohKaloAlphaFrame.RightLabels[i]:SetText("")
         end
     end
 end
 
-function AZP.BossTools.RohKalo:ReceivedCommand(payload)
-    local protocolVersion = string.match(payload, "(%d):.*")
-    if protocolVersion == "1" then
-        local _, requestType, data = string.match(payload, "(%d):([^:]*):(.*)")
-        if requestType == "HelpRequest" then
-            local requestOrigin, ring = string.match(data, "([^:]*):(.*)")
-            if tonumber(ring) == tonumber(assignedRing) and assignedRole == Roles.B then
-                local name, realm = select(6, GetPlayerInfoByGUID(requestOrigin))
-                AZP.BossTools.RohKalo:WarnPlayer(string.format("|cFFFF0000Help on ring %d!|r", assignedRing))
-            end
-        elseif requestType == "Assignments" then
-            local role, players = string.match(data, "([^:]*):(.*)")
+function AZP.BossTools.RohKalo:ReceiveAssignees(receiveAssignees)
+    local ring, alpha, beta = string.match(receiveAssignees, "([^:]*):([^:]*):([^:]*)")
+    AssignedPlayers[ring] = {alpha = alpha, beta = beta}
 
-            for i=1,6 do
-                if AZPRTRohKaloAsigneesAndBackUps[i] ~= nil then
-                    AZPRTRohKaloAsigneesAndBackUps[i][Roles[role]] = nil
-                end
-            end
-            local pattern = "([^:]+)"
-            local stringIndex = 1
-            local index = 0
-            while stringIndex < #players do
-                local _, endPos = string.find(players, pattern, stringIndex)
-                local unitGUID = string.match(players, pattern, stringIndex)
-                stringIndex = endPos + 1
-                index = index + 1
-                if AZPRTRohKaloAsigneesAndBackUps[index] == nil then AZPRTRohKaloAsigneesAndBackUps[index] = {} end
-                AZPRTRohKaloAsigneesAndBackUps[index][Roles[role]] = unitGUID
-            end
+    -- for i = 1, #AZPInterruptOrder do
+    --     if AZPInterruptOrder[i][1] ~= nil then
+    --         for j = 1, 40 do
+    --             if GetRaidRosterInfo(j) ~= nil then
+    --                 local curName = GetRaidRosterInfo(j)           -- For party GetPartyMember(j) ~= nil but this excludes the player.
+    --                 if string.find(curName, "-") then
+    --                     curName = string.match(curName, "(.+)-")
+    --                 end
+    --                 local curGUID = UnitGUID("raid" .. j)
+    --                 if curGUID == AZPInterruptOrder[i][1] then
+    --                     AZPBossTools.RohKaloGUIDs[i] = curName
+    --                     AZPBossTools.RohKaloSettingsList[i] = curGUID
+    --                 end
+    --             end
+    --         end
+    --     end
+    -- end
 
-            AZP.BossTools.RohKalo:UpdateRohKaloFrame()
+    -- AZP.BossTools.RohKalo:PutNamesInList()
+    -- AZP.BossTools.RohKalo:SaveInterrupts()
+    -- AZP.BossTools.RohKalo:ChangeFrameHeight()
+end
+
+function AZP.BossTools.RohKalo:ShareVersion()
+    local versionString = string.format("|IH:%d|", AZP.VersionControl["BossTools RohKalo"])
+    if UnitInBattleground("player") ~= nil then
+        -- BG stuff?
+    else
+        if IsInGroup() then
+            if IsInRaid() then
+                C_ChatInfo.SendAddonMessage("AZPVERSIONS", versionString ,"RAID", 1)
+            else
+                C_ChatInfo.SendAddonMessage("AZPVERSIONS", versionString ,"PARTY", 1)
+            end
+        end
+        if IsInGuild() then
+            C_ChatInfo.SendAddonMessage("AZPVERSIONS", versionString ,"GUILD", 1)
         end
     end
 end
 
-function AZP.BossTools.RohKalo:GetPositionAndRole(targetGUID)
-    for i,ring in ipairs(AZPRTRohKaloAsigneesAndBackUps) do
-        if ring[Roles.A] == targetGUID then
-            return Roles.A, i
-        end
-        if ring[Roles.B] == targetGUID then
-            return Roles.B, i
+function AZP.BossTools.RohKalo:ReceiveVersion(version)
+    if version > AZP.VersionControl["BossTools RohKalo"] then
+        if (not HaveShowedUpdateNotification) then
+            HaveShowedUpdateNotification = true
+            UpdateFrame:Show()
+            UpdateFrame.text:SetText(
+                "Please download the new version through the CurseForge app.\n" ..
+                "Or use the CurseForge website to download it manually!\n\n" .. 
+                "Newer Version: v" .. version .. "\n" .. 
+                "Your version: v" .. AZP.VersionControl["BossTools RohKalo"]
+            )
         end
     end
-    return nil
+end
+
+function AZP.BossTools.RohKalo:GetSpecificAddonVersion(versionString, addonWanted)
+    local pattern = "|([A-Z]+):([0-9]+)|"
+    local index = 1
+    while index < #versionString do
+        local _, endPos = string.find(versionString, pattern, index)
+        local addon, version = string.match(versionString, pattern, index)
+        index = endPos + 1
+        if addon == addonWanted then
+            return tonumber(version)
+        end
+    end
 end
 
 function AZP.BossTools.RohKalo:OnEvent(self, event, ...)
-    if event == "CHAT_MSG_ADDON" then
-        AZP.BossTools.Events:AddonMessage(...)
+    if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+        AZP.BossTools.RohKalo.Events:CombatLogEventUnfiltered(...)
     elseif event == "VARIABLES_LOADED" then
+        AZP.BossTools.RohKalo.Events:VariablesLoaded(...)
+    elseif event == "CHAT_MSG_ADDON" then
+        AZP.BossTools.RohKalo.Events:ChatMsgAddonVersion(...)
+        AZP.BossTools.RohKalo.Events:ChatMsgAddonInterrupts(...)
+    elseif event == "ENCOUNTER_START" then
+        AZP.BossTools.RohKalo.Events:PlayerEnterCombat()
+    elseif event == "ENCOUNTER_END" then
+        AZP.BossTools.RohKalo.Events:PlayerLeaveCombat()
+    elseif event == "GROUP_ROSTER_UPDATE" then
+        AZP.BossTools.RohKalo:ShareVersion()
     end
 end
 
 AZP.BossTools.RohKalo:OnLoadSelf()
 
+
 AZP.SlashCommands["RKH"] = function()
-    AZP.BossTools.RohKalo:ShowHideFrame()
+    if AZPRTRohKaloAlphaFrame ~= nil then AZPRTRohKaloAlphaFrame:Show() end
 end
 
 AZP.SlashCommands["rkh"] = AZP.SlashCommands["RKH"]
