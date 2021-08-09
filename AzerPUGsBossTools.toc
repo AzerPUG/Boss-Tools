@@ -8,3 +8,4 @@
 SlashCommands.lua
 BossTools.lua
 RohKalo.lua
+HotFTests.lua
