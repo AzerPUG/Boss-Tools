@@ -557,7 +557,7 @@ function AZP.BossTools.RohKalo:UpdateRohKaloFrame()
     local headerText = "Not Assigned"
 
 
-    AZPRTRohKaloAlphaFrame.Header:SetText(headerText)
+    
     for i = 1, 6 do
         local ring = AssignedPlayers[string.format( "Ring%d", i)]
         local alpha = ring.Alpha
@@ -579,7 +579,17 @@ function AZP.BossTools.RohKalo:UpdateRohKaloFrame()
             AZPBossToolsRohKaloBetaEditBoxes[i].editbox:SetText("")
             AZPRTRohKaloAlphaFrame.RightLabels[i]:SetText("")
         end
+
+        if alpha == playerGUID then
+            headerText = string.format( "Alpha %d", i )
+        end
+
+        if beta == playerGUID then 
+            headerText = string.format( "Beta %d", i )
+        end
     end
+
+    AZPRTRohKaloAlphaFrame.Header:SetText(headerText)
 end
 
 function AZP.BossTools.RohKalo:ReceiveAssignees(receiveAssignees)
