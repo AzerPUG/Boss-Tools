@@ -330,6 +330,11 @@ function AZP.BossTools.RohKalo:LoadSavedVars()
     if AZPBTRohKalo ~= nil then
         AZP.BossTools.RohKalo:CacheRaidNames()
         AssignedPlayers = AZPBTRohKalo
+        for i = 1, 6 do
+            if AssignedPlayers[string.format( "Ring%d",i )] == nil then
+                AssignedPlayers[string.format( "Ring%d",i )] = {}
+            end
+        end
         AZP.BossTools.RohKalo:UpdateRohKaloFrame()
     end
     AZPRTRohKaloAlphaFrame:SetPoint(AZPBossToolsRohKaloLocation[1], AZPBossToolsRohKaloLocation[4], AZPBossToolsRohKaloLocation[5])
@@ -516,7 +521,7 @@ end
 function AZP.BossTools.RohKalo:ShareAssignees()
     for ring, players in pairs(AssignedPlayers) do
         if players ~= nil then
-            local message = string.format("%s:%s:%s", ring, players.Alpha, players.Beta )
+            local message = string.format("%s:%s:%s", ring, players.Alpha or "", players.Beta or "" )
             C_ChatInfo.SendAddonMessage("AZPSHAREINFO", message ,"RAID", 1)
         end
     end
