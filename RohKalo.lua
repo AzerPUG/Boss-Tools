@@ -117,7 +117,7 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
     frameToFill.LockMoveButton:SetSize(100, 25)
     frameToFill.LockMoveButton:SetPoint("TOPRIGHT", -75, -50)
     frameToFill.LockMoveButton:SetText("Share List")
-    frameToFill.LockMoveButton:SetScript("OnClick", function() AZP.BossTools.RohKalo:ShareList() end )
+    frameToFill.LockMoveButton:SetScript("OnClick", function() AZP.BossTools.RohKalo:ShareAssignees() end )
 
     frameToFill.LockMoveButton = CreateFrame("Button", nil, frameToFill, "UIPanelButtonTemplate")
     frameToFill.LockMoveButton:SetSize(100, 25)
@@ -297,17 +297,17 @@ end
 function AZP.BossTools.RohKalo.Events:ChatMsgAddonInterrupts(...)
     local prefix, payload, _, sender = ...
     if prefix == "AZPSHAREINFO" then
-        AZP.BossTools.RohKalo:ReceiveInterrupters(payload)
+        AZP.BossTools.RohKalo:ReceiveAssignees(payload)
     end
 end
 
 function AZP.BossTools.RohKalo.Events:ChatMsgAddonVersion(...)
     local prefix, payload, _, sender = ...
     if prefix == "AZPVERSIONS" then
-        local version = AZP.BossTools.RohKalo:GetSpecificAddonVersion(payload, "BT")
-        if version ~= nil then
-            AZP.BossTools.RohKalo:ReceiveVersion(version)
-        end
+        -- local version = AZP.BossTools.RohKalo:GetSpecificAddonVersion(payload, "BT")
+        -- if version ~= nil then
+        --     AZP.BossTools.RohKalo:ReceiveVersion(version)
+        -- end
     elseif prefix == "AZPRKHHelp" then
         AZP.BossTools.RohKalo:HelpRequested(payload)
     end
@@ -333,9 +333,6 @@ function AZP.BossTools.RohKalo:LoadSavedVars()
         AZP.BossTools.RohKalo:UpdateRohKaloFrame()
     end
     AZPRTRohKaloAlphaFrame:SetPoint(AZPBossToolsRohKaloLocation[1], AZPBossToolsRohKaloLocation[4], AZPBossToolsRohKaloLocation[5])
-    -- AZP.BossTools.RohKalo:PutNamesInList()
-    -- -- AZP.BossTools.RohKalo:SaveInterrupts()
-    -- AZP.BossTools.RohKalo:ChangeFrameHeight()
 
     if AZPAZPShownLocked[1] then
         AZPBossToolsRohKaloOptionPanel.LockMoveButton:SetText("Move RohKalo!")
@@ -518,8 +515,10 @@ end
 
 function AZP.BossTools.RohKalo:ShareAssignees()
     for ring, players in pairs(AssignedPlayers) do
-        local message = string.format( "%s:%s:%s", ring, players.Alpha, players.Beta )
-        C_ChatInfo.SendAddonMessage("AZPSHAREINFO", message ,"RAID", 1)
+        if players ~= nil then
+            local message = string.format("%s:%s:%s", ring, players.Alpha, players.Beta )
+            C_ChatInfo.SendAddonMessage("AZPSHAREINFO", message ,"RAID", 1)
+        end
     end
 end
 
@@ -595,21 +594,21 @@ function AZP.BossTools.RohKalo:ReceiveAssignees(receiveAssignees)
 end
 
 function AZP.BossTools.RohKalo:ShareVersion()
-    local versionString = string.format("|BT:%d|", AZP.VersionControl["BossTools RohKalo"])
-    if UnitInBattleground("player") ~= nil then
-        -- BG stuff?
-    else
-        if IsInGroup() then
-            if IsInRaid() then
-                C_ChatInfo.SendAddonMessage("AZPVERSIONS", versionString ,"RAID", 1)
-            else
-                C_ChatInfo.SendAddonMessage("AZPVERSIONS", versionString ,"PARTY", 1)
-            end
-        end
-        if IsInGuild() then
-            C_ChatInfo.SendAddonMessage("AZPVERSIONS", versionString ,"GUILD", 1)
-        end
-    end
+    -- local versionString = string.format("|BT:%d|", AZP.VersionControl["BossTools RohKalo"])
+    -- if UnitInBattleground("player") ~= nil then
+    --     -- BG stuff?
+    -- else
+    --     if IsInGroup() then
+    --         if IsInRaid() then
+    --             C_ChatInfo.SendAddonMessage("AZPVERSIONS", versionString ,"RAID", 1)
+    --         else
+    --             C_ChatInfo.SendAddonMessage("AZPVERSIONS", versionString ,"PARTY", 1)
+    --         end
+    --     end
+    --     if IsInGuild() then
+    --         C_ChatInfo.SendAddonMessage("AZPVERSIONS", versionString ,"GUILD", 1)
+    --     end
+    -- end
 end
 
 function AZP.BossTools.RohKalo:ReceiveVersion(version)
