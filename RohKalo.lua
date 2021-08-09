@@ -304,7 +304,7 @@ end
 function AZP.BossTools.RohKalo.Events:ChatMsgAddonVersion(...)
     local prefix, payload, _, sender = ...
     if prefix == "AZPVERSIONS" then
-        local version = AZP.BossTools.RohKalo:GetSpecificAddonVersion(payload, "IH")
+        local version = AZP.BossTools.RohKalo:GetSpecificAddonVersion(payload, "BT")
         if version ~= nil then
             AZP.BossTools.RohKalo:ReceiveVersion(version)
         end
@@ -338,32 +338,32 @@ function AZP.BossTools.RohKalo:LoadSavedVars()
     -- AZP.BossTools.RohKalo:ChangeFrameHeight()
 
     if AZPAZPShownLocked[1] then
-        AZPBossToolsRohKaloOptionPanel.LockMoveButton:SetText("Move Interrupts!")
+        AZPBossToolsRohKaloOptionPanel.LockMoveButton:SetText("Move RohKalo!")
         AZPRTRohKaloAlphaFrame:EnableMouse(false)
         AZPRTRohKaloAlphaFrame:SetMovable(false)
     else
-        AZPBossToolsRohKaloOptionPanel.LockMoveButton:SetText("Lock Interrupts!")
+        AZPBossToolsRohKaloOptionPanel.LockMoveButton:SetText("Lock RohKalo!")
         AZPRTRohKaloAlphaFrame:EnableMouse(true)
         AZPRTRohKaloAlphaFrame:SetMovable(true)
     end
 
     if AZPAZPShownLocked[2] then
         AZPRTRohKaloAlphaFrame:Hide()
-        AZPBossToolsRohKaloOptionPanel.ShowHideButton:SetText("Show Interrupts!")
+        AZPBossToolsRohKaloOptionPanel.ShowHideButton:SetText("Show RohKalo!")
     else
         AZPRTRohKaloAlphaFrame:Show()
-        AZPBossToolsRohKaloOptionPanel.ShowHideButton:SetText("Hide Interrupts!")
+        AZPBossToolsRohKaloOptionPanel.ShowHideButton:SetText("Hide RohKalo!")
     end
 end
 
 function AZP.BossTools.RohKalo:ShowHideFrame()
     if AZPRTRohKaloAlphaFrame:IsShown() then
         AZPRTRohKaloAlphaFrame:Hide()
-        AZPBossTools.RohKaloOptionPanel.ShowHideButton:SetText("Show Interrupts!")
+        AZPBossTools.RohKaloOptionPanel.ShowHideButton:SetText("Show RohKalo!")
         AZPAZPShownLocked[2] = true
     else
         AZPRTRohKaloAlphaFrame:Show()
-        AZPBossTools.RohKaloOptionPanel.ShowHideButton:SetText("Hide Interrupts!")
+        AZPBossTools.RohKaloOptionPanel.ShowHideButton:SetText("Hide RohKalo!")
         AZPAZPShownLocked[2] = false
     end
 end
@@ -405,31 +405,6 @@ function AZP.BossTools.RohKalo:WarnPlayer(text)
     35)
 end
 
--- function AZP.BossTools.RohKalo:PutNamesInList()
---     for i = 1, 10 do
---         if AZPBossToolsRohKaloSettingsList[i] ~= nil then
---             for j = 1, 40 do
---                 local curName = GetRaidRosterInfo(j)
---                 local curGUID = UnitGUID("raid" .. j)
---                 if curName ~= nil then
---                     if string.find(curName, "-") then
---                         curName = string.match(curName, "(.+)-")
---                     end
---                     if AZPBossTools.RohKaloSettingsList[i] == curGUID then
---                         AZPBossTools.RohKaloGUIDs[curGUID] = curName
---                     end
---                 end
---             end
---             if AZPBossTools.RohKaloGUIDs[AZPBossTools.RohKaloSettingsList[i]] ~= nil then
---                 local temp = AZPBossTools.RohKaloGUIDs[AZPBossTools.RohKaloSettingsList[i]]
---                 AZPInterruptOrderEditBoxes[i].editbox:SetText(temp)
---                 AZPInterruptOrder[i][1] = AZPBossTools.RohKaloSettingsList[i]
---             end
---         else
---             AZPInterruptOrderEditBoxes[i].editbox:SetText("")
---         end
---     end
--- end
 
 function AZP.BossTools.RohKalo:SaveLocation()
     local temp = {}
@@ -620,7 +595,7 @@ function AZP.BossTools.RohKalo:ReceiveAssignees(receiveAssignees)
 end
 
 function AZP.BossTools.RohKalo:ShareVersion()
-    local versionString = string.format("|IH:%d|", AZP.VersionControl["BossTools RohKalo"])
+    local versionString = string.format("|BT:%d|", AZP.VersionControl["BossTools RohKalo"])
     if UnitInBattleground("player") ~= nil then
         -- BG stuff?
     else
