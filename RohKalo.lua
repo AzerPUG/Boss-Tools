@@ -34,7 +34,6 @@ function AZP.BossTools.RohKalo:OnLoadBoth()
     end
     AZP.BossTools.RohKalo:CreateMainFrame()
     AZP.BossTools.RohKalo:CreatePopUpFrame()
-    C_ChatInfo.RegisterAddonMessagePrefix("AZPSHAREINFO")
 end
 
 -- function AZP.BossTools.RohKalo:OnLoadCore()
@@ -55,6 +54,7 @@ end
 function AZP.BossTools.RohKalo:OnLoadSelf()
     C_ChatInfo.RegisterAddonMessagePrefix("AZPVERSIONS")
     C_ChatInfo.RegisterAddonMessagePrefix("AZPRKHHelp")
+    C_ChatInfo.RegisterAddonMessagePrefix("AZPRKHINFO")
 
     EventFrame = CreateFrame("FRAME", nil)
     EventFrame:RegisterEvent("CHAT_MSG_ADDON")
@@ -294,10 +294,12 @@ function AZP.BossTools.RohKalo.Events:VariablesLoaded(...)
     AZP.BossTools.RohKalo:ShareVersion()
 end
 
-function AZP.BossTools.RohKalo.Events:ChatMsgAddonInterrupts(...)
+function AZP.BossTools.RohKalo.Events:ChatMsgAddon(...)
     local prefix, payload, _, sender = ...
-    if prefix == "AZPSHAREINFO" then
+    if prefix == "AZPRKHINFO" then
         AZP.BossTools.RohKalo:ReceiveAssignees(payload)
+    elseif prefix == "AZPRKHHelp" then
+        AZP.BossTools.RohKalo:HelpRequested(payload)
     end
 end
 
@@ -308,8 +310,7 @@ function AZP.BossTools.RohKalo.Events:ChatMsgAddonVersion(...)
         -- if version ~= nil then
         --     AZP.BossTools.RohKalo:ReceiveVersion(version)
         -- end
-    elseif prefix == "AZPRKHHelp" then
-        AZP.BossTools.RohKalo:HelpRequested(payload)
+    
     end
 end
 
@@ -522,7 +523,7 @@ function AZP.BossTools.RohKalo:ShareAssignees()
     for ring, players in pairs(AssignedPlayers) do
         if players ~= nil then
             local message = string.format("%s:%s:%s", ring, players.Alpha or "", players.Beta or "" )
-            C_ChatInfo.SendAddonMessage("AZPSHAREINFO", message ,"RAID", 1)
+            C_ChatInfo.SendAddonMessage("AZPRKHINFO", message ,"RAID", 1)
         end
     end
 end
@@ -544,6 +545,7 @@ function AZP.BossTools.RohKalo:UpdateRohKaloFrame()
 
         if alpha ~= nil then
             local name = AZPBossToolsRohKaloGUIDs[alpha]
+            if name == nil then name = "" end
             AZPRTRohKaloAlphaFrame.LeftLabels[i]:SetText(name)
             AZPBossToolsRohKaloAlphaEditBoxes[i].editbox:SetText(name)
         else
@@ -552,6 +554,7 @@ function AZP.BossTools.RohKalo:UpdateRohKaloFrame()
         end
         if beta ~= nil then
             local name = AZPBossToolsRohKaloGUIDs[beta]
+            if name == nil then name = "" end
             AZPRTRohKaloAlphaFrame.RightLabels[i]:SetText(name)
             AZPBossToolsRohKaloBetaEditBoxes[i].editbox:SetText(name)
         else
@@ -573,7 +576,10 @@ end
 
 function AZP.BossTools.RohKalo:ReceiveAssignees(receiveAssignees)
     local ring, alpha, beta = string.match(receiveAssignees, "([^:]*):([^:]*):([^:]*)")
-    AssignedPlayers[ring] = {alpha = alpha, beta = beta}
+    if alpha == "" then alpha = nil end
+    if beta == "" then beta = nil end
+    AssignedPlayers[ring] = {Alpha = alpha, Beta = beta}
+    AZP.BossTools.RohKalo:UpdateRohKaloFrame()
 
     -- for i = 1, #AZPInterruptOrder do
     --     if AZPInterruptOrder[i][1] ~= nil then
@@ -651,7 +657,7 @@ function AZP.BossTools.RohKalo:OnEvent(self, event, ...)
         AZP.BossTools.RohKalo.Events:VariablesLoaded(...)
     elseif event == "CHAT_MSG_ADDON" then
         AZP.BossTools.RohKalo.Events:ChatMsgAddonVersion(...)
-        AZP.BossTools.RohKalo.Events:ChatMsgAddonInterrupts(...)
+        AZP.BossTools.RohKalo.Events:ChatMsgAddon(...)
     elseif event == "ENCOUNTER_START" then
         AZP.BossTools.RohKalo.Events:PlayerEnterCombat()
     elseif event == "ENCOUNTER_END" then
