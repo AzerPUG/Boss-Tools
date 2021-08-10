@@ -580,28 +580,6 @@ function AZP.BossTools.RohKalo:ReceiveAssignees(receiveAssignees)
     if beta == "" then beta = nil end
     AssignedPlayers[ring] = {Alpha = alpha, Beta = beta}
     AZP.BossTools.RohKalo:UpdateRohKaloFrame()
-
-    -- for i = 1, #AZPInterruptOrder do
-    --     if AZPInterruptOrder[i][1] ~= nil then
-    --         for j = 1, 40 do
-    --             if GetRaidRosterInfo(j) ~= nil then
-    --                 local curName = GetRaidRosterInfo(j)           -- For party GetPartyMember(j) ~= nil but this excludes the player.
-    --                 if string.find(curName, "-") then
-    --                     curName = string.match(curName, "(.+)-")
-    --                 end
-    --                 local curGUID = UnitGUID("raid" .. j)
-    --                 if curGUID == AZPInterruptOrder[i][1] then
-    --                     AZPBossTools.RohKaloGUIDs[i] = curName
-    --                     AZPBossTools.RohKaloSettingsList[i] = curGUID
-    --                 end
-    --             end
-    --         end
-    --     end
-    -- end
-
-    -- AZP.BossTools.RohKalo:PutNamesInList()
-    -- AZP.BossTools.RohKalo:SaveInterrupts()
-    -- AZP.BossTools.RohKalo:ChangeFrameHeight()
 end
 
 function AZP.BossTools.RohKalo:ShareVersion()
