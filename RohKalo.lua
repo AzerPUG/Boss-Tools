@@ -61,8 +61,6 @@ function AZP.BossTools.RohKalo:OnLoadSelf()
     EventFrame:RegisterEvent("VARIABLES_LOADED")
     EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-    EventFrame:RegisterEvent("ENCOUNTER_START")
-    EventFrame:RegisterEvent("ENCOUNTER_END")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.RohKalo:OnEvent(...) end)
 
     AZPBossToolsRohKaloOptionPanel = CreateFrame("FRAME", nil)
@@ -217,13 +215,13 @@ function AZP.BossTools.RohKalo:CreateMainFrame()
 
     AZPRTRohKaloAlphaFrame.HelpButton = CreateFrame("BUTTON", nil, AZPRTRohKaloAlphaFrame, "UIPanelButtonTemplate")
     AZPRTRohKaloAlphaFrame.HelpButton:SetSize(75, 20)
-    AZPRTRohKaloAlphaFrame.HelpButton:SetPoint("TOP", -40, -30)
+    AZPRTRohKaloAlphaFrame.HelpButton:SetPoint("TOP", 40, -30)
     AZPRTRohKaloAlphaFrame.HelpButton:SetText("I Need Help!")
     AZPRTRohKaloAlphaFrame.HelpButton:SetScript("OnClick", function() AZP.BossTools.RohKalo:RequestHelp() end)
 
     AZPRTRohKaloAlphaFrame.SafeButton = CreateFrame("BUTTON", nil, AZPRTRohKaloAlphaFrame, "UIPanelButtonTemplate")
     AZPRTRohKaloAlphaFrame.SafeButton:SetSize(75, 20)
-    AZPRTRohKaloAlphaFrame.SafeButton:SetPoint("TOP", 40, -30)
+    AZPRTRohKaloAlphaFrame.SafeButton:SetPoint("TOP", -40, -30)
     AZPRTRohKaloAlphaFrame.SafeButton:SetText("I Can Solo!")
     AZPRTRohKaloAlphaFrame.SafeButton:SetScript("OnClick", function()  end)
 
@@ -362,11 +360,11 @@ end
 function AZP.BossTools.RohKalo:ShowHideFrame()
     if AZPRTRohKaloAlphaFrame:IsShown() then
         AZPRTRohKaloAlphaFrame:Hide()
-        AZPBossTools.RohKaloOptionPanel.ShowHideButton:SetText("Show RohKalo!")
+        AZPBossToolsRohKaloOptionPanel.ShowHideButton:SetText("Show RohKalo!")
         AZPAZPShownLocked[2] = true
     else
         AZPRTRohKaloAlphaFrame:Show()
-        AZPBossTools.RohKaloOptionPanel.ShowHideButton:SetText("Hide RohKalo!")
+        AZPBossToolsRohKaloOptionPanel.ShowHideButton:SetText("Hide RohKalo!")
         AZPAZPShownLocked[2] = false
     end
 end
@@ -413,33 +411,6 @@ function AZP.BossTools.RohKalo:SaveLocation()
     local temp = {}
     temp[1], temp[2], temp[3], temp[4], temp[5] = AZPRTRohKaloAlphaFrame:GetPoint()
     AZPBossToolsRohKaloLocation = temp
-end
-
-function AZP.BossTools.RohKalo:ChangeFrameHeight()
-    local countGUID = 0
-    for i = 1, 10 do
-        if AZPInterruptOrder[i] ~= nil then
-            if AZPInterruptOrder[i][1] ~= nil then countGUID = countGUID + 1 end
-        end
-    end
-    AZPRTRohKaloAlphaFrame:SetHeight(countGUID * 20 + 50)
-end
-
-function AZP.BossTools.RohKalo:TickCoolDowns()
-    for i = 1, #AZPInterruptOrder do
-        if AZPInterruptOrder[i][3] ~= nil then
-            if AZPInterruptOrder[i][3] <= 0 then
-                AZPInterruptOrder[i][3] = nil
-                AZPInterruptOrder[i][2].cooldown:SetText("-")
-                AZPInterruptOrder[i][2]:SetMinMaxValues(0, 100)
-                AZPInterruptOrder[i][2]:SetValue(100)
-            else
-                AZPInterruptOrder[i][3] = AZPInterruptOrder[i][3] - 1
-                AZPInterruptOrder[i][2].cooldown:SetText(AZPInterruptOrder[i][3])
-                AZPInterruptOrder[i][2]:SetValue(AZPInterruptOrder[i][3])
-            end
-        end
-    end
 end
 
 function AZP.BossTools.RohKalo:GetClassColor(classIndex)
@@ -636,10 +607,6 @@ function AZP.BossTools.RohKalo:OnEvent(self, event, ...)
     elseif event == "CHAT_MSG_ADDON" then
         AZP.BossTools.RohKalo.Events:ChatMsgAddonVersion(...)
         AZP.BossTools.RohKalo.Events:ChatMsgAddon(...)
-    elseif event == "ENCOUNTER_START" then
-        AZP.BossTools.RohKalo.Events:PlayerEnterCombat()
-    elseif event == "ENCOUNTER_END" then
-        AZP.BossTools.RohKalo.Events:PlayerLeaveCombat()
     elseif event == "GROUP_ROSTER_UPDATE" then
         AZP.BossTools.RohKalo:ShareVersion()
     end
