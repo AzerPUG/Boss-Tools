@@ -8,7 +8,7 @@ if AZP.BossTools.RohKalo.Events == nil then AZP.BossTools.RohKalo.Events = {} en
 local AssignedPlayers = {}
 local AZPRTRohKaloAlphaFrame, AZPBossToolsRohKaloOptionPanel = nil, nil
 local AZPBossToolsRohKaloGUIDs, AZPBossToolsRohKaloAlphaEditBoxes, AZPBossToolsRohKaloBetaEditBoxes = {}, {}, {}
-local AZPRTRohKaloAlphaFrame = nil
+
 if AZPBossToolsRohKaloSettingsList == nil then AZPBossToolsRohKaloSettingsList = {} end
 
 if AZPAZPShownLocked == nil then AZPAZPShownLocked = {false, false} end
@@ -21,12 +21,9 @@ local curScale = 0.75
 local soundID = 8959
 local soundChannel = 1
 
-local blinkingBoolean = false
-local blinkingTicker, cooldownTicker = nil, nil
+local cooldownTicker = nil
 
 local optionHeader = "|cFF00FFFFBossTools RohKalo|r"
-
-local AZPRTRohKaloAlphaFrame = nil
 
 function AZP.BossTools.RohKalo:OnLoadBoth()
     for i = 1, 6 do
@@ -296,8 +293,10 @@ function AZP.BossTools.RohKalo.Events:ChatMsgAddon(...)
     local prefix, payload, _, sender = ...
     if prefix == "AZPRKHINFO" then
         AZP.BossTools.RohKalo:ReceiveAssignees(payload)
+        AZP.BossTools.RohKalo:CacheRaidNames()
     elseif prefix == "AZPRKHHelp" then
         AZP.BossTools.RohKalo:HelpRequested(payload)
+        AZP.BossTools.RohKalo:CacheRaidNames()
     end
 end
 
@@ -308,7 +307,6 @@ function AZP.BossTools.RohKalo.Events:ChatMsgAddonVersion(...)
         -- if version ~= nil then
         --     AZP.BossTools.RohKalo:ReceiveVersion(version)
         -- end
-    
     end
 end
 
@@ -330,8 +328,8 @@ function AZP.BossTools.RohKalo:LoadSavedVars()
         AZP.BossTools.RohKalo:CacheRaidNames()
         AssignedPlayers = AZPBTRohKalo
         for i = 1, 6 do
-            if AssignedPlayers[string.format( "Ring%d",i )] == nil then
-                AssignedPlayers[string.format( "Ring%d",i )] = {}
+            if AssignedPlayers[string.format("Ring%d", i)] == nil then
+                AssignedPlayers[string.format("Ring%d", i)] = {}
             end
         end
         AZP.BossTools.RohKalo:UpdateRohKaloFrame()
@@ -406,7 +404,6 @@ function AZP.BossTools.RohKalo:WarnPlayer(text)
     35)
 end
 
-
 function AZP.BossTools.RohKalo:SaveLocation()
     local temp = {}
     temp[1], temp[2], temp[3], temp[4], temp[5] = AZPRTRohKaloAlphaFrame:GetPoint()
@@ -414,7 +411,7 @@ function AZP.BossTools.RohKalo:SaveLocation()
 end
 
 function AZP.BossTools.RohKalo:GetClassColor(classIndex)
-    if classIndex ==  0 then return 0.00, 0.00, 0.00          -- None
+        if classIndex ==  0 then return 0.00, 0.00, 0.00      -- None
     elseif classIndex ==  1 then return 0.78, 0.61, 0.43      -- Warrior
     elseif classIndex ==  2 then return 0.96, 0.55, 0.73      -- Paladin
     elseif classIndex ==  3 then return 0.67, 0.83, 0.45      -- Hunter
@@ -444,24 +441,24 @@ function AZP.BossTools.RohKalo:CheckIfDead(playerGUID)
 end
 
 function AZP.BossTools.RohKalo:CacheRaidNames()
-    for k = 1, 40 do
-        local curName = GetRaidRosterInfo(k)
-        if curName ~= nil then
-            if string.find(curName, "-") then
-                curName = string.match(curName, "(.+)-")
+    if IsInRaid() == true then
+        for k = 1, 40 do
+            local curName = GetRaidRosterInfo(k)
+            if curName ~= nil then
+                if string.find(curName, "-") then
+                    curName = string.match(curName, "(.+)-")
+                end
+                local curGUID = UnitGUID("raid" .. k)
+                AZPBossToolsRohKaloGUIDs[curGUID] = curName
             end
-            local curGUID = UnitGUID("raid" .. k)
-            AZPBossToolsRohKaloGUIDs[curGUID] = curName
         end
-
     end
-    
 end
 
 function AZP.BossTools.RohKalo:OnEditFocusLost(role, ring)
     local editBoxFrame = nil
-    local ringName = string.format( "Ring%d", ring )
-    if role == "Alpha" then 
+    local ringName = string.format("Ring%d", ring)
+    if role == "Alpha" then
         editBoxFrame = AZPBossToolsRohKaloAlphaEditBoxes[ring]
     else
         editBoxFrame = AZPBossToolsRohKaloBetaEditBoxes[ring]
