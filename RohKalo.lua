@@ -57,10 +57,39 @@ function AZP.BossTools.RohKalo:GetPlayersWithHeroicBuff()
         while buffName ~= nil do
             currentBuffIndex = currentBuffIndex + 1
             if buffID == 354964 then
-                table.insert(players, UnitGUID(unit))
+                table.insert(players, {ID = UnitGUID(unit), Unit= unit })
             end
             buffName, icon, _, _, _, expirationTimer, _, _, _, buffID = UnitBuff(unit, currentBuffIndex)
         end
+    end
+end
+
+function AZP.BossTools.RohKalo:OrganizePlayers()
+    local tanks = {}
+    local healers = {}
+    local dps = {}
+    
+    local players = AZP.BossTools.RohKalo:GetPlayersWithHeroicBuff()
+    table.sort(players, function(a,b) return a.ID > b.ID end)
+    for i, player in ipairs(players) do
+        local role = UnitGroupRolesAssigned(player.Unit)
+        if role == "TANK" then
+            table.insert(tanks, player.ID)
+        elseif role == "HEALER" then
+            table.insert(healers, player.ID)
+        else
+            table.insert(dps, player.ID)
+        end
+    end
+
+    local alphas = dps
+    local betas = tanks + healers
+
+    -- TODO: Make algorithm to assign alphas and betas to the correct rings
+    if alphas > 6 then
+
+    elseif alphas < 6 then
+
     end
 end
 
