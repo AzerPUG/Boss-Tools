@@ -48,6 +48,22 @@ end
 --     end)
 -- end
 
+function AZP.BossTools.RohKalo:GetPlayersWithHeroicBuff()
+    local players = {}
+    for i = 1, 40 do
+        local unit = string.format("raid%d", i)
+        local currentBuffIndex = 1
+        local buffName, icon, _, _, _, expirationTimer, _, _, _, buffID = UnitBuff(unit, currentBuffIndex)
+        while buffName ~= nil do
+            currentBuffIndex = currentBuffIndex + 1
+            if buffID == 354964 then
+                table.insert(players, UnitGUID(unit))
+            end
+            buffName, icon, _, _, _, expirationTimer, _, _, _, buffID = UnitBuff(unit, currentBuffIndex)
+        end
+    end
+end
+
 function AZP.BossTools.RohKalo:OnLoadSelf()
     C_ChatInfo.RegisterAddonMessagePrefix("AZPVERSIONS")
     C_ChatInfo.RegisterAddonMessagePrefix("AZPRKHHelp")
