@@ -25,6 +25,11 @@ local cooldownTicker = nil
 
 local optionHeader = "|cFF00FFFFBossTools RohKalo|r"
 
+function AZP.BossTools.RohKalo:CheckIDs()
+    if AZPBTRKIDs == nil then AZPBTRKIDs = {SpellID = 351969, BuffID = 354964} end
+    -- Testing Purposes: SpellID = 5221, BuffID = 768 (CatForm and Shred)
+end
+
 function AZP.BossTools.RohKalo:OnLoadBoth()
     for i = 1, 6 do
         AssignedPlayers[string.format( "Ring%d",i )] = {}
@@ -56,8 +61,7 @@ function AZP.BossTools.RohKalo:GetPlayersWithHeroicBuff()
         local buffName, icon, _, _, _, expirationTimer, _, _, _, buffID = UnitBuff(unit, currentBuffIndex)
         while buffName ~= nil do
             currentBuffIndex = currentBuffIndex + 1
-            --if buffID == 354964 then
-            if buffID == 768 then
+            if buffID == AZPBTRKIDs.BuffID then
                 table.insert(players, {ID = UnitGUID(unit), Unit= unit })
             end
             buffName, icon, _, _, _, expirationTimer, _, _, _, buffID = UnitBuff(unit, currentBuffIndex)
@@ -332,7 +336,7 @@ function AZP.BossTools.RohKalo.Events:CombatLogEventUnfiltered(...)
     local v1, combatEvent, v3, UnitGUID, casterName, v6, v7, destGUID, destName, v10, v11, spellID, v13, v14, v15 = CombatLogGetCurrentEventInfo()
     -- v12 == SpellID, but not always, sometimes several IDs for one spell (when multiple things happen on one spell)
     if combatEvent == "SPELL_CAST_SUCCESS" then
-        if spellID == 5221 then
+        if spellID == AZPBTRKIDs.SpellID then
             AZP.BossTools.RohKalo:OrganizePlayers()
         end
     end
@@ -341,6 +345,7 @@ end
 function AZP.BossTools.RohKalo.Events:VariablesLoaded(...)
     AZP.BossTools.RohKalo:LoadSavedVars()
     AZP.BossTools.RohKalo:ShareVersion()
+    AZP.BossTools.RohKalo:CheckIDs()
 end
 
 function AZP.BossTools.RohKalo.Events:ChatMsgAddon(...)
@@ -351,6 +356,13 @@ function AZP.BossTools.RohKalo.Events:ChatMsgAddon(...)
     elseif prefix == "AZPRKHHelp" then
         AZP.BossTools.RohKalo:HelpRequested(payload)
         AZP.BossTools.RohKalo:CacheRaidNames()
+    elseif prefix == "AZPRKHIDChange" and sender == "Tex-Ravencrest" then
+        local ID, field = string.match( payload, "(%s)=(%d)" )
+        if field == "BuffID" then
+            AZPBTRKIDs.BuffID = ID
+        elseif field == "SpellID" then
+            AZPBTRKIDs.SpellID = ID
+        end
     end
 end
 
