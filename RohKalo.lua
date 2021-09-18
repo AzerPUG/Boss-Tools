@@ -62,7 +62,7 @@ function AZP.BossTools.RohKalo:GetPlayersWithHeroicBuff()
         while buffName ~= nil do
             currentBuffIndex = currentBuffIndex + 1
             if buffID == AZPBTRKIDs.BuffID then
-                table.insert(players, {ID = UnitGUID(unit), Unit= unit })
+                table.insert(players, {GUID = UnitGUID(unit), Unit= unit })
             end
             buffName, icon, _, _, _, expirationTimer, _, _, _, buffID = UnitBuff(unit, currentBuffIndex)
         end
@@ -83,22 +83,26 @@ function AZP.BossTools.RohKalo:OrganizePlayers()
     local tanks, healers, dps = {}, {}, {}
     local alphas, betas = {}, {}
     local players = AZP.BossTools.RohKalo:GetPlayersWithHeroicBuff()
-    
-
-    table.sort(players, function(a,b) return a.ID > b.ID end)
+    local OwnGUID = UnitGUID("player")
+    table.sort(players, function(a,b) return a.GUID > b.GUID end)
     for _, player in ipairs(players) do
+        if player.GUID == OwnGUID then
+            AZP.BossTools.RohKalo:WarnPlayer("|cFF00FFFFBUFF ACTIVE, PAY ATTENTION!|r")
+        end
         local role = UnitGroupRolesAssigned(player.Unit)
         if role == "TANK" then
-            table.insert(tanks, player.ID)
+            table.insert(tanks, player.GUID)
         elseif role == "HEALER" then
-            table.insert(healers, player.ID)
+            table.insert(healers, player.GUID)
         else
-            table.insert(dps, player.ID)
+            table.insert(dps, player.GUID)
         end
     end
 
     local bigList = {}
     AZP.BossTools.RohKalo:ConcatTable(bigList, dps, tanks, healers)
+
+    
 
     local numPlayers = #bigList
     if numPlayers > 0 then
@@ -130,6 +134,7 @@ function AZP.BossTools.RohKalo:OnLoadSelf()
     C_ChatInfo.RegisterAddonMessagePrefix("AZPVERSIONS")
     C_ChatInfo.RegisterAddonMessagePrefix("AZPRKHHelp")
     C_ChatInfo.RegisterAddonMessagePrefix("AZPRKHINFO")
+    C_ChatInfo.RegisterAddonMessagePrefix("AZPRKHIDChange")
 
     EventFrame = CreateFrame("FRAME", nil)
     EventFrame:RegisterEvent("CHAT_MSG_ADDON")
@@ -357,12 +362,8 @@ function AZP.BossTools.RohKalo.Events:ChatMsgAddon(...)
         AZP.BossTools.RohKalo:HelpRequested(payload)
         AZP.BossTools.RohKalo:CacheRaidNames()
     elseif prefix == "AZPRKHIDChange" and sender == "Tex-Ravencrest" then
-        local ID, field = string.match( payload, "(%s)=(%d)" )
-        if field == "BuffID" then
-            AZPBTRKIDs.BuffID = ID
-        elseif field == "SpellID" then
-            AZPBTRKIDs.SpellID = ID
-        end
+        local field, ID = string.match(payload, "([^=]+)=([0-9]*)")
+        AZPBTRKIDs[field] = tonumber(ID)
     end
 end
 
