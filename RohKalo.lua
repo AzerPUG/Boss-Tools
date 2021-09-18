@@ -334,7 +334,6 @@ function AZP.BossTools.RohKalo.Events:CombatLogEventUnfiltered(...)
     if combatEvent == "SPELL_CAST_SUCCESS" then
         if spellID == 5221 then
             AZP.BossTools.RohKalo:OrganizePlayers()
-            print("Cast MF success!")
         end
     end
 end
