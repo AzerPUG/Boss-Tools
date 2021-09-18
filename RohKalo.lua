@@ -118,6 +118,7 @@ function AZP.BossTools.RohKalo:OrganizePlayers()
             end
         end
         AZP.BossTools.RohKalo:UpdateRohKaloFrame()
+        AZP.BossTools.RohKalo:CacheRaidNames()
     end
 end
 
@@ -131,7 +132,6 @@ function AZP.BossTools.RohKalo:OnLoadSelf()
     EventFrame:RegisterEvent("VARIABLES_LOADED")
     EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-    EventFrame:RegisterEvent("UNIT_AURA")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.RohKalo:OnEvent(...) end)
 
     AZPBossToolsRohKaloOptionPanel = CreateFrame("FRAME", nil)
@@ -374,9 +374,6 @@ function AZP.BossTools.RohKalo.Events:PlayerLeaveCombat()
     -- AZP.BossTools.RohKalo:SaveInterrupts()
 end
 
-function AZP.BossTools.RohKalo.Events:UnitAura()
-    AZP.BossTools.RohKalo:OrganizePlayers()
-end
 
 function AZP.BossTools.RohKalo:LoadSavedVars()
     if AZPBossToolsRohKaloLocation == nil then
