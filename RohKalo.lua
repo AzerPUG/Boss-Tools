@@ -79,9 +79,7 @@ function AZP.BossTools.RohKalo:OrganizePlayers()
     local tanks, healers, dps = {}, {}, {}
     local alphas, betas = {}, {}
     local players = AZP.BossTools.RohKalo:GetPlayersWithHeroicBuff()
-    for i = 1, 6 do
-        AssignedPlayers[string.format("Ring%d", i)] = {}
-    end
+    
 
     table.sort(players, function(a,b) return a.ID > b.ID end)
     for _, player in ipairs(players) do
@@ -99,23 +97,28 @@ function AZP.BossTools.RohKalo:OrganizePlayers()
     AZP.BossTools.RohKalo:ConcatTable(bigList, dps, tanks, healers)
 
     local numPlayers = #bigList
-    for i, player in ipairs(bigList) do
-        if i > numPlayers/2 then
-            print(player.ID)
-            table.insert(betas, player)
-        else
-            table.insert(alphas, player)
-        end
-    end
+    if numPlayers > 0 then
 
-    for i, playerID in ipairs(alphas) do
-        AssignedPlayers[string.format( "Ring%d",i )].Alpha = playerID
-        if betas[i] ~= nil then
-            AssignedPlayers[string.format( "Ring%d",i )].Beta = betas[i]
+        for i = 1, 6 do
+            AssignedPlayers[string.format("Ring%d", i)] = {}
         end
+            
+        for i, player in ipairs(bigList) do
+            if i <= ceil(numPlayers/2) then
+                table.insert(alphas, player)
+            else
+                table.insert(betas, player)
+            end
+        end
+
+        for i, playerID in ipairs(alphas) do
+            AssignedPlayers[string.format( "Ring%d",i )].Alpha = playerID
+            if betas[i] ~= nil then
+                AssignedPlayers[string.format( "Ring%d",i )].Beta = betas[i]
+            end
+        end
+        AZP.BossTools.RohKalo:UpdateRohKaloFrame()
     end
-    DevTools_Dump(AssignedPlayers)
-    AZP.BossTools.RohKalo:UpdateRohKaloFrame()
 end
 
 function AZP.BossTools.RohKalo:OnLoadSelf()
