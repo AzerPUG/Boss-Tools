@@ -117,8 +117,8 @@ function AZP.BossTools.RohKalo:OrganizePlayers()
                 AssignedPlayers[string.format( "Ring%d",i )].Beta = betas[i]
             end
         end
-        AZP.BossTools.RohKalo:UpdateRohKaloFrame()
         AZP.BossTools.RohKalo:CacheRaidNames()
+        AZP.BossTools.RohKalo:UpdateRohKaloFrame()
     end
 end
 
