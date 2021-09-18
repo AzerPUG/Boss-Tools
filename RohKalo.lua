@@ -56,22 +56,35 @@ function AZP.BossTools.RohKalo:GetPlayersWithHeroicBuff()
         local buffName, icon, _, _, _, expirationTimer, _, _, _, buffID = UnitBuff(unit, currentBuffIndex)
         while buffName ~= nil do
             currentBuffIndex = currentBuffIndex + 1
-            if buffID == 354964 then
+            --if buffID == 354964 then
+            if buffID == 768 then
                 table.insert(players, {ID = UnitGUID(unit), Unit= unit })
             end
             buffName, icon, _, _, _, expirationTimer, _, _, _, buffID = UnitBuff(unit, currentBuffIndex)
         end
     end
+    return players
+end
+
+function AZP.BossTools.RohKalo:ConcatTable(dest, ...)
+    for i = 1, select("#", ...) do
+        local t = select(i, ...)
+        for _,v in ipairs(t) do
+            table.insert(dest, v)
+        end
+    end
 end
 
 function AZP.BossTools.RohKalo:OrganizePlayers()
-    local tanks = {}
-    local healers = {}
-    local dps = {}
-    
+    local tanks, healers, dps = {}, {}, {}
+    local alphas, betas = {}, {}
     local players = AZP.BossTools.RohKalo:GetPlayersWithHeroicBuff()
+    for i = 1, 6 do
+        AssignedPlayers[string.format("Ring%d", i)] = {}
+    end
+
     table.sort(players, function(a,b) return a.ID > b.ID end)
-    for i, player in ipairs(players) do
+    for _, player in ipairs(players) do
         local role = UnitGroupRolesAssigned(player.Unit)
         if role == "TANK" then
             table.insert(tanks, player.ID)
@@ -82,15 +95,27 @@ function AZP.BossTools.RohKalo:OrganizePlayers()
         end
     end
 
-    local alphas = dps
-    local betas = tanks + healers
+    local bigList = {}
+    AZP.BossTools.RohKalo:ConcatTable(bigList, dps, tanks, healers)
 
-    -- TODO: Make algorithm to assign alphas and betas to the correct rings
-    if alphas > 6 then
-
-    elseif alphas < 6 then
-
+    local numPlayers = #bigList
+    for i, player in ipairs(bigList) do
+        if i > numPlayers/2 then
+            print(player.ID)
+            table.insert(betas, player)
+        else
+            table.insert(alphas, player)
+        end
     end
+
+    for i, playerID in ipairs(alphas) do
+        AssignedPlayers[string.format( "Ring%d",i )].Alpha = playerID
+        if betas[i] ~= nil then
+            AssignedPlayers[string.format( "Ring%d",i )].Beta = betas[i]
+        end
+    end
+    DevTools_Dump(AssignedPlayers)
+    AZP.BossTools.RohKalo:UpdateRohKaloFrame()
 end
 
 function AZP.BossTools.RohKalo:OnLoadSelf()
@@ -103,6 +128,7 @@ function AZP.BossTools.RohKalo:OnLoadSelf()
     EventFrame:RegisterEvent("VARIABLES_LOADED")
     EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    EventFrame:RegisterEvent("UNIT_AURA")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.RohKalo:OnEvent(...) end)
 
     AZPBossToolsRohKaloOptionPanel = CreateFrame("FRAME", nil)
@@ -265,7 +291,7 @@ function AZP.BossTools.RohKalo:CreateMainFrame()
     AZPRTRohKaloAlphaFrame.SafeButton:SetSize(75, 20)
     AZPRTRohKaloAlphaFrame.SafeButton:SetPoint("TOP", -40, -30)
     AZPRTRohKaloAlphaFrame.SafeButton:SetText("I Can Solo!")
-    AZPRTRohKaloAlphaFrame.SafeButton:SetScript("OnClick", function()  end)
+    AZPRTRohKaloAlphaFrame.SafeButton:SetScript("OnClick", function() AZP.BossTools.RohKalo:OrganizePlayers() end)
 
     AZPRTRohKaloAlphaFrame.LeftLabels = {}
     AZPRTRohKaloAlphaFrame.RightLabels = {}
@@ -303,29 +329,10 @@ function AZP.BossTools.RohKalo.Events:CombatLogEventUnfiltered(...)
     local v1, combatEvent, v3, UnitGUID, casterName, v6, v7, destGUID, destName, v10, v11, spellID, v13, v14, v15 = CombatLogGetCurrentEventInfo()
     -- v12 == SpellID, but not always, sometimes several IDs for one spell (when multiple things happen on one spell)
     if combatEvent == "SPELL_CAST_SUCCESS" then
-        -- local unitName = UnitFullName("PLAYER")
-        -- if AZP.BossTools.RohKalo.interruptSpells[spellID] ~= nil then
-        --     for i = 1, #AZPInterruptOrder do
-        --         local potentialPetGUID = string.match(UnitGUID, "(.*)-")
-        --         if UnitGUID == AZPInterruptOrder[i][1] then
-        --             AZP.BossTools.RohKalo:StructureInterrupts(UnitGUID, spellID)
-        --             break
-        --         end
-        --     end
-        --     if casterName == unitName then      -- Change to GUID.
-        --         if blinkingTicker ~= nil then
-        --             blinkingTicker:Cancel()
-        --         end
-        --         AZP.BossTools.RohKalo:InterruptBlinking(false)
-        --     end
-        -- end
-    elseif combatEvent == "UNIT_DIED" then
-        -- for i = 1, #AZPInterruptOrder do
-        --     if destGUID == AZPInterruptOrder[i][1] then
-        --         AZP.BossTools.RohKalo:StructureInterrupts(destGUID, nil)
-        --         break
-        --     end
-        -- end
+        if spellID == 5221 then
+            AZP.BossTools.RohKalo:OrganizePlayers()
+            print("Cast MF success!")
+        end
     end
 end
 
@@ -362,6 +369,10 @@ end
 function AZP.BossTools.RohKalo.Events:PlayerLeaveCombat()
     cooldownTicker:Cancel()
     -- AZP.BossTools.RohKalo:SaveInterrupts()
+end
+
+function AZP.BossTools.RohKalo.Events:UnitAura()
+    AZP.BossTools.RohKalo:OrganizePlayers()
 end
 
 function AZP.BossTools.RohKalo:LoadSavedVars()
