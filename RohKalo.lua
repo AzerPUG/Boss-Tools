@@ -21,6 +21,8 @@ local curScale = 0.75
 local soundID = 8959
 local soundChannel = 1
 
+local newBuffScanRequest = false
+
 local cooldownTicker = nil
 
 local optionHeader = "|cFF00FFFFBossTools RohKalo|r"
@@ -58,13 +60,13 @@ function AZP.BossTools.RohKalo:GetPlayersWithHeroicBuff()
     for i = 1, 40 do
         local unit = string.format("raid%d", i)
         local currentBuffIndex = 1
-        local buffName, icon, _, _, _, expirationTimer, _, _, _, buffID = UnitBuff(unit, currentBuffIndex)
+        local buffName, icon, _, _, _, expirationTimer, _, _, _, buffID = UnitDebuff(unit, currentBuffIndex)
         while buffName ~= nil do
             currentBuffIndex = currentBuffIndex + 1
             if buffID == AZPBTRKIDs.BuffID then
                 table.insert(players, {GUID = UnitGUID(unit), Unit= unit })
             end
-            buffName, icon, _, _, _, expirationTimer, _, _, _, buffID = UnitBuff(unit, currentBuffIndex)
+            buffName, icon, _, _, _, expirationTimer, _, _, _, buffID = UnitDebuff(unit, currentBuffIndex)
         end
     end
     return players
@@ -101,7 +103,7 @@ function AZP.BossTools.RohKalo:OrganizePlayers()
 
     local bigList = {}
     AZP.BossTools.RohKalo:ConcatTable(bigList, dps, tanks, healers)
-
+    newBuffScanRequest = false
     
 
     local numPlayers = #bigList
@@ -340,9 +342,12 @@ end
 function AZP.BossTools.RohKalo.Events:CombatLogEventUnfiltered(...)
     local v1, combatEvent, v3, UnitGUID, casterName, v6, v7, destGUID, destName, v10, v11, spellID, v13, v14, v15 = CombatLogGetCurrentEventInfo()
     -- v12 == SpellID, but not always, sometimes several IDs for one spell (when multiple things happen on one spell)
-    if combatEvent == "SPELL_CAST_SUCCESS" then
-        if spellID == AZPBTRKIDs.SpellID then
-            AZP.BossTools.RohKalo:OrganizePlayers()
+    if combatEvent == "SPELL_AURA_APPLIED" then
+        if spellID == AZPBTRKIDs.BuffID then
+            if newBuffScanRequest == false then
+                newBuffScanRequest = true
+                C_Timer.After(1, function() AZP.BossTools.RohKalo:OrganizePlayers() end)
+            end
         end
     end
 end
