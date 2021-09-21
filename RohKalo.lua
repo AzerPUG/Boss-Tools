@@ -1,7 +1,7 @@
 if AZP == nil then AZP = {} end
 if AZP.VersionControl == nil then AZP.VersionControl = {} end
 
-AZP.VersionControl["BossTools RohKalo"] = 4
+AZP.VersionControl["BossTools RohKalo"] = 5
 if AZP.BossTools.RohKalo == nil then AZP.BossTools.RohKalo = {} end
 if AZP.BossTools.RohKalo.Events == nil then AZP.BossTools.RohKalo.Events = {} end
 
