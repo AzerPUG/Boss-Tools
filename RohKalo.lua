@@ -227,10 +227,14 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
         local AssigneesFrame = CreateFrame("Frame", nil, frameToFill)
         AssigneesFrame:SetSize(200, 25)
         AssigneesFrame:SetPoint("TOPLEFT", 25, -30*i - 75)
-        AssigneesFrame.editbox = CreateFrame("EditBox", nil, AssigneesFrame, "InputBoxTemplate")
+        AssigneesFrame.editbox = CreateFrame("EditBox", nil, AssigneesFrame, "InputBoxTemplate,AutoCompleteEditBoxTemplate")
         AssigneesFrame.editbox:SetSize(100, 25)
         AssigneesFrame.editbox:SetPoint("LEFT", 100, 0)
         AssigneesFrame.editbox:SetAutoFocus(false)
+        AssigneesFrame.editbox:SetScript("OnTextChanged", function ()
+            AutoCompleteEditBox_SetAutoCompleteSource(AssigneesFrame.editbox, GetAutoCompleteResults, AUTOCOMPLETE_FLAG_IN_GROUP, AUTOCOMPLETE_FLAG_NONE);
+            AutoCompleteEditBox_OnTextChanged(AssigneesFrame.editbox, AssigneesFrame.editbox:GetText());
+        end)
         AssigneesFrame.text = AssigneesFrame:CreateFontString("AssigneesFrame", "ARTWORK", "GameFontNormalLarge")
         AssigneesFrame.text:SetSize(100, 25)
         AssigneesFrame.text:SetPoint("LEFT", 0, 0)
@@ -253,12 +257,15 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
         local BackUpsFrame = CreateFrame("Frame", nil, frameToFill)
         BackUpsFrame:SetSize(100, 25)
         BackUpsFrame:SetPoint("LEFT", AZPBossToolsRohKaloAlphaEditBoxes[i], "RIGHT", 5, 0)
-        BackUpsFrame.editbox = CreateFrame("EditBox", nil, BackUpsFrame, "InputBoxTemplate")
+        BackUpsFrame.editbox = CreateFrame("EditBox", nil, BackUpsFrame, "InputBoxTemplate,AutoCompleteEditBoxTemplate")
         BackUpsFrame.editbox:SetSize(100, 25)
         BackUpsFrame.editbox:SetPoint("LEFT",0, 0)
         BackUpsFrame.editbox:SetAutoFocus(false)
         AZPBossToolsRohKaloBetaEditBoxes[i] = BackUpsFrame
-
+        BackUpsFrame.editbox:SetScript("OnTextChanged", function ()
+            AutoCompleteEditBox_SetAutoCompleteSource(BackUpsFrame.editbox, GetAutoCompleteResults, AUTOCOMPLETE_FLAG_IN_GROUP, AUTOCOMPLETE_FLAG_NONE);
+            AutoCompleteEditBox_OnTextChanged(BackUpsFrame.editbox, BackUpsFrame.editbox:GetText());
+        end)
         BackUpsFrame.editbox:SetScript("OnEditFocusLost",
         function()
             AZP.BossTools.RohKalo:OnEditFocusLost("Beta", i)
