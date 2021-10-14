@@ -7,4 +7,5 @@
 
 SlashCommands.lua
 BossTools.lua
+HeroReminder.lua
 RohKalo.lua
