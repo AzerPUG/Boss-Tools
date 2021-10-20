@@ -79,7 +79,7 @@ function AZP.BossTools.HeroReminder.OnLoad()
     AZPBTHeroReminderFrame.closeButton:SetPoint("TOPRIGHT", AZPBTHeroReminderFrame, "TOPRIGHT", 2, 2)
     AZPBTHeroReminderFrame.closeButton:SetScript("OnClick", function() AZP.BossTools.HeroReminder:ShowHideFrame() end )
 
-    AZPBTHeroReminderFrame:hide()
+    AZPBTHeroReminderFrame:Hide()
 end
 
 function AZP.BossTools.HeroReminder:ShowHideFrame()
