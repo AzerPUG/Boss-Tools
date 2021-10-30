@@ -234,6 +234,22 @@ function AZP.BossTools.Dormazain:ShareAssignees()
     end
 end
 
+
+function AZP.BossTools.Dormazain:CacheRaidNames()
+    if IsInRaid() == true then
+        for k = 1, 40 do
+            local curName = GetRaidRosterInfo(k)
+            if curName ~= nil then
+                if string.find(curName, "-") then
+                    curName = string.match(curName, "(.+)-")
+                end
+                local curGUID = UnitGUID("raid" .. k)
+                AZPBTDormazainGUIDs[curGUID] = curName
+            end
+        end
+    end
+end
+
 function AZP.BossTools.Dormazain:UpdateMainFrame()
     if IsInRaid() == false then
         print("BossTools Dormazain only works in raid.")
@@ -324,6 +340,7 @@ end
 function AZP.BossTools.Dormazain.Events:ChatMsgAddon(...)
     local prefix, payload, _, sender = ...
     if prefix == "AZPDORMINFO" then
+        AZP.BossTools.Dormazain:CacheRaidNames()
         AZP.BossTools.Dormazain:ReceiveAssignees(payload)
     end
 end
