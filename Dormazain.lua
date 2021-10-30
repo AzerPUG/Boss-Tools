@@ -27,6 +27,7 @@ function AZP.BossTools.Dormazain:OnLoadSelf()
     EventFrame:RegisterEvent("CHAT_MSG_ADDON")
     EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    EventFrame:RegisterEvent("ENCOUNTER_END")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Dormazain:OnEvent(...) end)
 
     AZPBTDormazainOptions = CreateFrame("FRAME", nil)
@@ -199,7 +200,6 @@ function AZP.BossTools.Dormazain:OnEditFocusLost(position, chains)
     elseif position == "Right" then
         editBoxFrame = AZPBTDormazainRightEditBoxes[chains]
     end
-    print(editBoxFrame:GetText())
     if (editBoxFrame:GetText() ~= nil and editBoxFrame:GetText() ~= "") then
         for k = 1, 40 do
             local curName = GetRaidRosterInfo(k)
@@ -209,7 +209,6 @@ function AZP.BossTools.Dormazain:OnEditFocusLost(position, chains)
                 end
                 if curName == editBoxFrame:GetText() then
                     local curGUID = UnitGUID("raid" .. k)
-                    print("Found GUID:", curGUID)
                     AZPBTDormazainGUIDs[curGUID] = curName
                     AssignedPlayers[chainsSet][position] = curGUID
                     AZP.BossTools.Dormazain:UpdateMainFrame()
@@ -308,6 +307,8 @@ function AZP.BossTools.Dormazain:OnEvent(self, event, ...)
         AZP.BossTools.Dormazain.Events:CombatLogEventUnfiltered(...)
     elseif event == "CHAT_MSG_ADDON" then
         AZP.BossTools.Dormazain.Events:ChatMsgAddon(...)
+    elseif event == "ENCOUNTER_END" then
+        AZP.BossTools.Dormazain.Events:EncounterEnd(...)
     end
 end
 
@@ -320,9 +321,12 @@ function AZP.BossTools.Dormazain.Events:CombatLogEventUnfiltered(...)
     end
 end
 
+function AZP.BossTools.Dormazain.Events:EncounterEnd(...)
+    ChainsCount = 0
+end
+
 function AZP.BossTools.Dormazain.Events:WarmongerShackles()
-    print("WarmongerShackles Called!")
-    ChainsCount = ChainsCount + 1           -- SET BACK TO 0 WHEN COMBAT ENDS OR STARTS, OR WIPES WILL FUCK IT UP!!
+    ChainsCount = ChainsCount + 1
     local curChain = string.format("Chain%s", ChainsCount)
     local curGUID = UnitGUID("PLAYER")
     local assignedPosition = nil
@@ -332,7 +336,6 @@ function AZP.BossTools.Dormazain.Events:WarmongerShackles()
 
     if assignedPosition ~= nil then
         local warnText = string.format("ChainSet %d - Pick up %s!", ChainsCount, assignedPosition)
-        print(warnText)
         AZP.BossTools:WarnPlayer(warnText)
     end
 end
