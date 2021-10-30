@@ -3,9 +3,11 @@
 ## Author: Tex & AzerPUG Gaming Community (www.azerpug.com/discord)
 ## Notes: Boss Tools for Raid and Dungeon Encounters, by AzerPUG (Tex)
 ## Version: SL 9.1 (For actual addon version, check BossTools.lua)
-## SavedVariables: AZPBossTools AZPBTRohKalo AZPAZPShownLocked AZPBTRKIDs
+## SavedVariables: AZPBossTools AZPBTDormazainChains AZPBTRohKalo AZPAZPShownLocked AZPBTRKIDs RKAnnounceCoE AZPBTSylvTimers
 
 SlashCommands.lua
+DataTable.lua
 BossTools.lua
 HeroReminder.lua
+Dormazain.lua
 RohKalo.lua
