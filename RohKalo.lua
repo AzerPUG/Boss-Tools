@@ -60,7 +60,7 @@ function AZP.BossTools.RohKalo:GetPlayersWithHeroicBuff()
         while buffName ~= nil do
             currentBuffIndex = currentBuffIndex + 1
             if buffID == AZPBTRKIDs.BuffID then
-                table.insert(players, {GUID = UnitGUID(unit), Unit= unit })
+                table.insert(players, {GUID = UnitGUID(unit), Unit = unit})
             end
             buffName, icon, _, _, _, expirationTimer, _, _, _, buffID = UnitDebuff(unit, currentBuffIndex)
         end
