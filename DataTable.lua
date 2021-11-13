@@ -3,11 +3,18 @@ if AZP.BossTools == nil then AZP.BossTools = {} end
 
 AZP.BossTools.IDs =
 {
+    TheEye =
+    {
+        Spell =
+        {
+            StygianEjection = 348117,
+        },
+    },
     Dormazain =
     {
         Spell =
         {
-            WarmongerShackles = 350415,     -- SPELL_AURA_APPLIED by Dormazain on Garrosh Hellscream.
+            WarmongerShackles = 350415,
         },
     },
 }

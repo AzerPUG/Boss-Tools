@@ -293,12 +293,13 @@ function AZP.BossTools.Dormazain:UpdateMainFrame()
     end
 end
 
-function AZP.BossTools.Dormazain:ReceiveAssignees(receiveAssignees)     -- XXX
+function AZP.BossTools.Dormazain:ReceiveAssignees(receiveAssignees)
     local chains, left, mid, right = string.match(receiveAssignees, "([^:]*):([^:]*):([^:]*):([^:]*)")
     if left == "" then left = nil end
     if mid == "" then mid = nil end
     if right == "" then right = nil end
     AssignedPlayers[chains] = {Left = left, Mid = mid, Right = right}
+    AZPBTDormazainChains = AssignedPlayers
     AZP.BossTools.Dormazain:UpdateMainFrame()
 end
 
