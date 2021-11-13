@@ -1,24 +1,92 @@
 if AZP == nil then AZP = {} end
 if AZP.VersionControl == nil then AZP.VersionControl = {} end
 
-AZP.VersionControl["BossTools"] = 9
+AZP.VersionControl["BossTools"] = 10
 if AZP.BossTools == nil then AZP.BossTools = {} end
 if AZP.BossTools.Events == nil then AZP.BossTools.Events = {} end
 
 AZP.BossTools.ParentOptionFrame = nil
 AZP.BossTools.PopUpFrame = nil
 AZP.BossTools.BossFrames = {}
+AZP.BossTools.BossIcons = {}
 
 local AZPRTBossToolsFrame = nil
 
 local soundID = 8959
 local soundChannel = 1
 
-local BossFileIDs =
+local BossInfo =
 {
-    Tarragrue = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Tarragrue.blp"),
-    Dormazain = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Soulrender Dormazain.blp"),
-    RohKalo   = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Fatescribe Roh-Talo.blp"),
+    Tarragrue =
+    {
+        Name = "Tarragrue",
+        Index = 1,
+        Active = "Soon",
+        FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Tarragrue.blp"),
+    },
+    TheEye =
+    {
+        Name = "The Eye",
+        Index = 2,
+        Active = true,
+        FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS- Eye of the Jailer.blp"),
+    },
+    TheNine =
+    {
+        Name = "The Nine",
+        Index = 3,
+        Active = false,
+        FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-The Nine.blp"),
+    },
+    NerZhul =
+    {
+        Name = "Ner'Zhul",
+        Index = 4,
+        Active = false,
+        FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Remnant of Ner zhul.blp"),
+    },
+    Dormazain =
+    {
+        Name = "Dormazain",
+        Index = 5,
+        Active = true,
+        FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Soulrender Dormazain.blp"),
+    },
+    Painsmith =
+    {
+        Name = "Painsmith",
+        Index = 6,
+        Active = false,
+        FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Painsmith Raznal.blp"),
+    },
+    Guardian =
+    {
+        Name = "Guardian",
+        Index = 7,
+        Active = false,
+        FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Guardian of the First Ones.blp"),
+    },
+    RohKalo =
+    {
+        Name = "Roh-Kalo",
+        Index = 8,
+        Active = true,
+        FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Fatescribe Roh-Talo.blp"),
+    },
+    KelThuzad =
+    {
+        Name = "Kel'Thuzad",
+        Index = 9,
+        Active = false,
+        FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Kel Thuzad Shadowlands.blp"),
+    },
+    Sylvanas =
+    {
+        Name = "Sylvanas",
+        Index = 10,
+        Active = false,
+        FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Sylvanas Windrunner Shadowlands.blp"),
+    },
 }
 
 function AZP.BossTools.OnLoad()
@@ -41,9 +109,12 @@ end
 function AZP.BossTools:CreateSelectorFrame()
     AZPRTBossToolsFrame = CreateFrame("FRAME", nil, UIParent, "BackdropTemplate")
     AZPRTBossToolsFrame:SetPoint("CENTER", 0, 0)
-    AZPRTBossToolsFrame:SetSize(265, 150)
+    AZPRTBossToolsFrame.Background = AZPRTBossToolsFrame:CreateTexture(nil, "ARTWORK")
+    AZPRTBossToolsFrame.Background:SetPoint("CENTER", 0, 0)
+    AZPRTBossToolsFrame.Background:SetTexture(GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-LOREBG-SanctumofDomination"))
+    AZPRTBossToolsFrame.Background:SetTexCoord(0.03425, 0.72525, 0.0585, 0.60)
+    AZPRTBossToolsFrame.Background:SetAlpha(0.8)
     AZPRTBossToolsFrame:SetBackdrop({
-        bgFile = "Interface/Tooltips/UI-Tooltip-Background",
         edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
         edgeSize = 10,
         insets = {left = 3, right = 3, top = 3, bottom = 3},
@@ -51,67 +122,68 @@ function AZP.BossTools:CreateSelectorFrame()
 
     AZPRTBossToolsFrame.Header = AZPRTBossToolsFrame:CreateFontString("AZPRTBossToolsFrame", "ARTWORK", "GameFontNormalHuge")
     AZPRTBossToolsFrame.Header:SetSize(AZPRTBossToolsFrame:GetWidth(), 25)
-    AZPRTBossToolsFrame.Header:SetPoint("TOP", 0, -5)
+    AZPRTBossToolsFrame.Header:SetPoint("TOP", 0, -15)
     AZPRTBossToolsFrame.Header:SetText(string.format("AzerPUG's BossTools v%s", AZP.VersionControl["BossTools"]))
 
     AZPRTBossToolsFrame.SubHeader = AZPRTBossToolsFrame:CreateFontString("AZPRTBossToolsFrame", "ARTWORK", "GameFontNormalLarge")
-    AZPRTBossToolsFrame.SubHeader:SetSize(AZPRTBossToolsFrame:GetWidth(), 25)
+    AZPRTBossToolsFrame.SubHeader:SetSize(AZPRTBossToolsFrame:GetWidth(), 50)
     AZPRTBossToolsFrame.SubHeader:SetPoint("TOP", AZPRTBossToolsFrame.Header, "BOTTOM", 0, 5)
-    AZPRTBossToolsFrame.SubHeader:SetText("Boss Selector Frame")
+    AZPRTBossToolsFrame.SubHeader:SetText("Sanctum of Domination\nBoss Selector Frame")
 
     local BossWidth, BossHeight = 100, 75
 
-    AZPRTBossToolsFrame.Tarragrue = CreateFrame("FRAME", nil, AZPRTBossToolsFrame)
-    AZPRTBossToolsFrame.Tarragrue:SetSize(BossWidth, BossHeight)
-    AZPRTBossToolsFrame.Tarragrue:SetPoint("BOTTOM", -80, -1)
-    AZPRTBossToolsFrame.Tarragrue:SetScript("OnMouseDown", function()  end) -- AZPRTBossToolsFrame:Hide() AZP.BossTools.BossFrames.Tarragrue:Show()
-    AZPRTBossToolsFrame.Tarragrue.Button = AZPRTBossToolsFrame.Tarragrue:CreateTexture(nil, "ARTWORK")
-    AZPRTBossToolsFrame.Tarragrue.Button:SetSize(AZPRTBossToolsFrame.Tarragrue:GetWidth(), 55)
-    AZPRTBossToolsFrame.Tarragrue.Button:SetPoint("BOTTOM", 0, 0)
-    AZPRTBossToolsFrame.Tarragrue.Button:SetTexture(BossFileIDs.Tarragrue)
-    AZPRTBossToolsFrame.Tarragrue.Button:SetDesaturated(true)
-    AZPRTBossToolsFrame.Tarragrue.Label = AZPRTBossToolsFrame.Tarragrue:CreateFontString("AZPRTBossToolsFrame", "ARTWORK", "GameFontNormalLarge")
-    AZPRTBossToolsFrame.Tarragrue.Label:SetSize(AZPRTBossToolsFrame.Tarragrue:GetWidth() -20, 25)
-    AZPRTBossToolsFrame.Tarragrue.Label:SetPoint("TOP", -10, 0)
-    AZPRTBossToolsFrame.Tarragrue.Label:SetText("Tarragrue")
+    for Boss, Info in pairs(BossInfo) do
+        if Info.Active ~= false then
+            local curFrame = CreateFrame("FRAME", nil, AZPRTBossToolsFrame)
+            curFrame:SetSize(BossWidth, BossHeight)
+            curFrame:SetScript("OnMouseDown", function() if AZP.BossTools.BossFrames[Boss] ~= nil then AZPRTBossToolsFrame:Hide() AZP.BossTools.BossFrames[Boss]:Show() end end)
+            curFrame.Button = curFrame:CreateTexture(nil, "ARTWORK")
+            curFrame.Button:SetSize(curFrame:GetWidth(), 55)
+            curFrame.Button:SetPoint("BOTTOM", 0, 0)
+            curFrame.Button:SetTexture(Info.FileID)
+            curFrame.Label = curFrame:CreateFontString("AZPRTBossToolsFrame", "ARTWORK", "GameFontNormalLarge")
+            curFrame.Label:SetSize(curFrame:GetWidth() -20, 25)
+            curFrame.Label:SetPoint("TOP", -10, -5)
+            curFrame.Label:SetText(Info.Name)
 
-    AZPRTBossToolsFrame.Tarragrue.ComingSoon = AZPRTBossToolsFrame.Tarragrue:CreateFontString("AZPRTBossToolsFrame", "ARTWORK", "GameFontNormalLarge")
-    AZPRTBossToolsFrame.Tarragrue.ComingSoon:SetSize(AZPRTBossToolsFrame.Tarragrue:GetWidth() -20, 50)
-    AZPRTBossToolsFrame.Tarragrue.ComingSoon:SetPoint("TOP", -10, -25)
-    AZPRTBossToolsFrame.Tarragrue.ComingSoon:SetText("Coming\nSoon!")
+            if Info.Active == "Soon" then
+                curFrame.Button:SetDesaturated(true)
+                curFrame.ComingSoon = curFrame:CreateFontString("AZPRTBossToolsFrame", "ARTWORK", "GameFontNormalLarge")
+                curFrame.ComingSoon:SetSize(curFrame:GetWidth() -20, 50)
+                curFrame.ComingSoon:SetPoint("TOP", -10, -25)
+                curFrame.ComingSoon:SetText("Coming\nSoon!")
+            end
 
-    AZPRTBossToolsFrame.Dormazain = CreateFrame("FRAME", nil, AZPRTBossToolsFrame)
-    AZPRTBossToolsFrame.Dormazain:SetSize(BossWidth, BossHeight)
-    AZPRTBossToolsFrame.Dormazain:SetPoint("BOTTOM", 10, -1)
-    AZPRTBossToolsFrame.Dormazain:SetScript("OnMouseDown", function() AZPRTBossToolsFrame:Hide() AZP.BossTools.BossFrames.Dormazain:Show() end)
-    AZPRTBossToolsFrame.Dormazain.Button = AZPRTBossToolsFrame.Dormazain:CreateTexture(nil, "ARTWORK")
-    AZPRTBossToolsFrame.Dormazain.Button:SetSize(100, 55)
-    AZPRTBossToolsFrame.Dormazain.Button:SetPoint("BOTTOM", 0, 0)
-    AZPRTBossToolsFrame.Dormazain.Button:SetTexture(BossFileIDs.Dormazain)
-    AZPRTBossToolsFrame.Dormazain.Label = AZPRTBossToolsFrame.Dormazain:CreateFontString("AZPRTBossToolsFrame", "ARTWORK", "GameFontNormalLarge")
-    AZPRTBossToolsFrame.Dormazain.Label:SetSize(AZPRTBossToolsFrame.Dormazain:GetWidth() -20, 25)
-    AZPRTBossToolsFrame.Dormazain.Label:SetPoint("TOP", -10, 0)
-    AZPRTBossToolsFrame.Dormazain.Label:SetText("Dormazain")
+            curFrame.Index = Info.Index
+            AZP.BossTools.BossIcons[#AZP.BossTools.BossIcons + 1] = curFrame
+        end
+    end
 
-    AZPRTBossToolsFrame.RohKalo = CreateFrame("FRAME", nil, AZPRTBossToolsFrame)
-    AZPRTBossToolsFrame.RohKalo:SetSize(BossWidth, BossHeight)
-    AZPRTBossToolsFrame.RohKalo:SetPoint("BOTTOM", 100, -1)
-    AZPRTBossToolsFrame.RohKalo:SetScript("OnMouseDown", function() AZPRTBossToolsFrame:Hide() AZP.BossTools.BossFrames.RohKalo:Show() end)
-    AZPRTBossToolsFrame.RohKalo.Button = AZPRTBossToolsFrame.RohKalo:CreateTexture(nil, "ARTWORK")
-    AZPRTBossToolsFrame.RohKalo.Button:SetSize(100, 55)
-    AZPRTBossToolsFrame.RohKalo.Button:SetPoint("BOTTOM", 0, 0)
-    AZPRTBossToolsFrame.RohKalo.Button:SetTexture(BossFileIDs.RohKalo)
-    AZPRTBossToolsFrame.RohKalo.Label = AZPRTBossToolsFrame.RohKalo:CreateFontString("AZPRTBossToolsFrame", "ARTWORK", "GameFontNormalLarge")
-    AZPRTBossToolsFrame.RohKalo.Label:SetSize(AZPRTBossToolsFrame.RohKalo:GetWidth() -20, 25)
-    AZPRTBossToolsFrame.RohKalo.Label:SetPoint("TOP", -10, 0)
-    AZPRTBossToolsFrame.RohKalo.Label:SetText("Roh-Kalo")
+    local iconsPerRow = {math.floor(#AZP.BossTools.BossIcons / 2), math.ceil(#AZP.BossTools.BossIcons / 2)}
+    local FrameWidth = (iconsPerRow[2] * 85 + 25)
+    if FrameWidth < 280 then FrameWidth = 280 end
+    AZPRTBossToolsFrame:SetSize(FrameWidth, FrameWidth - 15)
+    AZPRTBossToolsFrame.Background:SetSize(AZPRTBossToolsFrame:GetWidth() - 5, AZPRTBossToolsFrame:GetHeight() - 5)
+
+    table.sort(AZP.BossTools.BossIcons, function(a,b) return a.Index < b.Index end)
+
+    if #AZP.BossTools.BossIcons == 0 then return
+    elseif #AZP.BossTools.BossIcons > 0 then
+        for i = 1, #AZP.BossTools.BossIcons do
+            local BottomOffset = {[1] = 0, [2] = 8, [3] =  9, [4] = 10, [5] = 13,}
+            local   LeftOffset = {[1] = 0, [2] = 35, [3] = 22, [4] = 17, [5] = 11,}
+            if i == 1 then AZP.BossTools.BossIcons[i]:SetPoint("BOTTOM", (-35 * iconsPerRow[1]) + LeftOffset[iconsPerRow[1]], 100)
+            elseif i == (iconsPerRow[1] + 1) then AZP.BossTools.BossIcons[i]:SetPoint("BOTTOM", (-35 * iconsPerRow[2]) + LeftOffset[iconsPerRow[2]], BottomOffset[iconsPerRow[2]])
+            else AZP.BossTools.BossIcons[i]:SetPoint("LEFT", AZP.BossTools.BossIcons[i-1], "RIGHT", -10, 0) end
+        end
+    end
 
     AZPRTBossToolsFrame.closeButton = CreateFrame("Button", nil, AZPRTBossToolsFrame, "UIPanelCloseButton")
     AZPRTBossToolsFrame.closeButton:SetSize(20, 21)
-    AZPRTBossToolsFrame.closeButton:SetPoint("TOPRIGHT", AZPRTBossToolsFrame, "TOPRIGHT", 2, 2)
+    AZPRTBossToolsFrame.closeButton:SetPoint("TOPRIGHT", AZPRTBossToolsFrame, "TOPRIGHT", 1, 2)
     AZPRTBossToolsFrame.closeButton:SetScript("OnClick", function() AZPRTBossToolsFrame:Hide() end)
 
-    --AZPRTBossToolsFrame:Hide()
+    AZPRTBossToolsFrame:Hide()
 end
 
 function AZP.BossTools:CreatePopUpFrame()
@@ -124,6 +196,11 @@ function AZP.BossTools:CreatePopUpFrame()
     AZP.BossTools.PopUpFrame.text:SetSize(AZP.BossTools.PopUpFrame:GetWidth(), AZP.BossTools.PopUpFrame:GetHeight())
     AZP.BossTools.PopUpFrame.text:SetScale(0.5)
     AZP.BossTools.PopUpFrame.text:Hide()
+end
+
+function AZP.BossTools:ShowBossFrame(Boss)
+
+    AZP.BossTools.BossFrames[Boss]:Show()
 end
 
 function AZP.BossTools:CheckIfDead(playerGUID)
