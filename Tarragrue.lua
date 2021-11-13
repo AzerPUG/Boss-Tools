@@ -54,19 +54,19 @@ function AZP.BossTools.Tarragrue:OnLoadSelf()
     EventFrame:RegisterEvent("VARIABLES_LOADED")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Tarragrue:OnEvent(...) end)
 
-    AZPBTSylvOptions = CreateFrame("FRAME", nil)
-    AZPBTSylvOptions.name = "|cFF00FFFFTarragrue|r"
-    AZPBTSylvOptions.parent = AZP.BossTools.ParentOptionFrame.name
-    InterfaceOptions_AddCategory(AZPBTSylvOptions)
+    AZPBTTarragrueOptions = CreateFrame("FRAME", nil)
+    AZPBTTarragrueOptions.name = "|cFF00FFFFTarragrue|r"
+    AZPBTTarragrueOptions.parent = AZP.BossTools.ParentOptionFrame.name
+    InterfaceOptions_AddCategory(AZPBTTarragrueOptions)
 
-    AZPBTSylvOptions.Header = AZPBTSylvOptions:CreateFontString("AZPBTSylvOptions", "ARTWORK", "GameFontNormalHuge")
-    AZPBTSylvOptions.Header:SetPoint("TOP", 0, -10)
-    AZPBTSylvOptions.Header:SetText("|cFF00FFFFAzerPUG's BossTools Options!|r")
-    AZPBTSylvOptions.SubHeader = AZPBTSylvOptions:CreateFontString("AZPBTSylvOptions", "ARTWORK", "GameFontNormalLarge")
-    AZPBTSylvOptions.SubHeader:SetPoint("TOP", 0, -35)
-    AZPBTSylvOptions.SubHeader:SetText("|cFF00FFFFTarragrue|r")
+    AZPBTTarragrueOptions.Header = AZPBTTarragrueOptions:CreateFontString("AZPBTTarragrueOptions", "ARTWORK", "GameFontNormalHuge")
+    AZPBTTarragrueOptions.Header:SetPoint("TOP", 0, -10)
+    AZPBTTarragrueOptions.Header:SetText("|cFF00FFFFAzerPUG's BossTools Options!|r")
+    AZPBTTarragrueOptions.SubHeader = AZPBTTarragrueOptions:CreateFontString("AZPBTTarragrueOptions", "ARTWORK", "GameFontNormalLarge")
+    AZPBTTarragrueOptions.SubHeader:SetPoint("TOP", 0, -35)
+    AZPBTTarragrueOptions.SubHeader:SetText("|cFF00FFFFTarragrue|r")
 
-    AZPBTSylvOptions:Hide()
+    AZPBTTarragrueOptions:Hide()
 end
 
 function AZP.BossTools.Tarragrue:OnVarsLoaded()
