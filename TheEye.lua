@@ -20,7 +20,6 @@ function AZP.BossTools.TheEye:OnLoadSelf()
     EventFrame = CreateFrame("FRAME", nil)
     EventFrame:RegisterEvent("CHAT_MSG_ADDON")
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-    EventFrame:RegisterEvent("ENCOUNTER_END")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.TheEye:OnEvent(...) end)
 
     AZPBTTheEyeOptions = CreateFrame("FRAME", nil)
@@ -308,8 +307,6 @@ function AZP.BossTools.TheEye:OnEvent(self, event, ...)
         AZP.BossTools.TheEye.Events:CombatLogEventUnfiltered(...)
     elseif event == "CHAT_MSG_ADDON" then
         AZP.BossTools.TheEye.Events:ChatMsgAddon(...)
-    elseif event == "ENCOUNTER_END" then
-        AZP.BossTools.TheEye.Events:EncounterEnd(...)
     end
 end
 

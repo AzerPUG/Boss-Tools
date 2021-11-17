@@ -216,20 +216,30 @@ function AZP.BossTools:CheckIfDead(playerGUID)
     return deathStatus
 end
 
+function AZP.BossTools:GetClassIndexFromGUID(curGUID)
+    local curClassID = nil
+    for i = 1, 40 do
+        if UnitGUID("RAID" .. i) == curGUID then
+            _, _, curClassID = UnitClass("RAID" .. i)
+            return curClassID
+        end
+    end
+end
+
 function AZP.BossTools:GetClassColor(classIndex)
-        if classIndex ==  0 then return 0.00, 0.00, 0.00      -- None
-    elseif classIndex ==  1 then return 0.78, 0.61, 0.43      -- Warrior
-    elseif classIndex ==  2 then return 0.96, 0.55, 0.73      -- Paladin
-    elseif classIndex ==  3 then return 0.67, 0.83, 0.45      -- Hunter
-    elseif classIndex ==  4 then return 1.00, 0.96, 0.41      -- Rogue
-    elseif classIndex ==  5 then return 1.00, 1.00, 1.00      -- Priest
-    elseif classIndex ==  6 then return 0.77, 0.12, 0.23      -- Death Knight
-    elseif classIndex ==  7 then return 0.00, 0.44, 0.87      -- Shaman
-    elseif classIndex ==  8 then return 0.25, 0.78, 0.92      -- Mage
-    elseif classIndex ==  9 then return 0.53, 0.53, 0.93      -- Warlock
-    elseif classIndex == 10 then return 0.00, 1.00, 0.60      -- Monk
-    elseif classIndex == 11 then return 1.00, 0.49, 0.04      -- Druid
-    elseif classIndex == 12 then return 0.64, 0.19, 0.79      -- Demon Hunter
+        if classIndex ==  0 then return 0.00, 0.00, 0.00, "000000"      -- None
+    elseif classIndex ==  1 then return 0.78, 0.61, 0.43, "C69B6D"      -- Warrior
+    elseif classIndex ==  2 then return 0.96, 0.55, 0.73, "F48CBA"      -- Paladin
+    elseif classIndex ==  3 then return 0.67, 0.83, 0.45, "AAD372"      -- Hunter
+    elseif classIndex ==  4 then return 1.00, 0.96, 0.41, "FFF468"      -- Rogue
+    elseif classIndex ==  5 then return 1.00, 1.00, 1.00, "FFFFFF"      -- Priest
+    elseif classIndex ==  6 then return 0.77, 0.12, 0.23, "C41E3A"      -- Death Knight
+    elseif classIndex ==  7 then return 0.00, 0.44, 0.87, "0070DD"      -- Shaman
+    elseif classIndex ==  8 then return 0.25, 0.78, 0.92, "3FC7EB"      -- Mage
+    elseif classIndex ==  9 then return 0.53, 0.53, 0.93, "8788EE"      -- Warlock
+    elseif classIndex == 10 then return 0.00, 1.00, 0.60, "00FF98"      -- Monk
+    elseif classIndex == 11 then return 1.00, 0.49, 0.04, "FF7C0A"      -- Druid
+    elseif classIndex == 12 then return 0.64, 0.19, 0.79, "A330C9"      -- Demon Hunter
     end
 end
 

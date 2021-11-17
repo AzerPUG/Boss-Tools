@@ -233,7 +233,6 @@ function AZP.BossTools.Dormazain:ShareAssignees()
     end
 end
 
-
 function AZP.BossTools.Dormazain:CacheRaidNames()
     if IsInRaid() == true then
         for k = 1, 40 do
@@ -258,15 +257,18 @@ function AZP.BossTools.Dormazain:UpdateMainFrame()
 
     for i = 1, 5 do
         local chainsSet = string.format("Chain%d", i)
-        local ring = AssignedPlayers[chainsSet]
-        local left = ring.Left
-        local mid = ring.Mid
-        local right = ring.Right
+        local set = AssignedPlayers[chainsSet]
+        local left = set.Left
+        local mid = set.Mid
+        local right = set.Right
 
         if left ~= nil then
             local name = AZPBTDormazainGUIDs[left]
             if name == nil then name = "" end
-            AZP.BossTools.BossFrames.Dormazain.LeftLabels[i]:SetText(name)
+            local curClassID = AZP.BossTools:GetClassIndexFromGUID(left) --Create custom function with param left, mid, right
+            local _, _, _, curColor = AZP.BossTools:GetClassColor(curClassID)
+            local curName = string.format("\124cFF%s%s\124r", curColor, name)
+            AZP.BossTools.BossFrames.Dormazain.LeftLabels[i]:SetText(curName)
             AZPBTDormazainLeftEditBoxes[i]:SetText(name)
         else
             AZPBTDormazainLeftEditBoxes[i]:SetText("")
@@ -275,7 +277,10 @@ function AZP.BossTools.Dormazain:UpdateMainFrame()
         if mid ~= nil then
             local name = AZPBTDormazainGUIDs[mid]
             if name == nil then name = "" end
-            AZP.BossTools.BossFrames.Dormazain.MidLabels[i]:SetText(name)
+            local curClassID = AZP.BossTools:GetClassIndexFromGUID(mid)
+            local _, _, _, curColor = AZP.BossTools:GetClassColor(curClassID)
+            local curName = string.format("\124cFF%s%s\124r", curColor, name)
+            AZP.BossTools.BossFrames.Dormazain.MidLabels[i]:SetText(curName)
             AZPBTDormazainMidEditBoxes[i]:SetText(name)
         else
             AZPBTDormazainMidEditBoxes[i]:SetText("")
@@ -284,7 +289,10 @@ function AZP.BossTools.Dormazain:UpdateMainFrame()
         if right ~= nil then
             local name = AZPBTDormazainGUIDs[right]
             if name == nil then name = "" end
-            AZP.BossTools.BossFrames.Dormazain.RightLabels[i]:SetText(name)
+            local curClassID = AZP.BossTools:GetClassIndexFromGUID(right)
+            local _, _, _, curColor = AZP.BossTools:GetClassColor(curClassID)
+            local curName = string.format("\124cFF%s%s\124r", curColor, name)
+            AZP.BossTools.BossFrames.Dormazain.RightLabels[i]:SetText(curName)
             AZPBTDormazainRightEditBoxes[i]:SetText(name)
         else
             AZPBTDormazainRightEditBoxes[i]:SetText("")
