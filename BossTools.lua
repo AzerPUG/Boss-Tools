@@ -1,7 +1,7 @@
 if AZP == nil then AZP = {} end
 if AZP.VersionControl == nil then AZP.VersionControl = {} end
 
-AZP.VersionControl["BossTools"] = 9
+AZP.VersionControl["BossTools"] = 11
 if AZP.BossTools == nil then AZP.BossTools = {} end
 if AZP.BossTools.Events == nil then AZP.BossTools.Events = {} end
 
@@ -28,7 +28,7 @@ local BossInfo =
     {
         Name = "The Eye",
         Index = 2,
-        Active = "Soon",
+        Active = true,
         FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS- Eye of the Jailer.blp"),
     },
     TheNine =
@@ -77,7 +77,7 @@ local BossInfo =
     {
         Name = "Kel'Thuzad",
         Index = 9,
-        Active = false,
+        Active = true,
         FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Kel Thuzad Shadowlands.blp"),
     },
     Sylvanas =

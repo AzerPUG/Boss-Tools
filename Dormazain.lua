@@ -10,8 +10,9 @@ local AZPBTDormazainGUIDs, AZPBTDormazainLeftEditBoxes, AZPBTDormazainMidEditBox
 local ChainsCount = 0
 
 local DormazainFrame, DormazainOptions, EventFrame = nil, nil, nil
-
 local dragging, previousParent, previousPoint = false, nil, {}
+
+local GemFrame = nil
 
 function AZP.BossTools.Dormazain:OnLoadBoth()
     for i=1,6 do
@@ -294,7 +295,8 @@ function AZP.BossTools.Dormazain:FillOptionsPanel(frameToFill)
         curFrame.NameLabel = curFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
         curFrame.NameLabel:SetSize(85, 20)
         curFrame.NameLabel:SetPoint("CENTER", 0, 0)
-        curFrame.NameLabel:SetText(string.format("\124cFF%s%s\124r", AZP.BossTools:GetClassHEXColor(curNameClass[2]), curNameClass[1]))
+        local _, _, _, curClassColor = AZP.BossTools:GetClassColor(curNameClass[2])
+        curFrame.NameLabel:SetText(string.format("\124cFF%s%s\124r", curClassColor, curNameClass[1]))
         curFrame.NameLabel.Name = curNameClass[1]
     end
 
@@ -385,7 +387,7 @@ function AZP.BossTools.Dormazain:UpdateMainFrame()
             local _, _, _, curColor = AZP.BossTools:GetClassColor(curClassID)
             local curName = string.format("\124cFF%s%s\124r", curColor, name)
             AZP.BossTools.BossFrames.Dormazain.LeftLabels[i]:SetText(curName)
-            AZPBTDormazainLeftEditBoxes[i]:SetText(name)
+            AZPBTDormazainLeftEditBoxes[i].EditBox:SetText(name)
         else
             AZPBTDormazainLeftEditBoxes[i].EditBox:SetText("")
             DormazainFrame.LeftLabels[i]:SetText("")
@@ -397,7 +399,7 @@ function AZP.BossTools.Dormazain:UpdateMainFrame()
             local _, _, _, curColor = AZP.BossTools:GetClassColor(curClassID)
             local curName = string.format("\124cFF%s%s\124r", curColor, name)
             AZP.BossTools.BossFrames.Dormazain.MidLabels[i]:SetText(curName)
-            AZPBTDormazainMidEditBoxes[i]:SetText(name)
+            AZPBTDormazainMidEditBoxes[i].EditBox:SetText(name)
         else
             AZPBTDormazainMidEditBoxes[i].EditBox:SetText("")
             DormazainFrame.MidLabels[i]:SetText("")
@@ -409,7 +411,7 @@ function AZP.BossTools.Dormazain:UpdateMainFrame()
             local _, _, _, curColor = AZP.BossTools:GetClassColor(curClassID)
             local curName = string.format("\124cFF%s%s\124r", curColor, name)
             AZP.BossTools.BossFrames.Dormazain.RightLabels[i]:SetText(curName)
-            AZPBTDormazainRightEditBoxes[i]:SetText(name)
+            AZPBTDormazainRightEditBoxes[i].EditBox:SetText(name)
         else
             AZPBTDormazainRightEditBoxes[i].EditBox:SetText("")
             DormazainFrame.RightLabels[i]:SetText("")
