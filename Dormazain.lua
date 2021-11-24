@@ -13,6 +13,10 @@ local DormazainFrame, DormazainOptions, EventFrame = nil, nil, nil
 local dragging, previousParent, previousPoint = false, nil, {}
 
 local GemFrame = nil
+local BossEnergyTicker = nil
+local Armed = false
+local BossEnergySecondCounter = 0
+local BossEnertyTimeStamps = {}
 
 function AZP.BossTools.Dormazain:OnLoadBoth()
     for i=1,6 do
@@ -47,6 +51,7 @@ function AZP.BossTools.Dormazain:OnLoadSelf()
     EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     EventFrame:RegisterEvent("ENCOUNTER_END")
+    EventFrame:RegisterEvent("ENCOUNTER_START")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Dormazain:OnEvent(...) end)
 
     AZP.BossTools.Dormazain:OnLoadBoth()
@@ -487,6 +492,8 @@ function AZP.BossTools.Dormazain:OnEvent(self, event, ...)
         AZP.BossTools.Dormazain.Events:ChatMsgAddon(...)
     elseif event == "ENCOUNTER_END" then
         AZP.BossTools.Dormazain.Events:EncounterEnd(...)
+    elseif event == "ENCOUNTER_START" then
+        AZP.BossTools.Dormazain.Events:EncounterStart(...)
     end
 end
 
@@ -501,6 +508,21 @@ end
 
 function AZP.BossTools.Dormazain.Events:EncounterEnd(...)
     ChainsCount = 0
+    if BossEnergyTicker ~= nil then
+        BossEnergyTicker:Cancel()
+        BossEnergyTicker = nil
+    end
+end
+
+function AZP.BossTools.Dormazain.Events:EncounterStart(encounterID, encounterName, difficultyID, groupSize)
+    if encounterID == 2434 then
+        -- local unitRole = UnitGroupRolesAssigned("player")
+        -- if unitRole == "TANK" then
+            print("Encounter started, adding ticker.")
+            BossEnergySecondCounter = 0
+            BossEnergyTicker = C_Timer.NewTicker(1, function() BossEnergySecondCounter = BossEnergySecondCounter + 1 AZP.BossTools.Dormazain:TrackEnergy() end)
+        -- end
+    end
 end
 
 function AZP.BossTools.Dormazain.Events:WarmongerShackles()
@@ -525,5 +547,31 @@ function AZP.BossTools.Dormazain.Events:ChatMsgAddon(...)
         AZP.BossTools.Dormazain:ReceiveAssignees(payload)
     end
 end
+
+function AZP.BossTools.Dormazain:TrackEnergy()
+    local bossMaxEnergy = UnitPowerMax("boss1")
+    local bossCurrentEnergy = UnitPower("boss1")
+    local bossPercentHealth = (bossCurrentEnergy / bossMaxEnergy) * 100
+    print("Energy level:", bossPercentHealth)
+    if bossPercentHealth > 80 then
+        print("Boss at 80%, bring to back!")
+        if Armed == true then
+            local warnText = string.format("Boss Energy %d%%", bossPercentHealth)
+            AZP.BossTools:WarnPlayer(warnText)
+            Armed = false
+            table.insert(BossEnertyTimeStamps, BossEnergySecondCounter)
+        end
+    else
+        if Armed == false then
+            print("Boss below 80% and not armed, arm!")
+        end
+        Armed = true
+    end
+end
+
+function AZP.BossTools.Dormazain:DumpTable()
+    DevTools_Dump(BossEnertyTimeStamps)
+end
+
 
 AZP.BossTools.Dormazain:OnLoadSelf()
