@@ -9,6 +9,9 @@ SlashCommands.lua
 DataTable.lua
 BossTools.lua
 HeroReminder.lua
+Tarragrue.lua
 TheEye.lua
 Dormazain.lua
 RohKalo.lua
+KelThuzad.lua
+Sylvanas.lua

@@ -5,18 +5,37 @@ if AZP.BossTools.Dormazain == nil then AZP.BossTools.Dormazain = {} end
 if AZP.BossTools.Dormazain.Events == nil then AZP.BossTools.Dormazain.Events = {} end
 
 local AssignedPlayers = {}
-local AZPBTDormazainOptions = nil
 local AZPBTDormazainGUIDs, AZPBTDormazainLeftEditBoxes, AZPBTDormazainMidEditBoxes, AZPBTDormazainRightEditBoxes = {}, {}, {}, {}
 
 local ChainsCount = 0
 
-local EventFrame = nil
+local DormazainFrame, DormazainOptions, EventFrame = nil, nil, nil
+local dragging, previousParent, previousPoint = false, nil, {}
+
+local GemFrame = nil
 
 function AZP.BossTools.Dormazain:OnLoadBoth()
     for i=1,6 do
         local chainsSet = string.format("Chain%d", i)
         AssignedPlayers[chainsSet] = {}
     end
+
+    DormazainOptions = CreateFrame("FRAME", nil, UIParent, "BackdropTemplate")
+    DormazainOptions:SetSize(700, 400)
+    DormazainOptions:SetPoint("CENTER", 0, 0)
+    DormazainOptions:SetBackdrop({
+        bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+        edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+        edgeSize = 12,
+        insets = { left = 2, right = 2, top = 2, bottom = 2 },
+    })
+    DormazainOptions:SetBackdropColor(1, 1, 1, 1)
+    DormazainOptions:EnableMouse(true)
+    DormazainOptions:SetMovable(true)
+    DormazainOptions:RegisterForDrag("LeftButton")
+    DormazainOptions:SetScript("OnDragStart", DormazainOptions.StartMoving)
+    DormazainOptions:SetScript("OnDragStop", function() DormazainOptions:StopMovingOrSizing() end)
+    AZP.BossTools.Dormazain:FillOptionsPanel(DormazainOptions)
     AZP.BossTools.Dormazain:CreateMainFrame()
 end
 
@@ -30,33 +49,12 @@ function AZP.BossTools.Dormazain:OnLoadSelf()
     EventFrame:RegisterEvent("ENCOUNTER_END")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Dormazain:OnEvent(...) end)
 
-    AZPBTDormazainOptions = CreateFrame("FRAME", nil)
-    AZPBTDormazainOptions.name = "|cFF00FFFFDormazain|r"
-    AZPBTDormazainOptions.parent = AZP.BossTools.ParentOptionFrame.name
-    InterfaceOptions_AddCategory(AZPBTDormazainOptions)
-
-    AZPBTDormazainOptions.header = AZPBTDormazainOptions:CreateFontString("AZPBTDormazainOptions", "ARTWORK", "GameFontNormalHuge")
-    AZPBTDormazainOptions.header:SetPoint("TOP", 0, -10)
-    AZPBTDormazainOptions.header:SetText("|cFF00FFFFAzerPUG's BossTools Options!|r")
-    AZPBTDormazainOptions.SubHeader = AZPBTDormazainOptions:CreateFontString("AZPBTDormazainOptions", "ARTWORK", "GameFontNormalLarge")
-    AZPBTDormazainOptions.SubHeader:SetPoint("TOP", 0, -35)
-    AZPBTDormazainOptions.SubHeader:SetText("|cFF00FFFFDormazain|r")
-
-    AZPBTDormazainOptions.footer = AZPBTDormazainOptions:CreateFontString("AZPBTDormazainOptions", "ARTWORK", "GameFontNormalLarge")
-    AZPBTDormazainOptions.footer:SetPoint("TOP", 0, -400)
-    AZPBTDormazainOptions.footer:SetText(
-        "|cFF00FFFFAzerPUG Links:\n" ..
-        "Website: www.azerpug.com\n" ..
-        "Discord: www.azerpug.com/discord\n" ..
-        "Twitch: www.twitch.tv/azerpug\n|r"
-    )
-
-    AZP.BossTools.Dormazain:FillOptionsPanel(AZPBTDormazainOptions)
     AZP.BossTools.Dormazain:OnLoadBoth()
 end
 
 function AZP.BossTools.Dormazain:CreateMainFrame()
-    local DormazainFrame = CreateFrame("FRAME", nil, UIPanel, "BackdropTemplate")
+    DormazainFrame = CreateFrame("FRAME", nil, UIPanel, "BackdropTemplate")
+    AZP.BossTools.BossFrames.Dormazain = DormazainFrame
     DormazainFrame:SetSize(300, 125)
     DormazainFrame:SetPoint("TOPLEFT", 100, -200)
     DormazainFrame:SetBackdrop({
@@ -86,7 +84,7 @@ function AZP.BossTools.Dormazain:CreateMainFrame()
         DormazainFrame.TextLabels[i]:SetSize(50, 25)
         DormazainFrame.TextLabels[i]:SetPoint("TOPLEFT", 0, ((i - 1) * -15) -35)
         DormazainFrame.TextLabels[i]:SetJustifyH("RIGHT")
-        DormazainFrame.TextLabels[i]:SetText(string.format("Chain %d:", i))
+        DormazainFrame.TextLabels[i]:SetText(string.format("Set %d:", i))
 
         DormazainFrame.LeftLabels[i] = DormazainFrame:CreateFontString("DormazainFrame", "ARTWORK", "GameFontNormal")
         DormazainFrame.LeftLabels[i]:SetSize(75, 25)
@@ -107,41 +105,65 @@ function AZP.BossTools.Dormazain:CreateMainFrame()
         DormazainFrame.RightLabels[i]:SetText("-")
     end
 
-    DormazainFrame.closeButton = CreateFrame("Button", nil, DormazainFrame, "UIPanelCloseButton")
-    DormazainFrame.closeButton:SetSize(20, 21)
-    DormazainFrame.closeButton:SetPoint("TOPRIGHT", DormazainFrame, "TOPRIGHT", 2, 2)
-    DormazainFrame.closeButton:SetScript("OnClick", function() DormazainFrame:Hide() end)
+    DormazainFrame.OptionsButton = CreateFrame("Button", nil, DormazainFrame, "UIPanelButtonTemplate")
+    DormazainFrame.OptionsButton:SetSize(12, 12)
+    DormazainFrame.OptionsButton:SetPoint("TOPLEFT", DormazainFrame, "TOPLEFT", 2, 0)
+    DormazainFrame.OptionsButton:SetScript("OnClick", function() DormazainOptions:Show() end)
+    DormazainFrame.OptionsButton.Texture = DormazainFrame.OptionsButton:CreateTexture(nil, "ARTWORK")
+    DormazainFrame.OptionsButton.Texture:SetSize(10, 10)
+    DormazainFrame.OptionsButton.Texture:SetPoint("CENTER", 0, 0)
+    DormazainFrame.OptionsButton.Texture:SetTexture(GetFileIDFromPath("Interface\\GossipFrame\\HealerGossipIcon"))
 
-    AZP.BossTools.BossFrames.Dormazain = DormazainFrame
+    DormazainFrame.CloseButton = CreateFrame("Button", nil, DormazainFrame, "UIPanelCloseButton")
+    DormazainFrame.CloseButton:SetSize(20, 21)
+    DormazainFrame.CloseButton:SetPoint("TOPRIGHT", DormazainFrame, "TOPRIGHT", 2, 2)
+    DormazainFrame.CloseButton:SetScript("OnClick", function() DormazainFrame:Hide() end)
+
     DormazainFrame:Hide()
 end
 
 function AZP.BossTools.Dormazain:FillOptionsPanel(frameToFill)
-    frameToFill.LockMoveButton = CreateFrame("Button", nil, frameToFill, "UIPanelButtonTemplate")
-    frameToFill.LockMoveButton:SetSize(100, 25)
-    frameToFill.LockMoveButton:SetPoint("TOPRIGHT", -75, -50)
-    frameToFill.LockMoveButton:SetText("Share List")
-    frameToFill.LockMoveButton:SetScript("OnClick", function() AZP.BossTools.Dormazain:ShareAssignees() end )
+    frameToFill.header = frameToFill:CreateFontString("frameToFill", "ARTWORK", "GameFontNormalHuge")
+    frameToFill.header:SetPoint("TOP", 0, -10)
+    frameToFill.header:SetText("|cFF00FFFFAzerPUG's BossTools Options!|r")
+    frameToFill.SubHeader = frameToFill:CreateFontString("frameToFill", "ARTWORK", "GameFontNormalLarge")
+    frameToFill.SubHeader:SetPoint("TOP", 0, -35)
+    frameToFill.SubHeader:SetText("|cFF00FFFFDormazain|r")
+
+    frameToFill.footer = frameToFill:CreateFontString("frameToFill", "ARTWORK", "GameFontNormalLarge")
+    frameToFill.footer:SetPoint("TOP", 0, -400)
+    frameToFill.footer:SetText(
+        "|cFF00FFFFAzerPUG Links:\n" ..
+        "Website: www.azerpug.com\n" ..
+        "Discord: www.azerpug.com/discord\n" ..
+        "Twitch: www.twitch.tv/azerpug\n|r"
+    )
+
+    frameToFill.ShareButton = CreateFrame("Button", nil, frameToFill, "UIPanelButtonTemplate")
+    frameToFill.ShareButton:SetSize(100, 25)
+    frameToFill.ShareButton:SetPoint("TOPRIGHT", -25, -50)
+    frameToFill.ShareButton:SetText("Share List")
+    frameToFill.ShareButton:SetScript("OnClick", function() AZP.BossTools.Dormazain:ShareAssignees() end )
 
     frameToFill.LockMoveButton = CreateFrame("Button", nil, frameToFill, "UIPanelButtonTemplate")
     frameToFill.LockMoveButton:SetSize(100, 25)
-    frameToFill.LockMoveButton:SetPoint("TOPRIGHT", -75, -100)
+    frameToFill.LockMoveButton:SetPoint("TOPRIGHT", -25, -75)
     frameToFill.LockMoveButton:SetText("Lock Frame")
     frameToFill.LockMoveButton:SetScript("OnClick", function ()
-        if AZP.BossTools.BossFrames.Dormazain:IsMovable() then
-            AZP.BossTools.BossFrames.Dormazain:EnableMouse(false)
-            AZP.BossTools.BossFrames.Dormazain:SetMovable(false)
+        if DormazainFrame:IsMovable() then
+            DormazainFrame:EnableMouse(false)
+            DormazainFrame:SetMovable(false)
             frameToFill.LockMoveButton:SetText("UnLock Frame!")
         else
-            AZP.BossTools.BossFrames.Dormazain:EnableMouse(true)
-            AZP.BossTools.BossFrames.Dormazain:SetMovable(true)
+            DormazainFrame:EnableMouse(true)
+            DormazainFrame:SetMovable(true)
             frameToFill.LockMoveButton:SetText("Lock Frame")
         end
     end)
 
     frameToFill.ShowHideButton = CreateFrame("Button", nil, frameToFill, "UIPanelButtonTemplate")
     frameToFill.ShowHideButton:SetSize(100, 25)
-    frameToFill.ShowHideButton:SetPoint("TOPRIGHT", -75, -150)
+    frameToFill.ShowHideButton:SetPoint("TOPRIGHT", -25, -100)
     frameToFill.ShowHideButton:SetText("Hide Frame!")
     frameToFill.ShowHideButton:SetScript("OnClick", function () AZP.BossTools.Dormazain:ShowHideFrame() end)
 
@@ -166,26 +188,122 @@ function AZP.BossTools.Dormazain:FillOptionsPanel(frameToFill)
         frameToFill.textlabels[i] = frameToFill:CreateFontString("frameToFill", "ARTWORK", "GameFontNormalLarge")
         frameToFill.textlabels[i]:SetSize(50, 25)
         frameToFill.textlabels[i]:SetPoint("TOPLEFT", 10, -30 * i - 100)
-        frameToFill.textlabels[i]:SetText(string.format("Chain %d:", i))
+        frameToFill.textlabels[i]:SetText(string.format("Set %d:", i))
 
-        AZPBTDormazainLeftEditBoxes[i] = CreateFrame("EditBox", nil, frameToFill, "InputBoxTemplate")
+        AZPBTDormazainLeftEditBoxes[i] = CreateFrame("FRAME", nil, frameToFill)
         AZPBTDormazainLeftEditBoxes[i]:SetSize(100, 25)
         AZPBTDormazainLeftEditBoxes[i]:SetPoint("LEFT", frameToFill.textlabels[i], "RIGHT", 10, 0)
-        AZPBTDormazainLeftEditBoxes[i]:SetAutoFocus(false)
-        AZPBTDormazainLeftEditBoxes[i]:SetScript("OnEditFocusLost", function() AZP.BossTools.Dormazain:OnEditFocusLost("Left", i) end)
+        AZPBTDormazainLeftEditBoxes[i]:SetFrameStrata("HIGH")
+        AZPBTDormazainLeftEditBoxes[i]:SetFrameLevel(10)
+        AZPBTDormazainLeftEditBoxes[i]:SetScript("OnEnter", function() AZP.BossTools.Dormazain:StartHoverOverCopy(AZPBTDormazainLeftEditBoxes[i]) end)
+        AZPBTDormazainLeftEditBoxes[i]:SetScript("OnLeave", function() AZP.BossTools.Dormazain:StopHoverOverCopy(AZPBTDormazainLeftEditBoxes[i]) end)
+        AZPBTDormazainLeftEditBoxes[i]:SetScript("OnMouseDown", function() AZPBTDormazainLeftEditBoxes[i].EditBox:SetFocus() end)
+        AZPBTDormazainLeftEditBoxes[i].EditBox = CreateFrame("EditBox", nil, AZPBTDormazainLeftEditBoxes[i], "InputBoxTemplate BackdropTemplate")
+        AZPBTDormazainLeftEditBoxes[i].EditBox:SetSize(100, 25)
+        AZPBTDormazainLeftEditBoxes[i].EditBox:SetPoint("CENTER", 0, 0)
+        AZPBTDormazainLeftEditBoxes[i].EditBox:SetFrameLevel(5)
+        AZPBTDormazainLeftEditBoxes[i].EditBox:SetAutoFocus(false)
+        AZPBTDormazainLeftEditBoxes[i].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.Dormazain:OnEditFocusLost("Left", i) end)
+        AZPBTDormazainLeftEditBoxes[i].EditBox:SetScript("OnTextSet", function() AZP.BossTools.Dormazain:OnEditFocusLost("Left", i) end)
+        AZPBTDormazainLeftEditBoxes[i].EditBox:SetBackdrop({
+            bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+            insets = { left = -4, right = 1, top = 6, bottom = 6 },
+        })
+        AZPBTDormazainLeftEditBoxes[i].EditBox:SetBackdropColor(1, 1, 1, 1)
 
-        AZPBTDormazainMidEditBoxes[i] = CreateFrame("EditBox", nil, frameToFill, "InputBoxTemplate")
+        AZPBTDormazainMidEditBoxes[i] = CreateFrame("FRAME", nil, frameToFill)
         AZPBTDormazainMidEditBoxes[i]:SetSize(100, 25)
         AZPBTDormazainMidEditBoxes[i]:SetPoint("LEFT", AZPBTDormazainLeftEditBoxes[i], "RIGHT", 10, 0)
-        AZPBTDormazainMidEditBoxes[i]:SetAutoFocus(false)
-        AZPBTDormazainMidEditBoxes[i]:SetScript("OnEditFocusLost", function() AZP.BossTools.Dormazain:OnEditFocusLost("Mid", i) end)
+        AZPBTDormazainMidEditBoxes[i]:SetFrameStrata("HIGH")
+        AZPBTDormazainMidEditBoxes[i]:SetFrameLevel(10)
+        AZPBTDormazainMidEditBoxes[i]:SetScript("OnEnter", function() AZP.BossTools.Dormazain:StartHoverOverCopy(AZPBTDormazainMidEditBoxes[i]) end)
+        AZPBTDormazainMidEditBoxes[i]:SetScript("OnLeave", function() AZP.BossTools.Dormazain:StopHoverOverCopy(AZPBTDormazainMidEditBoxes[i]) end)
+        AZPBTDormazainMidEditBoxes[i]:SetScript("OnMouseDown", function() AZPBTDormazainMidEditBoxes[i].EditBox:SetFocus() end)
+        AZPBTDormazainMidEditBoxes[i].EditBox = CreateFrame("EditBox", nil, AZPBTDormazainMidEditBoxes[i], "InputBoxTemplate BackdropTemplate")
+        AZPBTDormazainMidEditBoxes[i].EditBox:SetSize(100, 25)
+        AZPBTDormazainMidEditBoxes[i].EditBox:SetPoint("CENTER", 0, 0)
+        AZPBTDormazainMidEditBoxes[i].EditBox:SetFrameLevel(5)
+        AZPBTDormazainMidEditBoxes[i].EditBox:SetAutoFocus(false)
+        AZPBTDormazainMidEditBoxes[i].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.Dormazain:OnEditFocusLost("Mid", i) end)
+        AZPBTDormazainMidEditBoxes[i].EditBox:SetScript("OnTextSet", function() AZP.BossTools.Dormazain:OnEditFocusLost("Mid", i) end)
+        AZPBTDormazainMidEditBoxes[i].EditBox:SetBackdrop({
+            bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+            insets = { left = -4, right = 1, top = 6, bottom = 6 },
+        })
+        AZPBTDormazainMidEditBoxes[i].EditBox:SetBackdropColor(1, 1, 1, 1)
 
-        AZPBTDormazainRightEditBoxes[i] = CreateFrame("EditBox", nil, frameToFill, "InputBoxTemplate")
+        AZPBTDormazainRightEditBoxes[i] = CreateFrame("FRAME", nil, frameToFill)
         AZPBTDormazainRightEditBoxes[i]:SetSize(100, 25)
         AZPBTDormazainRightEditBoxes[i]:SetPoint("LEFT", AZPBTDormazainMidEditBoxes[i], "RIGHT", 10, 0)
-        AZPBTDormazainRightEditBoxes[i]:SetAutoFocus(false)
-        AZPBTDormazainRightEditBoxes[i]:SetScript("OnEditFocusLost", function() AZP.BossTools.Dormazain:OnEditFocusLost("Right", i) end)
+        AZPBTDormazainRightEditBoxes[i]:SetFrameStrata("HIGH")
+        AZPBTDormazainRightEditBoxes[i]:SetFrameLevel(10)
+        AZPBTDormazainRightEditBoxes[i]:SetScript("OnEnter", function() AZP.BossTools.Dormazain:StartHoverOverCopy(AZPBTDormazainRightEditBoxes[i]) end)
+        AZPBTDormazainRightEditBoxes[i]:SetScript("OnLeave", function() AZP.BossTools.Dormazain:StopHoverOverCopy(AZPBTDormazainRightEditBoxes[i]) end)
+        AZPBTDormazainRightEditBoxes[i]:SetScript("OnMouseDown", function() AZPBTDormazainRightEditBoxes[i].EditBox:SetFocus() end)
+        AZPBTDormazainRightEditBoxes[i].EditBox = CreateFrame("EditBox", nil, AZPBTDormazainRightEditBoxes[i], "InputBoxTemplate BackdropTemplate")
+        AZPBTDormazainRightEditBoxes[i].EditBox:SetSize(100, 25)
+        AZPBTDormazainRightEditBoxes[i].EditBox:SetPoint("CENTER", 0, 0)
+        AZPBTDormazainRightEditBoxes[i].EditBox:SetFrameLevel(5)
+        AZPBTDormazainRightEditBoxes[i].EditBox:SetAutoFocus(false)
+        AZPBTDormazainRightEditBoxes[i].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.Dormazain:OnEditFocusLost("Right", i) end)
+        AZPBTDormazainRightEditBoxes[i].EditBox:SetScript("OnTextSet", function() AZP.BossTools.Dormazain:OnEditFocusLost("Right", i) end)
+        AZPBTDormazainRightEditBoxes[i].EditBox:SetBackdrop({
+            bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+            insets = { left = -4, right = 1, top = 6, bottom = 6 },
+        })
+        AZPBTDormazainRightEditBoxes[i].EditBox:SetBackdropColor(1, 1, 1, 1)
     end
+
+    frameToFill.AllNamesFrame = CreateFrame("FRAME", nil, frameToFill, "BackdropTemplate")
+    frameToFill.AllNamesFrame:SetSize(100, 325)
+    frameToFill.AllNamesFrame:SetPoint("TOPRIGHT", -150, -50)
+    frameToFill.AllNamesFrame:SetFrameLevel(3)
+    frameToFill.AllNamesFrame:SetBackdrop({
+        bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+        edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+        edgeSize = 12,
+        insets = { left = 2, right = 2, top = 2, bottom = 2 },
+    })
+    frameToFill.AllNamesFrame:SetBackdropColor(1, 1, 1, 1)
+
+    local allUnitNames = {}
+    frameToFill.AllNamesFrame.allNameLabels = {}
+
+    for i = 1, 40 do
+        local name = UnitName("RAID"..i)
+        if name ~= nil then
+            local _, _, classIndex = UnitClass("RAID"..i)
+            allUnitNames[i] = {name, classIndex}
+        end
+    end
+
+    for Index, curNameClass in pairs(allUnitNames) do
+        local curFrame = CreateFrame("FRAME", nil, frameToFill.AllNamesFrame, "BackdropTemplate")
+        frameToFill.AllNamesFrame.allNameLabels[Index] = curFrame
+        curFrame:SetSize(85, 20)
+        curFrame:SetPoint("TOP", 0, -18 * Index + 15)
+        curFrame:SetBackdrop({
+            bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+            edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+            edgeSize = 10,
+            insets = { left = 2, right = 2, top = 2, bottom = 2 },
+        })
+        curFrame:SetBackdropColor(1, 1, 1, 1)
+        curFrame:SetScript("OnMouseDown", function() GemFrame = curFrame AZP.BossTools.Dormazain:StartHoveringCopy() end)
+        curFrame:SetScript("OnMouseUp", function() AZP.BossTools.Dormazain:StopHoveringCopy() end)
+
+        curFrame.NameLabel = curFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+        curFrame.NameLabel:SetSize(85, 20)
+        curFrame.NameLabel:SetPoint("CENTER", 0, 0)
+        local _, _, _, curClassColor = AZP.BossTools:GetClassColor(curNameClass[2])
+        curFrame.NameLabel:SetText(string.format("\124cFF%s%s\124r", curClassColor, curNameClass[1]))
+        curFrame.NameLabel.Name = curNameClass[1]
+    end
+
+    frameToFill.CloseButton = CreateFrame("Button", nil, frameToFill, "UIPanelCloseButton")
+    frameToFill.CloseButton:SetSize(20, 21)
+    frameToFill.CloseButton:SetPoint("TOPRIGHT", frameToFill, "TOPRIGHT", 2, 2)
+    frameToFill.CloseButton:SetScript("OnClick", function() frameToFill:Hide() end)
 
     frameToFill:Hide()
 end
@@ -194,11 +312,11 @@ function AZP.BossTools.Dormazain:OnEditFocusLost(position, chains)
     local editBoxFrame = nil
     local chainsSet = string.format("Chain%d", chains)
     if position == "Left" then
-        editBoxFrame = AZPBTDormazainLeftEditBoxes[chains]
+        editBoxFrame = AZPBTDormazainLeftEditBoxes[chains].EditBox
     elseif position == "Mid" then
-        editBoxFrame = AZPBTDormazainMidEditBoxes[chains]
+        editBoxFrame = AZPBTDormazainMidEditBoxes[chains].EditBox
     elseif position == "Right" then
-        editBoxFrame = AZPBTDormazainRightEditBoxes[chains]
+        editBoxFrame = AZPBTDormazainRightEditBoxes[chains].EditBox
     end
     if (editBoxFrame:GetText() ~= nil and editBoxFrame:GetText() ~= "") then
         for k = 1, 40 do
@@ -233,7 +351,6 @@ function AZP.BossTools.Dormazain:ShareAssignees()
     end
 end
 
-
 function AZP.BossTools.Dormazain:CacheRaidNames()
     if IsInRaid() == true then
         for k = 1, 40 do
@@ -258,37 +375,46 @@ function AZP.BossTools.Dormazain:UpdateMainFrame()
 
     for i = 1, 5 do
         local chainsSet = string.format("Chain%d", i)
-        local ring = AssignedPlayers[chainsSet]
-        local left = ring.Left
-        local mid = ring.Mid
-        local right = ring.Right
+        local set = AssignedPlayers[chainsSet]
+        local left = set.Left
+        local mid = set.Mid
+        local right = set.Right
 
         if left ~= nil then
             local name = AZPBTDormazainGUIDs[left]
             if name == nil then name = "" end
-            AZP.BossTools.BossFrames.Dormazain.LeftLabels[i]:SetText(name)
-            AZPBTDormazainLeftEditBoxes[i]:SetText(name)
+            local curClassID = AZP.BossTools:GetClassIndexFromGUID(left) --Create custom function with param left, mid, right
+            local _, _, _, curColor = AZP.BossTools:GetClassColor(curClassID)
+            local curName = string.format("\124cFF%s%s\124r", curColor, name)
+            AZP.BossTools.BossFrames.Dormazain.LeftLabels[i]:SetText(curName)
+            AZPBTDormazainLeftEditBoxes[i].EditBox:SetText(name)
         else
-            AZPBTDormazainLeftEditBoxes[i]:SetText("")
-            AZP.BossTools.BossFrames.Dormazain.LeftLabels[i]:SetText("")
+            AZPBTDormazainLeftEditBoxes[i].EditBox:SetText("")
+            DormazainFrame.LeftLabels[i]:SetText("")
         end
         if mid ~= nil then
             local name = AZPBTDormazainGUIDs[mid]
             if name == nil then name = "" end
-            AZP.BossTools.BossFrames.Dormazain.MidLabels[i]:SetText(name)
-            AZPBTDormazainMidEditBoxes[i]:SetText(name)
+            local curClassID = AZP.BossTools:GetClassIndexFromGUID(mid)
+            local _, _, _, curColor = AZP.BossTools:GetClassColor(curClassID)
+            local curName = string.format("\124cFF%s%s\124r", curColor, name)
+            AZP.BossTools.BossFrames.Dormazain.MidLabels[i]:SetText(curName)
+            AZPBTDormazainMidEditBoxes[i].EditBox:SetText(name)
         else
-            AZPBTDormazainMidEditBoxes[i]:SetText("")
-            AZP.BossTools.BossFrames.Dormazain.MidLabels[i]:SetText("")
+            AZPBTDormazainMidEditBoxes[i].EditBox:SetText("")
+            DormazainFrame.MidLabels[i]:SetText("")
         end
         if right ~= nil then
             local name = AZPBTDormazainGUIDs[right]
             if name == nil then name = "" end
-            AZP.BossTools.BossFrames.Dormazain.RightLabels[i]:SetText(name)
-            AZPBTDormazainRightEditBoxes[i]:SetText(name)
+            local curClassID = AZP.BossTools:GetClassIndexFromGUID(right)
+            local _, _, _, curColor = AZP.BossTools:GetClassColor(curClassID)
+            local curName = string.format("\124cFF%s%s\124r", curColor, name)
+            AZP.BossTools.BossFrames.Dormazain.RightLabels[i]:SetText(curName)
+            AZPBTDormazainRightEditBoxes[i].EditBox:SetText(name)
         else
-            AZPBTDormazainRightEditBoxes[i]:SetText("")
-            AZP.BossTools.BossFrames.Dormazain.RightLabels[i]:SetText("")
+            AZPBTDormazainRightEditBoxes[i].EditBox:SetText("")
+            DormazainFrame.RightLabels[i]:SetText("")
         end
     end
 end
@@ -301,6 +427,57 @@ function AZP.BossTools.Dormazain:ReceiveAssignees(receiveAssignees)
     AssignedPlayers[chains] = {Left = left, Mid = mid, Right = right}
     AZPBTDormazainChains = AssignedPlayers
     AZP.BossTools.Dormazain:UpdateMainFrame()
+
+    AZPBTDormazainChains = AssignedPlayers
+end
+
+function AZP.BossTools.Dormazain:StartHoveringCopy()
+    dragging = true
+    local v1, v2, v3, v4, v5 = GemFrame:GetPoint()
+    previousPoint = {v1, v2, v3, v4, v5}
+    previousParent = GemFrame:GetParent()
+    GemFrame:SetBackdropColor(1, 0, 0, 0.75)
+    GemFrame:ClearAllPoints()
+    GemFrame:SetParent(UIParent)
+    GemFrame:SetScript("OnUpdate", function()
+        GemFrame:SetFrameStrata("HIGH")
+        GemFrame:SetFrameLevel(6)
+        local scale = 0.7 --GetCVar("UIScale") does not work, needs ElvUI scale, if ElvUI is used!
+        local xVal, yVal = GetCursorPosition()
+        GemFrame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", (xVal / scale), (yVal / scale))
+    end)
+end
+
+function AZP.BossTools.Dormazain:StopHoveringCopy()
+    GemFrame:SetScript("OnUpdate", nil)
+    if previousParent ~= nil then
+        if dragging == true then
+            GemFrame:ClearAllPoints()
+            GemFrame:SetParent(previousParent)
+            GemFrame:SetPoint(previousPoint[1], previousPoint[2], previousPoint[3],previousPoint[4], previousPoint[5])
+            if GemFrame.parent ~= nil then GemFrame.parent.EditBox:SetText(GemFrame.NameLabel.Name) end
+            dragging = false
+        end
+    end
+    GemFrame:SetBackdropColor(1, 1, 1, 1)
+    GemFrame = nil
+end
+
+function AZP.BossTools.Dormazain:StartHoverOverCopy(SocketFrame)
+    if dragging == true then
+        GemFrame.parent = SocketFrame
+        SocketFrame.EditBox:SetBackdropColor(0.25, 1, 0.25, 1)
+    end
+end
+
+function AZP.BossTools.Dormazain:StopHoverOverCopy(SocketFrame)
+    SocketFrame.EditBox:SetBackdropColor(1, 1, 1, 1)
+    if GemFrame ~= nil then if GemFrame.parent ~= nil then GemFrame.parent = nil end end
+end
+
+function AZP.BossTools.Dormazain:ShowHideFrame()
+    if DormazainFrame:IsShown() == true then DormazainFrame:Hide() DormazainOptions.ShowHideButton:SetText("Show Frame!")
+    elseif DormazainFrame:IsShown() == false then DormazainFrame:Show() DormazainOptions.ShowHideButton:SetText("Hide Frame!") end
 end
 
 function AZP.BossTools.Dormazain:OnEvent(self, event, ...)
