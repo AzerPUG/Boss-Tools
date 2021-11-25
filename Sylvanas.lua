@@ -14,71 +14,6 @@ local BasheeShroud = {ID = 350857, Count = 0}
 
 local SylvPhases = {"P1", "PI", "P2", "P3"}
 
---[[
-
-    [0] = nil remove it from saved var. Thus no need to garbage collect.
-    make old number nil and put in new number to change it.
-    options panel should list all the indices (?what is this word?)
-    Should run function onfocuslost.
-    Split things into sections.
-    Somehow be able to add more? (+ button with create a new label + editbox)
-
-]]
-
-AZP.BossTools.Sylvanas.Times =
-{
-    P1 =
-    {
-          [5] = "All DPS CDs + Pots + Hero",
-         [60] = "Panda - Tide",
-        [110] = "Tex - Tranq",
-    },
-    PI1 =
-    {
-          [1] = "Stack in Middle!",
-          [5] = "Panda - Link",
-         [10] = "Rhalya - AMast",
-         [15] = "Tex - Convoke",
-    },
-    P2 =
-    {
-         [1] = "All DPS CDs",
-         [35] = "Tex - Tranq",
-
-         [75] = "Panda - Tide",
-
-        [110] = "Stack on Summoner + Pots!",
-        [111] = "Tex - HotW",
-        [125] = "Rhalya - AMast",
-        [126] = "Panda - Link",
-
-        [160] = "2 Min DPS CDs",
-        [175] = "Tex - Tranq",
-
-        [210] = "4 Min DPS CDs",
-        [225] = "Tex - Convoke",
-    },
-    P3 =
-    {
-         [20] = "3 Min DPS CDs",
-         [40] = "Tex - Clear Platforms",
-         [50] = "Panda - Link",
-         [60] = "Rhalya - AMast",
-         [70] = "Panda - Tide",
-
-         [95] = "2 Min DPS CDs",
-        [110] = "Tex - Convoke",
-        [120] = "Tex - Tranq",
-
-        [240] = "All DPS CDs + Pots + Hero",
-        [241] = "IN'QUEH MELE'NAH!",
-        [250] = "Stack on Boss",
-        [255] = "Panda - Link, Tide",
-        [265] = "Rhalya - AMast",
-        [275] = "Tex - Tranq",
-    }
-}
-
 function AZP.BossTools.Sylvanas:OnLoadSelf()
     EventFrame = CreateFrame("FRAME", nil)
     EventFrame:RegisterEvent("ENCOUNTER_START")
@@ -163,22 +98,6 @@ function AZP.BossTools.Sylvanas:OnLoadSelf()
 end
 
 function AZP.BossTools.Sylvanas:OnVarsLoaded()
-    -- for timer, text in pairs(AZPBTSylvTimers.P1) do
-    --     AZP.BossTools.Sylvanas:CreateNewTimer("P1", timer, text)
-    -- end
-
-    -- for timer, text in pairs(AZPBTSylvTimers.PI) do
-    --     AZP.BossTools.Sylvanas:CreateNewTimer("PI", timer, text)
-    -- end
-
-    -- for timer, text in pairs(AZPBTSylvTimers.P2) do
-    --     AZP.BossTools.Sylvanas:CreateNewTimer("P2", timer, text)
-    -- end
-
-    -- for timer, text in pairs(AZPBTSylvTimers.P3) do
-    --     AZP.BossTools.Sylvanas:CreateNewTimer("P3", timer, text)
-    -- end
-
     for phase, data in pairs(AZPBTSylvTimers) do
         for timer, text in pairs(data) do
             AZP.BossTools.Sylvanas:CreateNewTimer(phase, timer, text)
@@ -225,7 +144,6 @@ function AZP.BossTools.Sylvanas:CreateNewTimer(Phase, Timer, RWTextBox)
     curFrame.Label:SetPoint("TOPLEFT", 5, 0)
     curFrame.Label:SetText(string.format("Label %s", curFrame.Index))
     curFrame.Label:SetAutoFocus(false)
-    -- curFrame.Label:SetScript("OnEditFocusLost", function() print(string.format("Label EditBox %d Lost Focus", curFrame.Index)) end)
 
     curFrame.DropDown = CreateFrame("Button", nil, curFrame, "UIDropDownMenuTemplate")
     curFrame.DropDown:SetPoint("LEFT", curFrame.Label, "RIGHT", -15, -3)
@@ -247,7 +165,6 @@ function AZP.BossTools.Sylvanas:CreateNewTimer(Phase, Timer, RWTextBox)
     curFrame.TimerBox:SetPoint("LEFT", curFrame.DropDown, "RIGHT", -5, 3)
     curFrame.TimerBox:SetAutoFocus(false)
     curFrame.TimerBox:SetText(Timer)
-    -- curFrame.TimerBox:SetScript("OnEditFocusLost", function() print(string.format("TimerBox EditBox %d Lost Focus", curFrame.Index)) end)
 
     curFrame.RWTextBox = CreateFrame("EditBox", nil, curFrame, "InputBoxTemplate")
     curFrame.RWTextBox:SetSize(200, 25)
@@ -373,9 +290,11 @@ function AZP.BossTools.Sylvanas:OnEvent(self, event, ...)
             end
         end
     elseif event == "ENCOUNTER_END" then
-        CurTicker:Cancel()
-        BasheeShroud.Count = 0
-        print("ENCOUNTER_END")
+        if ... == SylvEncounter then
+            CurTicker:Cancel()
+            BasheeShroud.Count = 0
+            print("ENCOUNTER_END")
+        end
     end
 end
 
