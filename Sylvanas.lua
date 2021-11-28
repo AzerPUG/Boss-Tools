@@ -98,6 +98,7 @@ function AZP.BossTools.Sylvanas:OnLoadSelf()
 end
 
 function AZP.BossTools.Sylvanas:OnVarsLoaded()
+    if AZPBTSylvTimers == nil then AZPBTSylvTimers = {} end
     for phase, data in pairs(AZPBTSylvTimers) do
         for timer, text in pairs(data) do
             AZP.BossTools.Sylvanas:CreateNewTimer(phase, timer, text)
