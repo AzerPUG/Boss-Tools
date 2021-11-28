@@ -516,12 +516,11 @@ end
 
 function AZP.BossTools.Dormazain.Events:EncounterStart(encounterID, encounterName, difficultyID, groupSize)
     if encounterID == 2434 then
-        -- local unitRole = UnitGroupRolesAssigned("player")
-        -- if unitRole == "TANK" then
-            print("Encounter started, adding ticker.")
+        local unitRole = UnitGroupRolesAssigned("player")
+        if unitRole == "TANK" then
             BossEnergySecondCounter = 0
             BossEnergyTicker = C_Timer.NewTicker(1, function() BossEnergySecondCounter = BossEnergySecondCounter + 1 AZP.BossTools.Dormazain:TrackEnergy() end)
-        -- end
+        end
     end
 end
 
@@ -552,7 +551,6 @@ function AZP.BossTools.Dormazain:TrackEnergy()
     local bossMaxEnergy = UnitPowerMax("boss1")
     local bossCurrentEnergy = UnitPower("boss1")
     local bossPercentHealth = (bossCurrentEnergy / bossMaxEnergy) * 100
-    print("Energy level:", bossPercentHealth)
     if bossPercentHealth > 80 then
         print("Boss at 80%, bring to back!")
         if Armed == true then
