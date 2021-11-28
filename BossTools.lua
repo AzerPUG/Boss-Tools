@@ -258,6 +258,20 @@ function AZP.BossTools:WarnPlayer(text)
     35)
 end
 
+
+function AZP.BossTools:SaveAssignments(boss, playerassignments)
+    if AZPBTAssignments == nil then AZPBTAssignments = {} end
+    AZPBTAssignments[boss] = playerassignments
+end
+
+
+function AZP.BossTools:LoadAssignments(boss)
+    if AZPBTAssignments == nil then AZPBTAssignments = {} end
+    if AZPBTAssignments[boss] == nil then AZPBTAssignments[boss] = {} end
+    return AZPBTAssignments[boss]
+end
+
+
 AZP.BossTools.OnLoad()
 
 AZP.SlashCommands["BT"] = function()

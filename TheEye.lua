@@ -39,6 +39,7 @@ function AZP.BossTools.TheEye:OnLoadSelf()
     EventFrame = CreateFrame("FRAME", nil)
     EventFrame:RegisterEvent("CHAT_MSG_ADDON")
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    EventFrame:RegisterEvent("VARIABLES_LOADED")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.TheEye:OnEvent(...) end)
 
     AZP.BossTools.TheEye:OnLoadBoth()
@@ -377,6 +378,7 @@ function AZP.BossTools.TheEye:ReceiveAssignees(receiveAssignees)
     end
 
     AZP.BossTools.TheEye:UpdateMainFrame()
+    AZP.BossTools:SaveAssignments("TheEye", AssignedPlayers)
 end
 
 function AZP.BossTools.TheEye:CacheRaidNames()
@@ -482,6 +484,10 @@ function AZP.BossTools.TheEye:OnEvent(self, event, ...)
         AZP.BossTools.TheEye.Events:CombatLogEventUnfiltered(...)
     elseif event == "CHAT_MSG_ADDON" then
         AZP.BossTools.TheEye.Events:ChatMsgAddon(...)
+    elseif event == "VARIABLES_LOADED" then
+        AssignedPlayers = AZP.BossTools:LoadAssignments("TheEye")
+        AZP.BossTools.TheEye:CacheRaidNames()
+        AZP.BossTools.TheEye:UpdateMainFrame()
     end
 end
 

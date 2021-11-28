@@ -47,6 +47,7 @@ function AZP.BossTools.Dormazain:OnLoadSelf()
     EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     EventFrame:RegisterEvent("ENCOUNTER_END")
+    EventFrame:RegisterEvent("VARIABLES_LOADED")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Dormazain:OnEvent(...) end)
 
     AZP.BossTools.Dormazain:OnLoadBoth()
@@ -339,7 +340,7 @@ function AZP.BossTools.Dormazain:OnEditFocusLost(position, chains)
         end
     end
 
-    AZPBTDormazainChains = AssignedPlayers
+    AZP.BossTools:SaveAssignments("Dormazain", AssignedPlayers)
 end
 
 function AZP.BossTools.Dormazain:ShareAssignees()
@@ -425,10 +426,8 @@ function AZP.BossTools.Dormazain:ReceiveAssignees(receiveAssignees)
     if mid == "" then mid = nil end
     if right == "" then right = nil end
     AssignedPlayers[chains] = {Left = left, Mid = mid, Right = right}
-    AZPBTDormazainChains = AssignedPlayers
     AZP.BossTools.Dormazain:UpdateMainFrame()
-
-    AZPBTDormazainChains = AssignedPlayers
+    AZP.BossTools:SaveAssignments("Dormazain", AssignedPlayers)
 end
 
 function AZP.BossTools.Dormazain:StartHoveringCopy()
@@ -487,6 +486,10 @@ function AZP.BossTools.Dormazain:OnEvent(self, event, ...)
         AZP.BossTools.Dormazain.Events:ChatMsgAddon(...)
     elseif event == "ENCOUNTER_END" then
         AZP.BossTools.Dormazain.Events:EncounterEnd(...)
+    elseif event == "VARIABLES_LOADED" then
+        AssignedPlayers = AZP.BossTools:LoadAssignments("Dormazain")
+        AZP.BossTools.Dormazain:CacheRaidNames()
+        AZP.BossTools.Dormazain:UpdateMainFrame()
     end
 end
 
@@ -508,9 +511,9 @@ function AZP.BossTools.Dormazain.Events:WarmongerShackles()
     local curChain = string.format("Chain%s", ChainsCount)
     local curGUID = UnitGUID("PLAYER")
     local assignedPosition = nil
-    if AZPBTDormazainChains[curChain].Left == curGUID then assignedPosition = "Left" end
-    if AZPBTDormazainChains[curChain].Mid == curGUID then assignedPosition = "Mid" end
-    if AZPBTDormazainChains[curChain].Right == curGUID then assignedPosition = "Right" end
+    if AssignedPlayers[curChain].Left == curGUID then assignedPosition = "Left" end
+    if AssignedPlayers[curChain].Mid == curGUID then assignedPosition = "Mid" end
+    if AssignedPlayers[curChain].Right == curGUID then assignedPosition = "Right" end
 
     if assignedPosition ~= nil then
         local warnText = string.format("ChainSet %d - Pick up %s!", ChainsCount, assignedPosition)
