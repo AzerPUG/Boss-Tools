@@ -50,8 +50,6 @@ local TarragruePowers =
 
 function AZP.BossTools.Tarragrue:OnLoadSelf()
     EventFrame = CreateFrame("FRAME", nil)
-    EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-    EventFrame:RegisterEvent("VARIABLES_LOADED")
     EventFrame:RegisterEvent("PLAYER_CHOICE_UPDATE")
     EventFrame:RegisterEvent("CHAT_MSG_LOOT")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Tarragrue:OnEvent(...) end)
@@ -71,14 +69,8 @@ function AZP.BossTools.Tarragrue:OnLoadSelf()
     AZPBTTarragrueOptions:Hide()
 end
 
-function AZP.BossTools.Tarragrue:OnVarsLoaded()
-    -- ?
-end
-
 function AZP.BossTools.Tarragrue:OnEvent(_, event, ...)
-    if event == "VARIABLES_LOADED" then
-        AZP.BossTools.Tarragrue:OnVarsLoaded()
-    elseif event == "ADDON_LOADED" then
+    if event == "ADDON_LOADED" then
     elseif event == "CHAT_MSG_LOOT" then
         local chatText = ...
         chatText = string.gsub(chatText, "|", "-")
@@ -132,10 +124,6 @@ function AZP.BossTools.Tarragrue:OnEvent(_, event, ...)
                     curFrame.Texture:SetTexture(nil)
                 end
             end
-        end
-    elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
-        local v1, subevent, v3, v4, v5, v6, v7, v8, v9, v10, v11, SpellID = CombatLogGetCurrentEventInfo()
-        if SpellID == 0 then
         end
     end
 end
