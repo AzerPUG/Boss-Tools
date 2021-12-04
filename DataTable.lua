@@ -1,6 +1,12 @@
 if AZP == nil then AZP = {} end
 if AZP.BossTools == nil then AZP.BossTools = {} end
 
+AZP.BossTools.MawPowers =
+{
+    [1425] = 348043,
+    [1420] = 347988,
+}
+
 AZP.BossTools.IDs =
 {
     TheEye =

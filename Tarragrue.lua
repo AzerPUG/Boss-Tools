@@ -52,6 +52,8 @@ function AZP.BossTools.Tarragrue:OnLoadSelf()
     EventFrame = CreateFrame("FRAME", nil)
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     EventFrame:RegisterEvent("VARIABLES_LOADED")
+    EventFrame:RegisterEvent("PLAYER_CHOICE_UPDATE")
+    EventFrame:RegisterEvent("CHAT_MSG_LOOT")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Tarragrue:OnEvent(...) end)
 
     AZPBTTarragrueOptions = CreateFrame("FRAME", nil)
@@ -73,9 +75,58 @@ function AZP.BossTools.Tarragrue:OnVarsLoaded()
     -- ?
 end
 
-function AZP.BossTools.Tarragrue:OnEvent(self, event, ...)
+function AZP.BossTools.Tarragrue:OnEvent(_, event, ...)
     if event == "VARIABLES_LOADED" then
         AZP.BossTools.Tarragrue:OnVarsLoaded()
+    elseif event == "ADDON_LOADED" then
+    elseif event == "CHAT_MSG_LOOT" then
+        local chatText = ...
+        chatText = string.gsub(chatText, "|", "-")
+        local loc = string.find(chatText, ":")
+        chatText = string.sub(chatText, loc + 1, #chatText)
+        loc = string.find(chatText, ":")
+        chatText = string.sub(chatText, loc + 1, loc + 4)
+        chatText = tonumber(chatText)
+        local powerTaken = nil
+        if AZP.BossTools.MawPowers[chatText] ~= nil then powerTaken = GetSpellLink(AZP.BossTools.MawPowers[chatText]) end
+        local preChatMsg = "(AddOn testing message) I am a number whore and purposely took "
+        local postChatMsg = ", even though it was clearly banned! Please remove me from your raid! I deserve it!"
+        if powerTaken ~= nul then SendChatMessage(string.format("%s%s%s", preChatMsg, powerTaken, postChatMsg), "RAID") end
+
+    elseif event == "PLAYER_CHOICE_UPDATE" then
+        PlayerChoiceFrame.Marker = {}
+        for i = 1, 3 do
+            local choiceInfo = PlayerChoiceFrame.choiceInfo
+            if choiceInfo ~= nil then
+                local curID = choiceInfo.options[i].spellID
+                local curFrame = CreateFrame("FRAME", nil, PlayerChoiceFrame, "BackdropTemplate")
+
+                curFrame:SetSize(200, 200)
+                curFrame:SetPoint("CENTER", 260 * (i - 1) - 257, 00)
+                curFrame:SetFrameLevel(10)
+
+                curFrame.Texture = curFrame:CreateTexture(nil, "ARTWORK")
+                curFrame.Texture:SetSize(180, 180)
+                curFrame.Texture:SetPoint("CENTER", 0, 70)
+
+                curFrame.Text = curFrame:CreateFontString("AZPBTTarragrueOptions", "ARTWORK", "GameFontNormalHuge")
+                curFrame.Text:SetPoint("CENTER", 3, -10)
+
+                local v1, v2, v3 = curFrame.Text:GetFont()
+                curFrame.Text:SetFont(v1, v2 + 10, v3)
+                curFrame.Text:SetTextColor(1, 0, 0, 1)
+
+                PlayerChoiceFrame.Marker[#PlayerChoiceFrame.Marker + 1] = curFrame
+
+                if curID == 348043 or curID == 347988 then
+                    curFrame.Text:SetText("BANNED!")
+                    curFrame.Texture:SetTexture(GetFileIDFromPath("Interface\\RAIDFRAME\\ReadyCheck-NotReady"))
+                else
+                    curFrame.Text:SetText(nil)
+                    curFrame.Texture:SetTexture(nil)
+                end
+            end
+        end
     elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
         local v1, subevent, v3, v4, v5, v6, v7, v8, v9, v10, v11, SpellID = CombatLogGetCurrentEventInfo()
         if SpellID == 0 then
