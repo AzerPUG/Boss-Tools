@@ -94,6 +94,12 @@ function AZP.BossTools.Tarragrue:OnEvent(_, event, ...)
         if powerTaken ~= nul then SendChatMessage(string.format("%s%s%s", preChatMsg, powerTaken, postChatMsg), "RAID") end
 
     elseif event == "PLAYER_CHOICE_UPDATE" then
+        if PlayerChoiceFrame.Marker ~= nil then
+            for _, frame in ipairs(PlayerChoiceFrame.Marker) do
+                frame.Texture:SetTexture(nil)
+                frame:Hide()
+            end
+        end
         PlayerChoiceFrame.Marker = {}
         for i = 1, 3 do
             local choiceInfo = PlayerChoiceFrame.choiceInfo
