@@ -72,7 +72,7 @@ end
 function AZP.BossTools.Tarragrue:OnEvent(_, event, ...)
     if event == "ADDON_LOADED" then
     elseif event == "CHAT_MSG_LOOT" then
-        local chatText = ...
+        local chatText, playerName = ...
         chatText = string.gsub(chatText, "|", "-")
         local loc = string.find(chatText, ":")
         chatText = string.sub(chatText, loc + 1, #chatText)
@@ -81,9 +81,10 @@ function AZP.BossTools.Tarragrue:OnEvent(_, event, ...)
         chatText = tonumber(chatText)
         local powerTaken = nil
         if AZP.BossTools.MawPowers[chatText] ~= nil then powerTaken = GetSpellLink(AZP.BossTools.MawPowers[chatText]) end
-        local preChatMsg = "(AddOn testing message) I am a number whore and purposely took "
-        local postChatMsg = ", even though it was clearly banned! Please remove me from your raid! I deserve it!"
-        if powerTaken ~= nul then SendChatMessage(string.format("%s%s%s", preChatMsg, powerTaken, postChatMsg), "RAID") end
+        local unitName, unitServer = UnitFullName("PLAYER")
+        local unitNameServer = string.format("%s-%s", unitName, unitServer)
+        local PreppedChatMsg = "I am a number whore and purposely took %s, even though it was clearly banned! Please remove me from your raid! I deserve it!"
+        if powerTaken ~= nul then if playerName == unitNameServer then SendChatMessage(string.format(PreppedChatMsg, powerTaken), "RAID") end end
 
     elseif event == "PLAYER_CHOICE_UPDATE" then
         if PlayerChoiceFrame.Marker ~= nil then
