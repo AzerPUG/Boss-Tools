@@ -553,7 +553,6 @@ function AZP.BossTools.Dormazain:TrackEnergy()
     local bossCurrentEnergy = UnitPower("boss1")
     local bossPercentHealth = (bossCurrentEnergy / bossMaxEnergy) * 100
     if bossPercentHealth > 80 then
-        print("Boss at 80%, bring to back!")
         if Armed == true then
             local warnText = string.format("Boss Energy %d%%", bossPercentHealth)
             AZP.BossTools:WarnPlayer(warnText)
@@ -561,9 +560,6 @@ function AZP.BossTools.Dormazain:TrackEnergy()
             table.insert(BossEnertyTimeStamps, BossEnergySecondCounter)
         end
     else
-        if Armed == false then
-            print("Boss below 80% and not armed, arm!")
-        end
         Armed = true
     end
 end
