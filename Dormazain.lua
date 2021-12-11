@@ -517,7 +517,8 @@ end
 function AZP.BossTools.Dormazain.Events:EncounterStart(encounterID, encounterName, difficultyID, groupSize)
     if encounterID == 2434 then
         local unitRole = UnitGroupRolesAssigned("player")
-        if unitRole == "TANK" then
+        local _, _, _, _, isHeroic = GetDifficultyInfo(GetRaidDifficultyID())
+        if unitRole == "TANK" and isHeroic == true then
             BossEnergySecondCounter = 0
             BossEnergyTicker = C_Timer.NewTicker(1, function() BossEnergySecondCounter = BossEnergySecondCounter + 1 AZP.BossTools.Dormazain:TrackEnergy() end)
         end
