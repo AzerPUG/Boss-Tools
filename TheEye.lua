@@ -38,6 +38,7 @@ function AZP.BossTools.TheEye:OnLoadSelf()
 
     EventFrame = CreateFrame("FRAME", nil)
     EventFrame:RegisterEvent("CHAT_MSG_ADDON")
+    EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.TheEye:OnEvent(...) end)
 
@@ -308,6 +309,51 @@ function AZP.BossTools.TheEye:FillOptionsPanel(frameToFill)
     frameToFill:Hide()
 end
 
+function AZP.BossTools.TheEye:RefreshNames()
+    local allUnitNames = {}
+    local allNameLabels = TheEyeOptions.AllNamesFrame.allNameLabels
+
+    for _, frame in ipairs(allNameLabels) do
+        frame:Hide()
+    end
+    
+    for i = 1, 40 do
+        local name = UnitName("RAID"..i)
+        if name ~= nil then
+            local _, _, classIndex = UnitClass("RAID"..i)
+            allUnitNames[i] = {name, classIndex}
+        end
+    end
+
+    for Index, curNameClass in pairs(allUnitNames) do
+        local curFrame = allNameLabels[Index]
+        if curFrame == nil then
+            curFrame = CreateFrame("FRAME", nil, TheEyeOptions.AllNamesFrame, "BackdropTemplate")
+            allNameLabels[Index] = curFrame
+            curFrame:SetSize(85, 20)
+            curFrame:SetPoint("TOP", 0, -18 * Index + 15)
+            curFrame:SetBackdrop({
+                bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+                edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+                edgeSize = 10,
+                insets = { left = 2, right = 2, top = 2, bottom = 2 },
+            })
+            curFrame:SetBackdropColor(1, 1, 1, 1)
+            curFrame:SetScript("OnMouseDown", function() GemFrame = curFrame AZP.BossTools.Dormazain:StartHoveringCopy() end)
+            curFrame:SetScript("OnMouseUp", function() AZP.BossTools.Dormazain:StopHoveringCopy() end)
+
+            curFrame.NameLabel = curFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+            curFrame.NameLabel:SetSize(85, 20)
+            curFrame.NameLabel:SetPoint("CENTER", 0, 0)
+        end
+        local _, _, _, curClassColor = AZP.BossTools:GetClassColor(curNameClass[2])
+        curFrame.NameLabel:SetText(string.format("\124cFF%s%s\124r", curClassColor, curNameClass[1]))
+        curFrame.NameLabel.Name = curNameClass[1]
+        curFrame:Show()
+    end
+end
+
+
 function AZP.BossTools.TheEye:OnEditFocusLost(sides, index)
     local editBoxFrame = nil
     if sides == "Left" then
@@ -482,6 +528,8 @@ function AZP.BossTools.TheEye:OnEvent(self, event, ...)
         AZP.BossTools.TheEye.Events:CombatLogEventUnfiltered(...)
     elseif event == "CHAT_MSG_ADDON" then
         AZP.BossTools.TheEye.Events:ChatMsgAddon(...)
+    elseif event == "GROUP_ROSTER_UPDATE" then
+        AZP.BossTools.TheEye.Events:GroupRosterUpdate(...)
     end
 end
 
@@ -515,6 +563,10 @@ function AZP.BossTools.TheEye.Events:ChatMsgAddon(...)
         AZP.BossTools.TheEye:CacheRaidNames()
         AZP.BossTools.TheEye:ReceiveAssignees(payload)
     end
+end
+
+function AZP.BossTools.TheEye.Events:GroupRosterUpdate(...)
+    AZP.BossTools.TheEye:RefreshNames(...)
 end
 
 AZP.BossTools.TheEye:OnLoadSelf()

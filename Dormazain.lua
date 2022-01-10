@@ -313,6 +313,50 @@ function AZP.BossTools.Dormazain:FillOptionsPanel(frameToFill)
     frameToFill:Hide()
 end
 
+function AZP.BossTools.Dormazain:RefreshNames()
+    local allUnitNames = {}
+    local allNameLabels = DormazainOptions.AllNamesFrame.allNameLabels
+
+    for _, frame in ipairs(allNameLabels) do
+        frame:Hide()
+    end
+    
+    for i = 1, 40 do
+        local name = UnitName("RAID"..i)
+        if name ~= nil then
+            local _, _, classIndex = UnitClass("RAID"..i)
+            allUnitNames[i] = {name, classIndex}
+        end
+    end
+
+    for Index, curNameClass in pairs(allUnitNames) do
+        local curFrame = allNameLabels[Index]
+        if curFrame == nil then
+            curFrame = CreateFrame("FRAME", nil, DormazainOptions.AllNamesFrame, "BackdropTemplate")
+            allNameLabels[Index] = curFrame
+            curFrame:SetSize(85, 20)
+            curFrame:SetPoint("TOP", 0, -18 * Index + 15)
+            curFrame:SetBackdrop({
+                bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+                edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+                edgeSize = 10,
+                insets = { left = 2, right = 2, top = 2, bottom = 2 },
+            })
+            curFrame:SetBackdropColor(1, 1, 1, 1)
+            curFrame:SetScript("OnMouseDown", function() GemFrame = curFrame AZP.BossTools.Dormazain:StartHoveringCopy() end)
+            curFrame:SetScript("OnMouseUp", function() AZP.BossTools.Dormazain:StopHoveringCopy() end)
+
+            curFrame.NameLabel = curFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+            curFrame.NameLabel:SetSize(85, 20)
+            curFrame.NameLabel:SetPoint("CENTER", 0, 0)
+        end
+        local _, _, _, curClassColor = AZP.BossTools:GetClassColor(curNameClass[2])
+        curFrame.NameLabel:SetText(string.format("\124cFF%s%s\124r", curClassColor, curNameClass[1]))
+        curFrame.NameLabel.Name = curNameClass[1]
+        curFrame:Show()
+    end
+end
+
 function AZP.BossTools.Dormazain:OnEditFocusLost(position, chains)
     local editBoxFrame = nil
     local chainsSet = string.format("Chain%d", chains)
@@ -494,6 +538,8 @@ function AZP.BossTools.Dormazain:OnEvent(self, event, ...)
         AZP.BossTools.Dormazain.Events:EncounterEnd(...)
     elseif event == "ENCOUNTER_START" then
         AZP.BossTools.Dormazain.Events:EncounterStart(...)
+    elseif event == "GROUP_ROSTER_UPDATE" then
+        AZP.BossTools.Dormazain.Events:GroupRosterUpdate(...)
     end
 end
 
@@ -546,6 +592,10 @@ function AZP.BossTools.Dormazain.Events:ChatMsgAddon(...)
         AZP.BossTools.Dormazain:CacheRaidNames()
         AZP.BossTools.Dormazain:ReceiveAssignees(payload)
     end
+end
+
+function AZP.BossTools.Dormazain.Events:GroupRosterUpdate(...)
+    AZP.BossTools.Dormazain:RefreshNames()
 end
 
 function AZP.BossTools.Dormazain:TrackEnergy()
