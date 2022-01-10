@@ -351,6 +351,7 @@ function AZP.BossTools.Dormazain:RefreshNames()
             curFrame.NameLabel:SetPoint("CENTER", 0, 0)
         end
         local _, _, _, curClassColor = AZP.BossTools:GetClassColor(curNameClass[2])
+        if curClassColor == nil then return end
         curFrame.NameLabel:SetText(string.format("\124cFF%s%s\124r", curClassColor, curNameClass[1]))
         curFrame.NameLabel.Name = curNameClass[1]
         curFrame:Show()
