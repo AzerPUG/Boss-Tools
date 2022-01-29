@@ -320,7 +320,7 @@ function AZP.BossTools.Dormazain:RefreshNames()
     for _, frame in ipairs(allNameLabels) do
         frame:Hide()
     end
-    
+
     for i = 1, 40 do
         local name = UnitName("RAID"..i)
         if name ~= nil then

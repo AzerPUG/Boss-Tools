@@ -6,7 +6,7 @@ if AZP.BossTools.HeroReminder.Events == nil then AZP.BossTools.HeroReminder.Even
 
 local AZPBTHeroReminderFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
 
-function AZP.BossTools.HeroReminder.OnLoad()
+function AZP.BossTools.HeroReminder.OnLoad()    
     AZPBTHeroReminderFrame:SetSize(250, 250)
     AZPBTHeroReminderFrame:SetPoint("CENTER", 0, 0)
     AZPBTHeroReminderFrame:SetBackdrop({
@@ -77,7 +77,25 @@ function AZP.BossTools.HeroReminder.OnLoad()
     AZPBTHeroReminderFrame.closeButton = CreateFrame("Button", nil, AZPBTHeroReminderFrame, "UIPanelCloseButton")
     AZPBTHeroReminderFrame.closeButton:SetSize(20, 21)
     AZPBTHeroReminderFrame.closeButton:SetPoint("TOPRIGHT", AZPBTHeroReminderFrame, "TOPRIGHT", 2, 2)
-    AZPBTHeroReminderFrame.closeButton:SetScript("OnClick", function() AZP.BossTools.HeroReminder:ShowHideFrame() end )
+    AZPBTHeroReminderFrame.closeButton:SetScript("OnClick", function() AZP.BossTools.HeroReminder:ShowHideFrame() end)
+
+    local AZPBossToolsFrame = AZP.BossTools.AZPBossToolsFrame
+    local _, _, curClass = UnitClass("PLAYER")
+
+    AZPBossToolsFrame.HeroButton = CreateFrame("Button", nil, AZPBossToolsFrame)
+    AZPBossToolsFrame.HeroButton:SetSize(20, 20)
+    AZPBossToolsFrame.HeroButton:SetPoint("TOPLEFT", AZPBossToolsFrame, "TOPLEFT", 3, -2)
+    AZPBossToolsFrame.HeroButton:SetScript("OnClick", function() AZPBossToolsFrame:Hide() AZPBTHeroReminderFrame:Show() end)
+    AZPBossToolsFrame.HeroButton.Texture = AZPBossToolsFrame.HeroButton:CreateTexture(nil, "ARTWORK")
+    AZPBossToolsFrame.HeroButton.Texture:SetSize(20, 20)
+    AZPBossToolsFrame.HeroButton.Texture:SetPoint("CENTER", 0, 0)
+    local filePath = nil
+        if curClass == 3 then filePath = "Interface/ICONS/Spell_Shadow_UnholyFrenzy"        -- Ancient Hysteria for Hunter.
+    elseif curClass == 7 then filePath = "Interface/ICONS/Ability_Shaman_Heroism"           -- Heroism for Shaman.
+    --elseif curClass == 7 then filePath = "Interface/ICONS/Spell_Nature_BloodLust"         -- Bloodlust for Traitor Shaman.
+    elseif curClass == 8 then filePath = "Interface/ICONS/Ability_Mage_TimeWarp"            -- Timewarp for Mage.
+                         else filePath = "Interface/ICONS/INV_Leatherworking_Drums" end     -- Drums for Others.
+    AZPBossToolsFrame.HeroButton.Texture:SetTexture(GetFileIDFromPath(filePath))
 
     AZPBTHeroReminderFrame:Hide()
 end
