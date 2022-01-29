@@ -339,8 +339,8 @@ function AZP.BossTools.TheEye:RefreshNames()
                 insets = { left = 2, right = 2, top = 2, bottom = 2 },
             })
             curFrame:SetBackdropColor(1, 1, 1, 1)
-            curFrame:SetScript("OnMouseDown", function() GemFrame = curFrame AZP.BossTools.Dormazain:StartHoveringCopy() end)
-            curFrame:SetScript("OnMouseUp", function() AZP.BossTools.Dormazain:StopHoveringCopy() end)
+            curFrame:SetScript("OnMouseDown", function() GemFrame = curFrame AZP.BossTools.TheEye:StartHoveringCopy() end)
+            curFrame:SetScript("OnMouseUp", function() AZP.BossTools.TheEye:StopHoveringCopy() end)
 
             curFrame.NameLabel = curFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
             curFrame.NameLabel:SetSize(85, 20)
