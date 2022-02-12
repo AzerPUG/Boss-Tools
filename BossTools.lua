@@ -9,9 +9,9 @@ AZP.BossTools.ParentOptionFrame = nil
 AZP.BossTools.PopUpFrame = nil
 AZP.BossTools.BossFrames = {}
 AZP.BossTools.BossIcons = {}
+AZP.BossTools.ReceiveFrame = nil
 
 local AZPBossToolsFrame = nil
-
 local soundID = 8959
 local soundChannel = 1
 
@@ -103,6 +103,7 @@ function AZP.BossTools.OnLoad()
     AZP.BossTools.ParentOptionFrame.SubHeader:SetText("Options Panel")
 
     AZP.BossTools:CreateSelectorFrame()
+    AZP.BossTools:CreateReceiveFrame()
     AZP.BossTools:CreatePopUpFrame()
     AZP.BossTools:ApplyTaintFix()
 end
@@ -216,6 +217,54 @@ function AZP.BossTools:CreateSelectorFrame()
     AZPBossToolsFrame:Hide()
 end
 
+function AZP.BossTools:CreateReceiveFrame()
+    AZP.BossTools.ReceiveFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+    AZP.BossTools.ReceiveFrame:SetPoint("CENTER", 0, 250)
+    AZP.BossTools.ReceiveFrame:SetSize(250, 125)
+    AZP.BossTools.ReceiveFrame:SetBackdrop({
+        bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+        edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+        edgeSize = 12,
+        insets = { left = 1, right = 1, top = 1, bottom = 1 },
+    })
+    AZP.BossTools.ReceiveFrame:SetBackdropColor(0.25, 0.25, 0.25, 0.80)
+    AZP.BossTools.ReceiveFrame.header = AZP.BossTools.ReceiveFrame:CreateFontString("UpdateFrame", "ARTWORK", "GameFontNormalHuge")
+    AZP.BossTools.ReceiveFrame.header:SetPoint("TOP", 0, -10)
+    AZP.BossTools.ReceiveFrame.header:SetText("Received data")
+
+    AZP.BossTools.ReceiveFrame.subHeader = AZP.BossTools.ReceiveFrame:CreateFontString("UpdateFrame", "ARTWORK", "GameFontNormalLarge")
+    AZP.BossTools.ReceiveFrame.subHeader:SetPoint("TOP", AZP.BossTools.ReceiveFrame.header, "BOTTOM", 0, -15)
+    AZP.BossTools.ReceiveFrame.subHeader:SetText("Received data for %s\nSent by %s")
+    AZP.BossTools.ReceiveFrame.subHeader:SetWidth(225)
+    AZP.BossTools.ReceiveFrame.subHeader:SetJustifyH("LEFT")
+
+    AZP.BossTools.ReceiveFrame.openButton = CreateFrame("Button", nil, AZP.BossTools.ReceiveFrame, "UIPanelButtonTemplate")
+    AZP.BossTools.ReceiveFrame.openButton:SetSize(100, 25)
+    AZP.BossTools.ReceiveFrame.openButton:SetPoint("BOTTOM", 0, 10)
+    AZP.BossTools.ReceiveFrame.openButton:SetText("Open")
+    AZP.BossTools.ReceiveFrame.openButton:SetScript("OnClick", function() AZP.BossTools:ShowCurrentDataFrame() end)
+
+    AZP.BossTools.ReceiveFrame.closeButton = CreateFrame("Button", nil, AZP.BossTools.ReceiveFrame, "UIPanelCloseButton")
+    AZP.BossTools.ReceiveFrame.closeButton:SetSize(20, 21)
+    AZP.BossTools.ReceiveFrame.closeButton:SetPoint("TOPRIGHT", AZP.BossTools.ReceiveFrame, "TOPRIGHT", 1, 2)
+    AZP.BossTools.ReceiveFrame.closeButton:SetScript("OnClick", function() AZP.BossTools.ReceiveFrame:Hide() end)
+
+    AZP.BossTools.ReceiveFrame:Hide()
+end
+
+function AZP.BossTools:ShowCurrentDataFrame()
+    AZP.BossTools:ShowBossFrame(AZP.BossTools.ReceiveFrame.Boss)
+    AZP.BossTools.ReceiveFrame:Hide()
+end
+
+function AZP.BossTools:ShowReceiveFrame(sender, raid, boss)
+    local bossInfo = AZP.BossTools.BossInfo[raid][boss]
+    if bossInfo ~= nil then
+        AZP.BossTools.ReceiveFrame.Boss = boss
+        AZP.BossTools.ReceiveFrame.subHeader:SetText(string.format("Received data for %s\nSent by %s", bossInfo.Name, sender))    
+    end
+end
+
 function AZP.BossTools:CreatePopUpFrame()
     AZP.BossTools.PopUpFrame = CreateFrame("FRAME", nil, UIParent)
     AZP.BossTools.PopUpFrame:SetPoint("CENTER", 0, 250)
@@ -229,7 +278,6 @@ function AZP.BossTools:CreatePopUpFrame()
 end
 
 function AZP.BossTools:ShowBossFrame(Boss)
-
     AZP.BossTools.BossFrames[Boss]:Show()
 end
 

@@ -388,6 +388,7 @@ function AZP.BossTools.RohKalo.Events:ChatMsgAddon(...)
     if prefix == "AZPRKHINFO" then
         AZP.BossTools.RohKalo:ReceiveAssignees(payload)
         AZP.BossTools.RohKalo:CacheRaidNames()
+        AZP.BossTools:ShowReceiveFrame(sender, "Sanctum", "RohKalo")
     elseif prefix == "AZPRKHHelp" then
         AZP.BossTools.RohKalo:HelpRequested(payload)
         AZP.BossTools.RohKalo:CacheRaidNames()

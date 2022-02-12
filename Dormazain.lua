@@ -592,6 +592,7 @@ function AZP.BossTools.Dormazain.Events:ChatMsgAddon(...)
     if prefix == "AZPDORMINFO" then
         AZP.BossTools.Dormazain:CacheRaidNames()
         AZP.BossTools.Dormazain:ReceiveAssignees(payload)
+        AZP.BossTools:ShowReceiveFrame(sender, "Sanctum", "Dormazain")
     end
 end
 

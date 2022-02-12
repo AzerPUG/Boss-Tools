@@ -563,6 +563,7 @@ function AZP.BossTools.TheEye.Events:ChatMsgAddon(...)
     if prefix == "AZPEYEINFO" then
         AZP.BossTools.TheEye:CacheRaidNames()
         AZP.BossTools.TheEye:ReceiveAssignees(payload)
+        AZP.BossTools:ShowReceiveFrame(sender, "Sanctum", "TheEye")
     end
 end
 
