@@ -11,7 +11,8 @@ AZP.BossTools.BossFrames = {}
 AZP.BossTools.BossIcons = {}
 AZP.BossTools.ReceiveFrame = nil
 
-local AZPBossToolsFrame = nil
+local AZPBossToolsSanctumFrame, AZPBossToolsSepulcherFrame = nil, nil
+
 local soundID = 8959
 local soundChannel = 1
 
@@ -102,8 +103,8 @@ function AZP.BossTools.OnLoad()
     AZP.BossTools.ParentOptionFrame.SubHeader:SetPoint("TOP", AZP.BossTools.ParentOptionFrame.Header, "BOTTOM", 0, -5)
     AZP.BossTools.ParentOptionFrame.SubHeader:SetText("Options Panel")
 
-    AZP.BossTools:CreateSelectorFrame()
-    AZP.BossTools:CreateReceiveFrame()
+    AZP.BossTools:CreateSanctumSelectorFrame()
+    AZP.BossTools:CreateSepulcherSelectorFrame()
     AZP.BossTools:CreatePopUpFrame()
     AZP.BossTools:ApplyTaintFix()
 end
@@ -136,49 +137,50 @@ function AZP.BossTools:ApplyTaintFix()
     end
 end
 
-function AZP.BossTools:CreateSelectorFrame()
-    AZPBossToolsFrame = CreateFrame("FRAME", nil, UIParent, "BackdropTemplate")
-    AZPBossToolsFrame:SetPoint("CENTER", 0, 0)
-    AZPBossToolsFrame.Background = AZPBossToolsFrame:CreateTexture(nil, "ARTWORK")
-    AZPBossToolsFrame.Background:SetPoint("CENTER", 0, 0)
-    AZPBossToolsFrame.Background:SetTexture(GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-LOREBG-SanctumofDomination"))
-    AZPBossToolsFrame.Background:SetTexCoord(0.03425, 0.72525, 0.0585, 0.60)
-    AZPBossToolsFrame.Background:SetAlpha(0.8)
-    AZPBossToolsFrame:SetBackdrop({
+function AZP.BossTools:CreateSanctumSelectorFrame()
+    AZPBossToolsSanctumFrame = CreateFrame("FRAME", nil, UIParent, "BackdropTemplate")
+    AZPBossToolsSanctumFrame:SetPoint("CENTER", 0, 0)
+    AZPBossToolsSanctumFrame.Background = AZPBossToolsSanctumFrame:CreateTexture(nil, "ARTWORK")
+    AZPBossToolsSanctumFrame.Background:SetPoint("CENTER", 0, 0)
+    AZPBossToolsSanctumFrame.Background:SetTexture(AZP.BossTools.BossInfo.Sanctum.Background)
+    --AZPBossToolsSanctumFrame.Background:SetTexture(AZP.BossTools.BossInfo.Sepulcher.Background)
+    AZPBossToolsSanctumFrame.Background:SetTexCoord(0.03425, 0.72525, 0.0585, 0.60)
+    AZPBossToolsSanctumFrame.Background:SetAlpha(0.8)
+    AZPBossToolsSanctumFrame:SetBackdrop({
         edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
         edgeSize = 10,
         insets = {left = 3, right = 3, top = 3, bottom = 3},
     })
 
-    AZPBossToolsFrame.Header = AZPBossToolsFrame:CreateFontString("AZPBossToolsFrame", "ARTWORK", "GameFontNormalHuge")
-    AZPBossToolsFrame.Header:SetSize(AZPBossToolsFrame:GetWidth(), 25)
-    AZPBossToolsFrame.Header:SetPoint("TOP", 0, -15)
-    AZPBossToolsFrame.Header:SetText(string.format("AzerPUG's BossTools v%s", AZP.VersionControl["BossTools"]))
+    AZPBossToolsSanctumFrame.Header = AZPBossToolsSanctumFrame:CreateFontString("AZPBossToolsSanctumFrame", "ARTWORK", "GameFontNormalHuge")
+    AZPBossToolsSanctumFrame.Header:SetSize(AZPBossToolsSanctumFrame:GetWidth(), 25)
+    AZPBossToolsSanctumFrame.Header:SetPoint("TOP", 0, -15)
+    AZPBossToolsSanctumFrame.Header:SetText(string.format("AzerPUG's BossTools v%s", AZP.VersionControl["BossTools"]))
 
-    AZPBossToolsFrame.SubHeader = AZPBossToolsFrame:CreateFontString("AZPBossToolsFrame", "ARTWORK", "GameFontNormalLarge")
-    AZPBossToolsFrame.SubHeader:SetSize(AZPBossToolsFrame:GetWidth(), 50)
-    AZPBossToolsFrame.SubHeader:SetPoint("TOP", AZPBossToolsFrame.Header, "BOTTOM", 0, 5)
-    AZPBossToolsFrame.SubHeader:SetText("Sanctum of Domination\nBoss Selector Frame")
+    AZPBossToolsSanctumFrame.SubHeader = AZPBossToolsSanctumFrame:CreateFontString("AZPBossToolsSanctumFrame", "ARTWORK", "GameFontNormalLarge")
+    AZPBossToolsSanctumFrame.SubHeader:SetSize(AZPBossToolsSanctumFrame:GetWidth(), 50)
+    AZPBossToolsSanctumFrame.SubHeader:SetPoint("TOP", AZPBossToolsSanctumFrame.Header, "BOTTOM", 0, 5)
+    AZPBossToolsSanctumFrame.SubHeader:SetText("Sanctum of Domination\nBoss Selector Frame")
 
     local BossWidth, BossHeight = 100, 75
 
     for Boss, Info in pairs(BossInfo) do
         if Info.Active ~= false then
-            local curFrame = CreateFrame("FRAME", nil, AZPBossToolsFrame)
+            local curFrame = CreateFrame("FRAME", nil, AZPBossToolsSanctumFrame)
             curFrame:SetSize(BossWidth, BossHeight)
-            curFrame:SetScript("OnMouseDown", function() if AZP.BossTools.BossFrames[Boss] ~= nil then AZPBossToolsFrame:Hide() AZP.BossTools.BossFrames[Boss]:Show() end end)
+            curFrame:SetScript("OnMouseDown", function() if AZP.BossTools.BossFrames[Boss] ~= nil then AZPBossToolsSanctumFrame:Hide() AZP.BossTools.BossFrames[Boss]:Show() end end)
             curFrame.Button = curFrame:CreateTexture(nil, "ARTWORK")
             curFrame.Button:SetSize(curFrame:GetWidth(), 55)
             curFrame.Button:SetPoint("BOTTOM", 0, 0)
             curFrame.Button:SetTexture(Info.FileID)
-            curFrame.Label = curFrame:CreateFontString("AZPBossToolsFrame", "ARTWORK", "GameFontNormalLarge")
+            curFrame.Label = curFrame:CreateFontString("AZPBossToolsSanctumFrame", "ARTWORK", "GameFontNormalLarge")
             curFrame.Label:SetSize(curFrame:GetWidth() -20, 25)
             curFrame.Label:SetPoint("TOP", -10, -5)
             curFrame.Label:SetText(Info.Name)
 
             if Info.Active == "Soon" then
                 curFrame.Button:SetDesaturated(true)
-                curFrame.ComingSoon = curFrame:CreateFontString("AZPBossToolsFrame", "ARTWORK", "GameFontNormalLarge")
+                curFrame.ComingSoon = curFrame:CreateFontString("AZPBossToolsSanctumFrame", "ARTWORK", "GameFontNormalLarge")
                 curFrame.ComingSoon:SetSize(curFrame:GetWidth() -20, 50)
                 curFrame.ComingSoon:SetPoint("TOP", -10, -25)
                 curFrame.ComingSoon:SetText("Coming\nSoon!")
@@ -192,8 +194,8 @@ function AZP.BossTools:CreateSelectorFrame()
     local iconsPerRow = {math.floor(#AZP.BossTools.BossIcons / 2), math.ceil(#AZP.BossTools.BossIcons / 2)}
     local FrameWidth = (iconsPerRow[2] * 85 + 25)
     if FrameWidth < 280 then FrameWidth = 280 end
-    AZPBossToolsFrame:SetSize(FrameWidth, FrameWidth - 15)
-    AZPBossToolsFrame.Background:SetSize(AZPBossToolsFrame:GetWidth() - 5, AZPBossToolsFrame:GetHeight() - 5)
+    AZPBossToolsSanctumFrame:SetSize(FrameWidth, FrameWidth - 15)
+    AZPBossToolsSanctumFrame.Background:SetSize(AZPBossToolsSanctumFrame:GetWidth() - 5, AZPBossToolsSanctumFrame:GetHeight() - 5)
 
     table.sort(AZP.BossTools.BossIcons, function(a,b) return a.Index < b.Index end)
 
@@ -208,13 +210,95 @@ function AZP.BossTools:CreateSelectorFrame()
         end
     end
 
-    AZPBossToolsFrame.closeButton = CreateFrame("Button", nil, AZPBossToolsFrame, "UIPanelCloseButton")
-    AZPBossToolsFrame.closeButton:SetSize(20, 21)
-    AZPBossToolsFrame.closeButton:SetPoint("TOPRIGHT", AZPBossToolsFrame, "TOPRIGHT", 1, 2)
-    AZPBossToolsFrame.closeButton:SetScript("OnClick", function() AZPBossToolsFrame:Hide() end)
+    AZPBossToolsSanctumFrame.closeButton = CreateFrame("Button", nil, AZPBossToolsSanctumFrame, "UIPanelCloseButton")
+    AZPBossToolsSanctumFrame.closeButton:SetSize(20, 21)
+    AZPBossToolsSanctumFrame.closeButton:SetPoint("TOPRIGHT", AZPBossToolsSanctumFrame, "TOPRIGHT", 1, 2)
+    AZPBossToolsSanctumFrame.closeButton:SetScript("OnClick", function() AZPBossToolsSanctumFrame:Hide() end)
 
-    AZP.BossTools.AZPBossToolsFrame = AZPBossToolsFrame
-    AZPBossToolsFrame:Hide()
+    AZP.BossTools.AZPBossToolsSanctumFrame = AZPBossToolsSanctumFrame
+    AZPBossToolsSanctumFrame:Hide()
+end
+
+function AZP.BossTools:CreateSepulcherSelectorFrame()
+    AZPBossToolsSepulcherFrame = CreateFrame("FRAME", nil, UIParent, "BackdropTemplate")
+    AZPBossToolsSepulcherFrame:SetPoint("CENTER", 0, 0)
+    AZPBossToolsSepulcherFrame.Background = AZPBossToolsSepulcherFrame:CreateTexture(nil, "ARTWORK")
+    AZPBossToolsSepulcherFrame.Background:SetPoint("CENTER", 0, 0)
+    AZPBossToolsSepulcherFrame.Background:SetTexture(AZP.BossTools.BossInfo.Sanctum.Background)
+    --AZPBossToolsSepulcherFrame.Background:SetTexture(AZP.BossTools.BossInfo.Sepulcher.Background)
+    AZPBossToolsSepulcherFrame.Background:SetTexCoord(0.03425, 0.72525, 0.0585, 0.60)
+    AZPBossToolsSepulcherFrame.Background:SetAlpha(0.8)
+    AZPBossToolsSepulcherFrame:SetBackdrop({
+        edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+        edgeSize = 10,
+        insets = {left = 3, right = 3, top = 3, bottom = 3},
+    })
+
+    AZPBossToolsSepulcherFrame.Header = AZPBossToolsSepulcherFrame:CreateFontString("AZPBossToolsSepulcherFrame", "ARTWORK", "GameFontNormalHuge")
+    AZPBossToolsSepulcherFrame.Header:SetSize(AZPBossToolsSepulcherFrame:GetWidth(), 25)
+    AZPBossToolsSepulcherFrame.Header:SetPoint("TOP", 0, -15)
+    AZPBossToolsSepulcherFrame.Header:SetText(string.format("AzerPUG's BossTools v%s", AZP.VersionControl["BossTools"]))
+
+    AZPBossToolsSepulcherFrame.SubHeader = AZPBossToolsSepulcherFrame:CreateFontString("AZPBossToolsSepulcherFrame", "ARTWORK", "GameFontNormalLarge")
+    AZPBossToolsSepulcherFrame.SubHeader:SetSize(AZPBossToolsSepulcherFrame:GetWidth(), 50)
+    AZPBossToolsSepulcherFrame.SubHeader:SetPoint("TOP", AZPBossToolsSepulcherFrame.Header, "BOTTOM", 0, 5)
+    AZPBossToolsSepulcherFrame.SubHeader:SetText("Sanctum of Domination\nBoss Selector Frame")
+
+    local BossWidth, BossHeight = 100, 75
+
+    for Boss, Info in pairs(BossInfo) do
+        if Info.Active ~= false then
+            local curFrame = CreateFrame("FRAME", nil, AZPBossToolsSepulcherFrame)
+            curFrame:SetSize(BossWidth, BossHeight)
+            curFrame:SetScript("OnMouseDown", function() if AZP.BossTools.BossFrames[Boss] ~= nil then AZPBossToolsSepulcherFrame:Hide() AZP.BossTools.BossFrames[Boss]:Show() end end)
+            curFrame.Button = curFrame:CreateTexture(nil, "ARTWORK")
+            curFrame.Button:SetSize(curFrame:GetWidth(), 55)
+            curFrame.Button:SetPoint("BOTTOM", 0, 0)
+            curFrame.Button:SetTexture(Info.FileID)
+            curFrame.Label = curFrame:CreateFontString("AZPBossToolsSepulcherFrame", "ARTWORK", "GameFontNormalLarge")
+            curFrame.Label:SetSize(curFrame:GetWidth() -20, 25)
+            curFrame.Label:SetPoint("TOP", -10, -5)
+            curFrame.Label:SetText(Info.Name)
+
+            if Info.Active == "Soon" then
+                curFrame.Button:SetDesaturated(true)
+                curFrame.ComingSoon = curFrame:CreateFontString("AZPBossToolsSepulcherFrame", "ARTWORK", "GameFontNormalLarge")
+                curFrame.ComingSoon:SetSize(curFrame:GetWidth() -20, 50)
+                curFrame.ComingSoon:SetPoint("TOP", -10, -25)
+                curFrame.ComingSoon:SetText("Coming\nSoon!")
+            end
+
+            curFrame.Index = Info.Index
+            AZP.BossTools.BossIcons[#AZP.BossTools.BossIcons + 1] = curFrame
+        end
+    end
+
+    local iconsPerRow = {math.floor(#AZP.BossTools.BossIcons / 2), math.ceil(#AZP.BossTools.BossIcons / 2)}
+    local FrameWidth = (iconsPerRow[2] * 85 + 25)
+    if FrameWidth < 280 then FrameWidth = 280 end
+    AZPBossToolsSepulcherFrame:SetSize(FrameWidth, FrameWidth - 15)
+    AZPBossToolsSepulcherFrame.Background:SetSize(AZPBossToolsSepulcherFrame:GetWidth() - 5, AZPBossToolsSepulcherFrame:GetHeight() - 5)
+
+    table.sort(AZP.BossTools.BossIcons, function(a,b) return a.Index < b.Index end)
+
+    if #AZP.BossTools.BossIcons == 0 then return
+    elseif #AZP.BossTools.BossIcons > 0 then
+        for i = 1, #AZP.BossTools.BossIcons do
+            local BottomOffset = {[1] = 0, [2] = 8, [3] =  9, [4] = 10, [5] = 13,}
+            local   LeftOffset = {[1] = 0, [2] = 35, [3] = 22, [4] = 17, [5] = 11,}
+            if i == 1 then AZP.BossTools.BossIcons[i]:SetPoint("BOTTOM", (-35 * iconsPerRow[1]) + LeftOffset[iconsPerRow[1]], 100)
+            elseif i == (iconsPerRow[1] + 1) then AZP.BossTools.BossIcons[i]:SetPoint("BOTTOM", (-35 * iconsPerRow[2]) + LeftOffset[iconsPerRow[2]], BottomOffset[iconsPerRow[2]])
+            else AZP.BossTools.BossIcons[i]:SetPoint("LEFT", AZP.BossTools.BossIcons[i-1], "RIGHT", -10, 0) end
+        end
+    end
+
+    AZPBossToolsSepulcherFrame.closeButton = CreateFrame("Button", nil, AZPBossToolsSepulcherFrame, "UIPanelCloseButton")
+    AZPBossToolsSepulcherFrame.closeButton:SetSize(20, 21)
+    AZPBossToolsSepulcherFrame.closeButton:SetPoint("TOPRIGHT", AZPBossToolsSepulcherFrame, "TOPRIGHT", 1, 2)
+    AZPBossToolsSepulcherFrame.closeButton:SetScript("OnClick", function() AZPBossToolsSepulcherFrame:Hide() end)
+
+    AZP.BossTools.AZPBossToolsSepulcherFrame = AZPBossToolsSepulcherFrame
+    AZPBossToolsSepulcherFrame:Hide()
 end
 
 function AZP.BossTools:CreateReceiveFrame()
@@ -339,7 +423,11 @@ end
 AZP.BossTools.OnLoad()
 
 AZP.SlashCommands["BT"] = function()
-    if AZPBossToolsFrame ~= nil then AZPBossToolsFrame:Show() end
+    if AZPBossToolsSepulcherFrame ~= nil then AZPBossToolsSepulcherFrame:Show() end
+end
+
+AZP.SlashCommands["BTA"] = function()
+    if AZPBossToolsSanctumFrame ~= nil then AZPBossToolsSanctumFrame:Show() end
 end
 
 AZP.SlashCommands["bt"] = AZP.SlashCommands["BT"]
@@ -347,3 +435,9 @@ AZP.SlashCommands["boos tools"] = AZP.SlashCommands["BT"]
 AZP.SlashCommands["Boss Tools"] = AZP.SlashCommands["BT"]
 AZP.SlashCommands["bosstools"] = AZP.SlashCommands["BT"]
 AZP.SlashCommands["BossTools"] = AZP.SlashCommands["BT"]
+
+AZP.SlashCommands["bta"] = AZP.SlashCommands["BTA"]
+AZP.SlashCommands["boos tools all"] = AZP.SlashCommands["BTA"]
+AZP.SlashCommands["Boss Tools All"] = AZP.SlashCommands["BTA"]
+AZP.SlashCommands["bosstoolsall"] = AZP.SlashCommands["BTA"]
+AZP.SlashCommands["BossToolsAll"] = AZP.SlashCommands["BTA"]

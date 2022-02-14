@@ -6,7 +6,7 @@ if AZP.BossTools.HeroReminder.Events == nil then AZP.BossTools.HeroReminder.Even
 
 local AZPBTHeroReminderFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
 
-function AZP.BossTools.HeroReminder.OnLoad()    
+function AZP.BossTools.HeroReminder.OnLoad()
     AZPBTHeroReminderFrame:SetSize(250, 250)
     AZPBTHeroReminderFrame:SetPoint("CENTER", 0, 0)
     AZPBTHeroReminderFrame:SetBackdrop({
@@ -98,6 +98,14 @@ function AZP.BossTools.HeroReminder.OnLoad()
     AZPBossToolsFrame.HeroButton.Texture:SetTexture(GetFileIDFromPath(filePath))
 
     AZPBTHeroReminderFrame:Hide()
+end
+
+function AZP.BossTools.HeroReminder:SanctumData()
+
+end
+
+function AZP.BossTools.HeroReminder:SepulcherData()
+
 end
 
 function AZP.BossTools.HeroReminder:ShowHideFrame()
