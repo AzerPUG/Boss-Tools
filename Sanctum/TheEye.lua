@@ -1,8 +1,8 @@
 if AZP == nil then AZP = {} end
 if AZP.VersionControl == nil then AZP.VersionControl = {} end
 
-if AZP.BossTools.TheEye == nil then AZP.BossTools.TheEye = {} end
-if AZP.BossTools.TheEye.Events == nil then AZP.BossTools.TheEye.Events = {} end
+if AZP.BossTools.Sanctum.TheEye == nil then AZP.BossTools.Sanctum.TheEye = {} end
+if AZP.BossTools.Sanctum.TheEye.Events == nil then AZP.BossTools.Sanctum.TheEye.Events = {} end
 
 local AssignedPlayers = {Left = {}, Right = {},}
 local AZPBTTheEyeOptions = nil
@@ -13,7 +13,7 @@ local EventFrame = nil
 local dragging, previousParent, previousPoint = false, nil, {}
 local GemFrame = nil
 
-function AZP.BossTools.TheEye:OnLoadBoth()
+function AZP.BossTools.Sanctum.TheEye:OnLoadBoth()
     TheEyeOptions = CreateFrame("FRAME", nil, UIParent, "BackdropTemplate")
     TheEyeOptions:SetSize(700, 400)
     TheEyeOptions:SetPoint("CENTER", 0, 0)
@@ -29,23 +29,23 @@ function AZP.BossTools.TheEye:OnLoadBoth()
     TheEyeOptions:RegisterForDrag("LeftButton")
     TheEyeOptions:SetScript("OnDragStart", TheEyeOptions.StartMoving)
     TheEyeOptions:SetScript("OnDragStop", function() TheEyeOptions:StopMovingOrSizing() end)
-    AZP.BossTools.TheEye:FillOptionsPanel(TheEyeOptions)
-    AZP.BossTools.TheEye:CreateMainFrame()
+    AZP.BossTools.Sanctum.TheEye:FillOptionsPanel(TheEyeOptions)
+    AZP.BossTools.Sanctum.TheEye:CreateMainFrame()
 end
 
-function AZP.BossTools.TheEye:OnLoadSelf()
+function AZP.BossTools.Sanctum.TheEye:OnLoadSelf()
     C_ChatInfo.RegisterAddonMessagePrefix("AZPEYEINFO")
 
     EventFrame = CreateFrame("FRAME", nil)
     EventFrame:RegisterEvent("CHAT_MSG_ADDON")
     EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-    EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.TheEye:OnEvent(...) end)
+    EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Sanctum.TheEye:OnEvent(...) end)
 
-    AZP.BossTools.TheEye:OnLoadBoth()
+    AZP.BossTools.Sanctum.TheEye:OnLoadBoth()
 end
 
-function AZP.BossTools.TheEye:CreateMainFrame()
+function AZP.BossTools.Sanctum.TheEye:CreateMainFrame()
     local TheEyeFrame = CreateFrame("FRAME", nil, UIPanel, "BackdropTemplate")
     TheEyeFrame:SetSize(350, 200)
     TheEyeFrame:SetPoint("TOPLEFT", 100, -200)
@@ -121,7 +121,7 @@ function AZP.BossTools.TheEye:CreateMainFrame()
     TheEyeFrame:Hide()
 end
 
-function AZP.BossTools.TheEye:FillOptionsPanel(frameToFill)
+function AZP.BossTools.Sanctum.TheEye:FillOptionsPanel(frameToFill)
     frameToFill.Header = frameToFill:CreateFontString("frameToFill", "ARTWORK", "GameFontNormalHuge")
     frameToFill.Header:SetPoint("TOP", 0, -10)
     frameToFill.Header:SetText("|cFF00FFFFAzerPUG's BossTools Options!|r")
@@ -133,7 +133,7 @@ function AZP.BossTools.TheEye:FillOptionsPanel(frameToFill)
     frameToFill.ShareButton:SetSize(100, 25)
     frameToFill.ShareButton:SetPoint("TOPRIGHT", -50, -25)
     frameToFill.ShareButton:SetText("Share List")
-    frameToFill.ShareButton:SetScript("OnClick", function() AZP.BossTools.TheEye:ShareAssignees() end )
+    frameToFill.ShareButton:SetScript("OnClick", function() AZP.BossTools.Sanctum.TheEye:ShareAssignees() end )
 
     frameToFill.LockMoveButton = CreateFrame("Button", nil, frameToFill, "UIPanelButtonTemplate")
     frameToFill.LockMoveButton:SetSize(100, 25)
@@ -155,7 +155,7 @@ function AZP.BossTools.TheEye:FillOptionsPanel(frameToFill)
     frameToFill.ShowHideButton:SetSize(100, 25)
     frameToFill.ShowHideButton:SetPoint("TOPRIGHT", -50, -85)
     frameToFill.ShowHideButton:SetText("Hide Frame!")
-    frameToFill.ShowHideButton:SetScript("OnClick", function () AZP.BossTools.TheEye:ShowHideFrame() end)
+    frameToFill.ShowHideButton:SetScript("OnClick", function () AZP.BossTools.Sanctum.TheEye:ShowHideFrame() end)
 
     frameToFill.textlabels = {}
 
@@ -175,16 +175,16 @@ function AZP.BossTools.TheEye:FillOptionsPanel(frameToFill)
         AZPBTTheEyeLeftEditBoxes[i]:SetPoint("TOPLEFT", 20, -25 * i - 75)
         AZPBTTheEyeLeftEditBoxes[i]:SetFrameStrata("HIGH")
         AZPBTTheEyeLeftEditBoxes[i]:SetFrameLevel(10)
-        AZPBTTheEyeLeftEditBoxes[i]:SetScript("OnEnter", function() AZP.BossTools.TheEye:StartHoverOverCopy(AZPBTTheEyeLeftEditBoxes[i]) end)
-        AZPBTTheEyeLeftEditBoxes[i]:SetScript("OnLeave", function() AZP.BossTools.TheEye:StopHoverOverCopy(AZPBTTheEyeLeftEditBoxes[i]) end)
+        AZPBTTheEyeLeftEditBoxes[i]:SetScript("OnEnter", function() AZP.BossTools.Sanctum.TheEye:StartHoverOverCopy(AZPBTTheEyeLeftEditBoxes[i]) end)
+        AZPBTTheEyeLeftEditBoxes[i]:SetScript("OnLeave", function() AZP.BossTools.Sanctum.TheEye:StopHoverOverCopy(AZPBTTheEyeLeftEditBoxes[i]) end)
         AZPBTTheEyeLeftEditBoxes[i]:SetScript("OnMouseDown", function() AZPBTTheEyeLeftEditBoxes[i].EditBox:SetFocus() end)
         AZPBTTheEyeLeftEditBoxes[i].EditBox = CreateFrame("EditBox", nil, AZPBTTheEyeLeftEditBoxes[i], "InputBoxTemplate BackdropTemplate")
         AZPBTTheEyeLeftEditBoxes[i].EditBox:SetSize(AZPBTTheEyeLeftEditBoxes[i]:GetWidth(), AZPBTTheEyeLeftEditBoxes[i]:GetHeight())
         AZPBTTheEyeLeftEditBoxes[i].EditBox:SetPoint("CENTER", 0, 0)
         AZPBTTheEyeLeftEditBoxes[i].EditBox:SetFrameLevel(5)
         AZPBTTheEyeLeftEditBoxes[i].EditBox:SetAutoFocus(false)
-        AZPBTTheEyeLeftEditBoxes[i].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.TheEye:OnEditFocusLost("Left", i) end)
-        AZPBTTheEyeLeftEditBoxes[i].EditBox:SetScript("OnTextSet", function() AZP.BossTools.TheEye:OnEditFocusLost("Left", i) end)
+        AZPBTTheEyeLeftEditBoxes[i].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.Sanctum.TheEye:OnEditFocusLost("Left", i) end)
+        AZPBTTheEyeLeftEditBoxes[i].EditBox:SetScript("OnTextSet", function() AZP.BossTools.Sanctum.TheEye:OnEditFocusLost("Left", i) end)
         AZPBTTheEyeLeftEditBoxes[i].EditBox:SetBackdrop({
             bgFile = "Interface/Tooltips/UI-Tooltip-Background",
             insets = { left = -4, right = 1, top = 6, bottom = 6 },
@@ -196,16 +196,16 @@ function AZP.BossTools.TheEye:FillOptionsPanel(frameToFill)
         AZPBTTheEyeLeftEditBoxes[i + 10]:SetPoint("LEFT", AZPBTTheEyeLeftEditBoxes[i], "RIGHT", 10, 0)
         AZPBTTheEyeLeftEditBoxes[i + 10]:SetFrameStrata("HIGH")
         AZPBTTheEyeLeftEditBoxes[i + 10]:SetFrameLevel(10)
-        AZPBTTheEyeLeftEditBoxes[i + 10]:SetScript("OnEnter", function() AZP.BossTools.TheEye:StartHoverOverCopy(AZPBTTheEyeLeftEditBoxes[i + 10]) end)
-        AZPBTTheEyeLeftEditBoxes[i + 10]:SetScript("OnLeave", function() AZP.BossTools.TheEye:StopHoverOverCopy(AZPBTTheEyeLeftEditBoxes[i + 10]) end)
+        AZPBTTheEyeLeftEditBoxes[i + 10]:SetScript("OnEnter", function() AZP.BossTools.Sanctum.TheEye:StartHoverOverCopy(AZPBTTheEyeLeftEditBoxes[i + 10]) end)
+        AZPBTTheEyeLeftEditBoxes[i + 10]:SetScript("OnLeave", function() AZP.BossTools.Sanctum.TheEye:StopHoverOverCopy(AZPBTTheEyeLeftEditBoxes[i + 10]) end)
         AZPBTTheEyeLeftEditBoxes[i + 10]:SetScript("OnMouseDown", function() AZPBTTheEyeLeftEditBoxes[i + 10].EditBox:SetFocus() end)
         AZPBTTheEyeLeftEditBoxes[i + 10].EditBox = CreateFrame("EditBox", nil, AZPBTTheEyeLeftEditBoxes[i + 10], "InputBoxTemplate BackdropTemplate")
         AZPBTTheEyeLeftEditBoxes[i + 10].EditBox:SetSize(AZPBTTheEyeLeftEditBoxes[i + 10]:GetWidth(), AZPBTTheEyeLeftEditBoxes[i + 10]:GetHeight())
         AZPBTTheEyeLeftEditBoxes[i + 10].EditBox:SetPoint("CENTER", 0, 0)
         AZPBTTheEyeLeftEditBoxes[i + 10].EditBox:SetFrameLevel(5)
         AZPBTTheEyeLeftEditBoxes[i + 10].EditBox:SetAutoFocus(false)
-        AZPBTTheEyeLeftEditBoxes[i + 10].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.TheEye:OnEditFocusLost("Left", i + 10) end)
-        AZPBTTheEyeLeftEditBoxes[i + 10].EditBox:SetScript("OnTextSet", function() AZP.BossTools.TheEye:OnEditFocusLost("Left", i + 10) end)
+        AZPBTTheEyeLeftEditBoxes[i + 10].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.Sanctum.TheEye:OnEditFocusLost("Left", i + 10) end)
+        AZPBTTheEyeLeftEditBoxes[i + 10].EditBox:SetScript("OnTextSet", function() AZP.BossTools.Sanctum.TheEye:OnEditFocusLost("Left", i + 10) end)
         AZPBTTheEyeLeftEditBoxes[i + 10].EditBox:SetBackdrop({
             bgFile = "Interface/Tooltips/UI-Tooltip-Background",
             insets = { left = -4, right = 1, top = 6, bottom = 6 },
@@ -217,16 +217,16 @@ function AZP.BossTools.TheEye:FillOptionsPanel(frameToFill)
         AZPBTTheEyeRightEditBoxes[i]:SetPoint("LEFT", AZPBTTheEyeLeftEditBoxes[i + 10], "RIGHT", 25, 0)
         AZPBTTheEyeRightEditBoxes[i]:SetFrameStrata("HIGH")
         AZPBTTheEyeRightEditBoxes[i]:SetFrameLevel(10)
-        AZPBTTheEyeRightEditBoxes[i]:SetScript("OnEnter", function() AZP.BossTools.TheEye:StartHoverOverCopy(AZPBTTheEyeRightEditBoxes[i]) end)
-        AZPBTTheEyeRightEditBoxes[i]:SetScript("OnLeave", function() AZP.BossTools.TheEye:StopHoverOverCopy(AZPBTTheEyeRightEditBoxes[i]) end)
+        AZPBTTheEyeRightEditBoxes[i]:SetScript("OnEnter", function() AZP.BossTools.Sanctum.TheEye:StartHoverOverCopy(AZPBTTheEyeRightEditBoxes[i]) end)
+        AZPBTTheEyeRightEditBoxes[i]:SetScript("OnLeave", function() AZP.BossTools.Sanctum.TheEye:StopHoverOverCopy(AZPBTTheEyeRightEditBoxes[i]) end)
         AZPBTTheEyeRightEditBoxes[i]:SetScript("OnMouseDown", function() AZPBTTheEyeRightEditBoxes[i].EditBox:SetFocus() end)
         AZPBTTheEyeRightEditBoxes[i].EditBox = CreateFrame("EditBox", nil, AZPBTTheEyeRightEditBoxes[i], "InputBoxTemplate BackdropTemplate")
         AZPBTTheEyeRightEditBoxes[i].EditBox:SetSize(AZPBTTheEyeRightEditBoxes[i]:GetWidth(), AZPBTTheEyeRightEditBoxes[i]:GetHeight())
         AZPBTTheEyeRightEditBoxes[i].EditBox:SetPoint("CENTER", 0, 0)
         AZPBTTheEyeRightEditBoxes[i].EditBox:SetFrameLevel(5)
         AZPBTTheEyeRightEditBoxes[i].EditBox:SetAutoFocus(false)
-        AZPBTTheEyeRightEditBoxes[i].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.TheEye:OnEditFocusLost("Right", i) end)
-        AZPBTTheEyeRightEditBoxes[i].EditBox:SetScript("OnTextSet", function() AZP.BossTools.TheEye:OnEditFocusLost("Right", i) end)
+        AZPBTTheEyeRightEditBoxes[i].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.Sanctum.TheEye:OnEditFocusLost("Right", i) end)
+        AZPBTTheEyeRightEditBoxes[i].EditBox:SetScript("OnTextSet", function() AZP.BossTools.Sanctum.TheEye:OnEditFocusLost("Right", i) end)
         AZPBTTheEyeRightEditBoxes[i].EditBox:SetBackdrop({
             bgFile = "Interface/Tooltips/UI-Tooltip-Background",
             insets = { left = -4, right = 1, top = 6, bottom = 6 },
@@ -238,16 +238,16 @@ function AZP.BossTools.TheEye:FillOptionsPanel(frameToFill)
         AZPBTTheEyeRightEditBoxes[i + 10]:SetPoint("LEFT", AZPBTTheEyeRightEditBoxes[i], "RIGHT", 10, 0)
         AZPBTTheEyeRightEditBoxes[i + 10]:SetFrameStrata("HIGH")
         AZPBTTheEyeRightEditBoxes[i + 10]:SetFrameLevel(10)
-        AZPBTTheEyeRightEditBoxes[i + 10]:SetScript("OnEnter", function() AZP.BossTools.TheEye:StartHoverOverCopy(AZPBTTheEyeRightEditBoxes[i + 10]) end)
-        AZPBTTheEyeRightEditBoxes[i + 10]:SetScript("OnLeave", function() AZP.BossTools.TheEye:StopHoverOverCopy(AZPBTTheEyeRightEditBoxes[i + 10]) end)
+        AZPBTTheEyeRightEditBoxes[i + 10]:SetScript("OnEnter", function() AZP.BossTools.Sanctum.TheEye:StartHoverOverCopy(AZPBTTheEyeRightEditBoxes[i + 10]) end)
+        AZPBTTheEyeRightEditBoxes[i + 10]:SetScript("OnLeave", function() AZP.BossTools.Sanctum.TheEye:StopHoverOverCopy(AZPBTTheEyeRightEditBoxes[i + 10]) end)
         AZPBTTheEyeRightEditBoxes[i + 10]:SetScript("OnMouseDown", function() AZPBTTheEyeRightEditBoxes[i + 10].EditBox:SetFocus() end)
         AZPBTTheEyeRightEditBoxes[i + 10].EditBox = CreateFrame("EditBox", nil, AZPBTTheEyeRightEditBoxes[i + 10], "InputBoxTemplate BackdropTemplate")
         AZPBTTheEyeRightEditBoxes[i + 10].EditBox:SetSize(AZPBTTheEyeRightEditBoxes[i + 10]:GetWidth(), AZPBTTheEyeRightEditBoxes[i + 10]:GetHeight())
         AZPBTTheEyeRightEditBoxes[i + 10].EditBox:SetPoint("CENTER", 0, 0)
         AZPBTTheEyeRightEditBoxes[i + 10].EditBox:SetFrameLevel(5)
         AZPBTTheEyeRightEditBoxes[i + 10].EditBox:SetAutoFocus(false)
-        AZPBTTheEyeRightEditBoxes[i + 10].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.TheEye:OnEditFocusLost("Right", i + 10) end)
-        AZPBTTheEyeRightEditBoxes[i + 10].EditBox:SetScript("OnTextSet", function() AZP.BossTools.TheEye:OnEditFocusLost("Right", i + 10) end)
+        AZPBTTheEyeRightEditBoxes[i + 10].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.Sanctum.TheEye:OnEditFocusLost("Right", i + 10) end)
+        AZPBTTheEyeRightEditBoxes[i + 10].EditBox:SetScript("OnTextSet", function() AZP.BossTools.Sanctum.TheEye:OnEditFocusLost("Right", i + 10) end)
         AZPBTTheEyeRightEditBoxes[i + 10].EditBox:SetBackdrop({
             bgFile = "Interface/Tooltips/UI-Tooltip-Background",
             insets = { left = -4, right = 1, top = 6, bottom = 6 },
@@ -290,8 +290,8 @@ function AZP.BossTools.TheEye:FillOptionsPanel(frameToFill)
             insets = { left = 2, right = 2, top = 2, bottom = 2 },
         })
         curFrame:SetBackdropColor(1, 1, 1, 1)
-        curFrame:SetScript("OnMouseDown", function() GemFrame = curFrame AZP.BossTools.TheEye:StartHoveringCopy() end)
-        curFrame:SetScript("OnMouseUp", function() AZP.BossTools.TheEye:StopHoveringCopy() end)
+        curFrame:SetScript("OnMouseDown", function() GemFrame = curFrame AZP.BossTools.Sanctum.TheEye:StartHoveringCopy() end)
+        curFrame:SetScript("OnMouseUp", function() AZP.BossTools.Sanctum.TheEye:StopHoveringCopy() end)
 
         curFrame.NameLabel = curFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
         curFrame.NameLabel:SetSize(85, 20)
@@ -309,7 +309,7 @@ function AZP.BossTools.TheEye:FillOptionsPanel(frameToFill)
     frameToFill:Hide()
 end
 
-function AZP.BossTools.TheEye:RefreshNames()
+function AZP.BossTools.Sanctum.TheEye:RefreshNames()
     local allUnitNames = {}
     local allNameLabels = TheEyeOptions.AllNamesFrame.allNameLabels
 
@@ -339,8 +339,8 @@ function AZP.BossTools.TheEye:RefreshNames()
                 insets = { left = 2, right = 2, top = 2, bottom = 2 },
             })
             curFrame:SetBackdropColor(1, 1, 1, 1)
-            curFrame:SetScript("OnMouseDown", function() GemFrame = curFrame AZP.BossTools.TheEye:StartHoveringCopy() end)
-            curFrame:SetScript("OnMouseUp", function() AZP.BossTools.TheEye:StopHoveringCopy() end)
+            curFrame:SetScript("OnMouseDown", function() GemFrame = curFrame AZP.BossTools.Sanctum.TheEye:StartHoveringCopy() end)
+            curFrame:SetScript("OnMouseUp", function() AZP.BossTools.Sanctum.TheEye:StopHoveringCopy() end)
 
             curFrame.NameLabel = curFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
             curFrame.NameLabel:SetSize(85, 20)
@@ -355,7 +355,7 @@ function AZP.BossTools.TheEye:RefreshNames()
 end
 
 
-function AZP.BossTools.TheEye:OnEditFocusLost(sides, index)
+function AZP.BossTools.Sanctum.TheEye:OnEditFocusLost(sides, index)
     local editBoxFrame = nil
     if sides == "Left" then
         editBoxFrame = AZPBTTheEyeLeftEditBoxes[index].EditBox
@@ -373,7 +373,7 @@ function AZP.BossTools.TheEye:OnEditFocusLost(sides, index)
                     local curGUID = UnitGUID("raid" .. k)
                     AZPBTTheEyeGUIDs[curGUID] = curName
                     AssignedPlayers[sides][index] = curGUID
-                    AZP.BossTools.TheEye:UpdateMainFrame()
+                    AZP.BossTools.Sanctum.TheEye:UpdateMainFrame()
                 end
             end
         end
@@ -384,7 +384,7 @@ function AZP.BossTools.TheEye:OnEditFocusLost(sides, index)
     AZPBTTheEyeSides = AssignedPlayers
 end
 
-function AZP.BossTools.TheEye:GetRaidIDs(side)
+function AZP.BossTools.Sanctum.TheEye:GetRaidIDs(side)
     local FoundRaidIDs = nil
     for index,guid in ipairs(side) do
         for raidID=1,40 do
@@ -400,18 +400,18 @@ function AZP.BossTools.TheEye:GetRaidIDs(side)
     return FoundRaidIDs
 end
 
-function AZP.BossTools.TheEye:ShareAssignees()
+function AZP.BossTools.Sanctum.TheEye:ShareAssignees()
     for ring, players in pairs(AssignedPlayers) do
         if players ~= nil then
-            local leftPlayerString = AZP.BossTools.TheEye:GetRaidIDs(AssignedPlayers.Left)
-            local rightPlayerString = AZP.BossTools.TheEye:GetRaidIDs(AssignedPlayers.Right)
+            local leftPlayerString = AZP.BossTools.Sanctum.TheEye:GetRaidIDs(AssignedPlayers.Left)
+            local rightPlayerString = AZP.BossTools.Sanctum.TheEye:GetRaidIDs(AssignedPlayers.Right)
             local message = string.format("%s:%s", leftPlayerString or "", rightPlayerString or "")
             C_ChatInfo.SendAddonMessage("AZPEYEINFO", message ,"RAID", 1)
         end
     end
 end
 
-function AZP.BossTools.TheEye:ReceiveAssignees(receiveAssignees)
+function AZP.BossTools.Sanctum.TheEye:ReceiveAssignees(receiveAssignees)
     local left, right = string.match(receiveAssignees, "([^:]*):([^:]*)")
     AssignedPlayers.Left = {}
     AssignedPlayers.Right = {}
@@ -423,10 +423,10 @@ function AZP.BossTools.TheEye:ReceiveAssignees(receiveAssignees)
         table.insert(AssignedPlayers.Right, UnitGUID(string.format("raid%d", RaidID)))
     end
 
-    AZP.BossTools.TheEye:UpdateMainFrame()
+    AZP.BossTools.Sanctum.TheEye:UpdateMainFrame()
 end
 
-function AZP.BossTools.TheEye:CacheRaidNames()
+function AZP.BossTools.Sanctum.TheEye:CacheRaidNames()
     if IsInRaid() == true then
         for k = 1, 40 do
             local curName = GetRaidRosterInfo(k)
@@ -441,7 +441,7 @@ function AZP.BossTools.TheEye:CacheRaidNames()
     end
 end
 
-function AZP.BossTools.TheEye:UpdateMainFrame()
+function AZP.BossTools.Sanctum.TheEye:UpdateMainFrame()
     if IsInRaid() == false then
         print("BossTools TheEye only works in raid.")
         return
@@ -480,7 +480,7 @@ function AZP.BossTools.TheEye:UpdateMainFrame()
     end
 end
 
-function AZP.BossTools.TheEye:StartHoveringCopy()
+function AZP.BossTools.Sanctum.TheEye:StartHoveringCopy()
     dragging = true
     local v1, v2, v3, v4, v5 = GemFrame:GetPoint()
     previousPoint = {v1, v2, v3, v4, v5}
@@ -497,7 +497,7 @@ function AZP.BossTools.TheEye:StartHoveringCopy()
     end)
 end
 
-function AZP.BossTools.TheEye:StopHoveringCopy()
+function AZP.BossTools.Sanctum.TheEye:StopHoveringCopy()
     GemFrame:SetScript("OnUpdate", nil)
     if previousParent ~= nil then
         if dragging == true then
@@ -512,38 +512,38 @@ function AZP.BossTools.TheEye:StopHoveringCopy()
     GemFrame = nil
 end
 
-function AZP.BossTools.TheEye:StartHoverOverCopy(SocketFrame)
+function AZP.BossTools.Sanctum.TheEye:StartHoverOverCopy(SocketFrame)
     if dragging == true then
         GemFrame.parent = SocketFrame
         SocketFrame.EditBox:SetBackdropColor(0.25, 1, 0.25, 1)
     end
 end
 
-function AZP.BossTools.TheEye:StopHoverOverCopy(SocketFrame)
+function AZP.BossTools.Sanctum.TheEye:StopHoverOverCopy(SocketFrame)
     SocketFrame.EditBox:SetBackdropColor(1, 1, 1, 1)
     if GemFrame ~= nil then if GemFrame.parent ~= nil then GemFrame.parent = nil end end
 end
 
-function AZP.BossTools.TheEye:OnEvent(self, event, ...)
+function AZP.BossTools.Sanctum.TheEye:OnEvent(self, event, ...)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-        AZP.BossTools.TheEye.Events:CombatLogEventUnfiltered(...)
+        AZP.BossTools.Sanctum.TheEye.Events:CombatLogEventUnfiltered(...)
     elseif event == "CHAT_MSG_ADDON" then
-        AZP.BossTools.TheEye.Events:ChatMsgAddon(...)
+        AZP.BossTools.Sanctum.TheEye.Events:ChatMsgAddon(...)
     elseif event == "GROUP_ROSTER_UPDATE" then
-        AZP.BossTools.TheEye.Events:GroupRosterUpdate(...)
+        AZP.BossTools.Sanctum.TheEye.Events:GroupRosterUpdate(...)
     end
 end
 
-function AZP.BossTools.TheEye.Events:CombatLogEventUnfiltered(...)
+function AZP.BossTools.Sanctum.TheEye.Events:CombatLogEventUnfiltered(...)
     local _, SubEvent, _, _, _, _, _, _, _, _, _, SpellID = CombatLogGetCurrentEventInfo()
     if SubEvent == "SPELL_CAST_SUCCESS" then
         if SpellID == AZP.BossTools.IDs.TheEye.Spell.StygianEjection then
-            AZP.BossTools.TheEye.Events:StygianEjection()
+            AZP.BossTools.Sanctum.TheEye.Events:StygianEjection()
         end
     end
 end
 
-function AZP.BossTools.TheEye.Events:StygianEjection()
+function AZP.BossTools.Sanctum.TheEye.Events:StygianEjection()
     local curGUID = UnitGUID("PLAYER")
     local side = nil
     if tContains(AZPBTTheEyeSides.Left, curGUID) then
@@ -558,17 +558,18 @@ function AZP.BossTools.TheEye.Events:StygianEjection()
     end
 end
 
-function AZP.BossTools.TheEye.Events:ChatMsgAddon(...)
+function AZP.BossTools.Sanctum.TheEye.Events:ChatMsgAddon(...)
     local prefix, payload, _, sender = ...
     if prefix == "AZPEYEINFO" then
-        AZP.BossTools.TheEye:CacheRaidNames()
-        AZP.BossTools.TheEye:ReceiveAssignees(payload)
+        AZP.BossTools.Sanctum.TheEye:CacheRaidNames()
+        AZP.BossTools.Sanctum.TheEye:ReceiveAssignees(payload)
         AZP.BossTools:ShowReceiveFrame(sender, "Sanctum", "TheEye")
+        AZP.BossTools.ReceiveFrame:Show()
     end
 end
 
-function AZP.BossTools.TheEye.Events:GroupRosterUpdate(...)
-    AZP.BossTools.TheEye:RefreshNames(...)
+function AZP.BossTools.Sanctum.TheEye.Events:GroupRosterUpdate(...)
+    AZP.BossTools.Sanctum.TheEye:RefreshNames(...)
 end
 
-AZP.BossTools.TheEye:OnLoadSelf()
+AZP.BossTools.Sanctum.TheEye:OnLoadSelf()

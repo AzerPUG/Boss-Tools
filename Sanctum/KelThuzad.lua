@@ -1,8 +1,8 @@
 if AZP == nil then AZP = {} end
 if AZP.VersionControl == nil then AZP.VersionControl = {} end
 
-if AZP.BossTools.KelThuzad == nil then AZP.BossTools.KelThuzad = {} end
-if AZP.BossTools.KelThuzad.Events == nil then AZP.BossTools.KelThuzad.Events = {} end
+if AZP.BossTools.Sanctum.KelThuzad == nil then AZP.BossTools.Sanctum.KelThuzad = {} end
+if AZP.BossTools.Sanctum.KelThuzad.Events == nil then AZP.BossTools.Sanctum.KelThuzad.Events = {} end
 
 local AssignedPlayers = {}
 
@@ -25,16 +25,16 @@ local curTimer = 0
 
 local KelThuzadFrame, KelThuzadOptions, EventFrame = nil, nil, nil
 
-function AZP.BossTools.KelThuzad:OnLoad()
+function AZP.BossTools.Sanctum.KelThuzad:OnLoad()
     EventFrame = CreateFrame("FRAME", nil)
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     EventFrame:RegisterEvent("ENCOUNTER_END")
-    EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.KelThuzad:OnEvent(...) end)
+    EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Sanctum.KelThuzad:OnEvent(...) end)
 
-    AZP.BossTools.KelThuzad:CreateKelThuzadFrame()
+    AZP.BossTools.Sanctum.KelThuzad:CreateKelThuzadFrame()
 end
 
-function AZP.BossTools.KelThuzad:CreateKelThuzadFrame()
+function AZP.BossTools.Sanctum.KelThuzad:CreateKelThuzadFrame()
     KelThuzadFrame = CreateFrame("FRAME", nil, UIPanel, "BackdropTemplate")
     AZP.BossTools.BossFrames.KelThuzad = KelThuzadFrame
     KelThuzadFrame:SetSize(150, 75)
@@ -72,7 +72,7 @@ function AZP.BossTools.KelThuzad:CreateKelThuzadFrame()
         KelThuzadFrame.startButton = CreateFrame("BUTTON", nil, KelThuzadFrame)
         KelThuzadFrame.startButton:SetSize(22, 22)
         KelThuzadFrame.startButton:SetPoint("TOPLEFT", -2, 0)
-        KelThuzadFrame.startButton:SetScript("OnMouseDown", function() AZP.BossTools.KelThuzad:CreateTimer() end)
+        KelThuzadFrame.startButton:SetScript("OnMouseDown", function() AZP.BossTools.Sanctum.KelThuzad:CreateTimer() end)
         KelThuzadFrame.startButton:SetHighlightTexture(GetFileIDFromPath("Interface\\Timer\\ChallengesGlow-Logo.blp"))
 
         KelThuzadFrame.startButton.Texture = KelThuzadFrame.startButton:CreateTexture(nil, "ARTWORK")
@@ -91,14 +91,14 @@ end
 
 
 
-function AZP.BossTools.KelThuzad:CreateTimer()
+function AZP.BossTools.Sanctum.KelThuzad:CreateTimer()
     phaseCounter = phaseCounter + 1
     KelThuzadFrame.SubHeader:SetText(percStrings[phaseCounter])
     curTimer = phaseTime
-    C_Timer.NewTicker(1, function() AZP.BossTools.KelThuzad:TickTimer() end, phaseTime)
+    C_Timer.NewTicker(1, function() AZP.BossTools.Sanctum.KelThuzad:TickTimer() end, phaseTime)
 end
 
-function AZP.BossTools.KelThuzad:TickTimer()
+function AZP.BossTools.Sanctum.KelThuzad:TickTimer()
     local preString, postString = "\124cFF", "\124r"
     local midString = nil
         if curTimer  > 30 then midString = "00FF00"
@@ -110,23 +110,23 @@ function AZP.BossTools.KelThuzad:TickTimer()
     curTimer = curTimer - 1
 end
 
-function AZP.BossTools.KelThuzad:OnEvent(_, event, ...)
+function AZP.BossTools.Sanctum.KelThuzad:OnEvent(_, event, ...)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-        AZP.BossTools.KelThuzad.Events:CombatLogEventUnfiltered()
+        AZP.BossTools.Sanctum.KelThuzad.Events:CombatLogEventUnfiltered()
     elseif event == "ENCOUNTER_END" then
         phaseCounter = 0
     end
 end
 
-function AZP.BossTools.KelThuzad.Events:CombatLogEventUnfiltered()
+function AZP.BossTools.Sanctum.KelThuzad.Events:CombatLogEventUnfiltered()
     local _, SubEvent, _, _, _, _, _, TargetGUID, _, _, _, SpellID = CombatLogGetCurrentEventInfo()
     if SubEvent == "SPELL_AURA_APPLIED" then
         if SpellID == buffID then
             if TargetGUID == UnitGUID("PLAYER") then
-                AZP.BossTools.KelThuzad:CreateTimer()
+                AZP.BossTools.Sanctum.KelThuzad:CreateTimer()
             end
         end
     end
 end
 
-AZP.BossTools.KelThuzad:OnLoad()
+AZP.BossTools.Sanctum.KelThuzad:OnLoad()

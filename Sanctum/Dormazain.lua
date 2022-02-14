@@ -1,8 +1,8 @@
 if AZP == nil then AZP = {} end
 if AZP.VersionControl == nil then AZP.VersionControl = {} end
 
-if AZP.BossTools.Dormazain == nil then AZP.BossTools.Dormazain = {} end
-if AZP.BossTools.Dormazain.Events == nil then AZP.BossTools.Dormazain.Events = {} end
+if AZP.BossTools.Sanctum.Dormazain == nil then AZP.BossTools.Sanctum.Dormazain = {} end
+if AZP.BossTools.Sanctum.Dormazain.Events == nil then AZP.BossTools.Sanctum.Dormazain.Events = {} end
 
 local AssignedPlayers = {}
 local AZPBTDormazainGUIDs, AZPBTDormazainLeftEditBoxes, AZPBTDormazainMidEditBoxes, AZPBTDormazainRightEditBoxes = {}, {}, {}, {}
@@ -18,7 +18,7 @@ local Armed = false
 local BossEnergySecondCounter = 0
 local BossEnertyTimeStamps = {}
 
-function AZP.BossTools.Dormazain:OnLoadBoth()
+function AZP.BossTools.Sanctum.Dormazain:OnLoadBoth()
     for i=1,6 do
         local chainsSet = string.format("Chain%d", i)
         AssignedPlayers[chainsSet] = {}
@@ -39,11 +39,11 @@ function AZP.BossTools.Dormazain:OnLoadBoth()
     DormazainOptions:RegisterForDrag("LeftButton")
     DormazainOptions:SetScript("OnDragStart", DormazainOptions.StartMoving)
     DormazainOptions:SetScript("OnDragStop", function() DormazainOptions:StopMovingOrSizing() end)
-    AZP.BossTools.Dormazain:FillOptionsPanel(DormazainOptions)
-    AZP.BossTools.Dormazain:CreateMainFrame()
+    AZP.BossTools.Sanctum.Dormazain:FillOptionsPanel(DormazainOptions)
+    AZP.BossTools.Sanctum.Dormazain:CreateMainFrame()
 end
 
-function AZP.BossTools.Dormazain:OnLoadSelf()
+function AZP.BossTools.Sanctum.Dormazain:OnLoadSelf()
     C_ChatInfo.RegisterAddonMessagePrefix("AZPDORMINFO")
 
     EventFrame = CreateFrame("FRAME", nil)
@@ -52,12 +52,12 @@ function AZP.BossTools.Dormazain:OnLoadSelf()
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     EventFrame:RegisterEvent("ENCOUNTER_END")
     EventFrame:RegisterEvent("ENCOUNTER_START")
-    EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Dormazain:OnEvent(...) end)
+    EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Sanctum.Dormazain:OnEvent(...) end)
 
-    AZP.BossTools.Dormazain:OnLoadBoth()
+    AZP.BossTools.Sanctum.Dormazain:OnLoadBoth()
 end
 
-function AZP.BossTools.Dormazain:CreateMainFrame()
+function AZP.BossTools.Sanctum.Dormazain:CreateMainFrame()
     DormazainFrame = CreateFrame("FRAME", nil, UIPanel, "BackdropTemplate")
     AZP.BossTools.BossFrames.Dormazain = DormazainFrame
     DormazainFrame:SetSize(300, 125)
@@ -127,7 +127,7 @@ function AZP.BossTools.Dormazain:CreateMainFrame()
     DormazainFrame:Hide()
 end
 
-function AZP.BossTools.Dormazain:FillOptionsPanel(frameToFill)
+function AZP.BossTools.Sanctum.Dormazain:FillOptionsPanel(frameToFill)
     frameToFill.header = frameToFill:CreateFontString("frameToFill", "ARTWORK", "GameFontNormalHuge")
     frameToFill.header:SetPoint("TOP", 0, -10)
     frameToFill.header:SetText("|cFF00FFFFAzerPUG's BossTools Options!|r")
@@ -148,7 +148,7 @@ function AZP.BossTools.Dormazain:FillOptionsPanel(frameToFill)
     frameToFill.ShareButton:SetSize(100, 25)
     frameToFill.ShareButton:SetPoint("TOPRIGHT", -25, -50)
     frameToFill.ShareButton:SetText("Share List")
-    frameToFill.ShareButton:SetScript("OnClick", function() AZP.BossTools.Dormazain:ShareAssignees() end )
+    frameToFill.ShareButton:SetScript("OnClick", function() AZP.BossTools.Sanctum.Dormazain:ShareAssignees() end )
 
     frameToFill.LockMoveButton = CreateFrame("Button", nil, frameToFill, "UIPanelButtonTemplate")
     frameToFill.LockMoveButton:SetSize(100, 25)
@@ -170,7 +170,7 @@ function AZP.BossTools.Dormazain:FillOptionsPanel(frameToFill)
     frameToFill.ShowHideButton:SetSize(100, 25)
     frameToFill.ShowHideButton:SetPoint("TOPRIGHT", -25, -100)
     frameToFill.ShowHideButton:SetText("Hide Frame!")
-    frameToFill.ShowHideButton:SetScript("OnClick", function () AZP.BossTools.Dormazain:ShowHideFrame() end)
+    frameToFill.ShowHideButton:SetScript("OnClick", function () AZP.BossTools.Sanctum.Dormazain:ShowHideFrame() end)
 
     frameToFill.textlabels = {}
 
@@ -200,16 +200,16 @@ function AZP.BossTools.Dormazain:FillOptionsPanel(frameToFill)
         AZPBTDormazainLeftEditBoxes[i]:SetPoint("LEFT", frameToFill.textlabels[i], "RIGHT", 10, 0)
         AZPBTDormazainLeftEditBoxes[i]:SetFrameStrata("HIGH")
         AZPBTDormazainLeftEditBoxes[i]:SetFrameLevel(10)
-        AZPBTDormazainLeftEditBoxes[i]:SetScript("OnEnter", function() AZP.BossTools.Dormazain:StartHoverOverCopy(AZPBTDormazainLeftEditBoxes[i]) end)
-        AZPBTDormazainLeftEditBoxes[i]:SetScript("OnLeave", function() AZP.BossTools.Dormazain:StopHoverOverCopy(AZPBTDormazainLeftEditBoxes[i]) end)
+        AZPBTDormazainLeftEditBoxes[i]:SetScript("OnEnter", function() AZP.BossTools.Sanctum.Dormazain:StartHoverOverCopy(AZPBTDormazainLeftEditBoxes[i]) end)
+        AZPBTDormazainLeftEditBoxes[i]:SetScript("OnLeave", function() AZP.BossTools.Sanctum.Dormazain:StopHoverOverCopy(AZPBTDormazainLeftEditBoxes[i]) end)
         AZPBTDormazainLeftEditBoxes[i]:SetScript("OnMouseDown", function() AZPBTDormazainLeftEditBoxes[i].EditBox:SetFocus() end)
         AZPBTDormazainLeftEditBoxes[i].EditBox = CreateFrame("EditBox", nil, AZPBTDormazainLeftEditBoxes[i], "InputBoxTemplate BackdropTemplate")
         AZPBTDormazainLeftEditBoxes[i].EditBox:SetSize(100, 25)
         AZPBTDormazainLeftEditBoxes[i].EditBox:SetPoint("CENTER", 0, 0)
         AZPBTDormazainLeftEditBoxes[i].EditBox:SetFrameLevel(5)
         AZPBTDormazainLeftEditBoxes[i].EditBox:SetAutoFocus(false)
-        AZPBTDormazainLeftEditBoxes[i].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.Dormazain:OnEditFocusLost("Left", i) end)
-        AZPBTDormazainLeftEditBoxes[i].EditBox:SetScript("OnTextSet", function() AZP.BossTools.Dormazain:OnEditFocusLost("Left", i) end)
+        AZPBTDormazainLeftEditBoxes[i].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.Sanctum.Dormazain:OnEditFocusLost("Left", i) end)
+        AZPBTDormazainLeftEditBoxes[i].EditBox:SetScript("OnTextSet", function() AZP.BossTools.Sanctum.Dormazain:OnEditFocusLost("Left", i) end)
         AZPBTDormazainLeftEditBoxes[i].EditBox:SetBackdrop({
             bgFile = "Interface/Tooltips/UI-Tooltip-Background",
             insets = { left = -4, right = 1, top = 6, bottom = 6 },
@@ -221,16 +221,16 @@ function AZP.BossTools.Dormazain:FillOptionsPanel(frameToFill)
         AZPBTDormazainMidEditBoxes[i]:SetPoint("LEFT", AZPBTDormazainLeftEditBoxes[i], "RIGHT", 10, 0)
         AZPBTDormazainMidEditBoxes[i]:SetFrameStrata("HIGH")
         AZPBTDormazainMidEditBoxes[i]:SetFrameLevel(10)
-        AZPBTDormazainMidEditBoxes[i]:SetScript("OnEnter", function() AZP.BossTools.Dormazain:StartHoverOverCopy(AZPBTDormazainMidEditBoxes[i]) end)
-        AZPBTDormazainMidEditBoxes[i]:SetScript("OnLeave", function() AZP.BossTools.Dormazain:StopHoverOverCopy(AZPBTDormazainMidEditBoxes[i]) end)
+        AZPBTDormazainMidEditBoxes[i]:SetScript("OnEnter", function() AZP.BossTools.Sanctum.Dormazain:StartHoverOverCopy(AZPBTDormazainMidEditBoxes[i]) end)
+        AZPBTDormazainMidEditBoxes[i]:SetScript("OnLeave", function() AZP.BossTools.Sanctum.Dormazain:StopHoverOverCopy(AZPBTDormazainMidEditBoxes[i]) end)
         AZPBTDormazainMidEditBoxes[i]:SetScript("OnMouseDown", function() AZPBTDormazainMidEditBoxes[i].EditBox:SetFocus() end)
         AZPBTDormazainMidEditBoxes[i].EditBox = CreateFrame("EditBox", nil, AZPBTDormazainMidEditBoxes[i], "InputBoxTemplate BackdropTemplate")
         AZPBTDormazainMidEditBoxes[i].EditBox:SetSize(100, 25)
         AZPBTDormazainMidEditBoxes[i].EditBox:SetPoint("CENTER", 0, 0)
         AZPBTDormazainMidEditBoxes[i].EditBox:SetFrameLevel(5)
         AZPBTDormazainMidEditBoxes[i].EditBox:SetAutoFocus(false)
-        AZPBTDormazainMidEditBoxes[i].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.Dormazain:OnEditFocusLost("Mid", i) end)
-        AZPBTDormazainMidEditBoxes[i].EditBox:SetScript("OnTextSet", function() AZP.BossTools.Dormazain:OnEditFocusLost("Mid", i) end)
+        AZPBTDormazainMidEditBoxes[i].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.Sanctum.Dormazain:OnEditFocusLost("Mid", i) end)
+        AZPBTDormazainMidEditBoxes[i].EditBox:SetScript("OnTextSet", function() AZP.BossTools.Sanctum.Dormazain:OnEditFocusLost("Mid", i) end)
         AZPBTDormazainMidEditBoxes[i].EditBox:SetBackdrop({
             bgFile = "Interface/Tooltips/UI-Tooltip-Background",
             insets = { left = -4, right = 1, top = 6, bottom = 6 },
@@ -242,16 +242,16 @@ function AZP.BossTools.Dormazain:FillOptionsPanel(frameToFill)
         AZPBTDormazainRightEditBoxes[i]:SetPoint("LEFT", AZPBTDormazainMidEditBoxes[i], "RIGHT", 10, 0)
         AZPBTDormazainRightEditBoxes[i]:SetFrameStrata("HIGH")
         AZPBTDormazainRightEditBoxes[i]:SetFrameLevel(10)
-        AZPBTDormazainRightEditBoxes[i]:SetScript("OnEnter", function() AZP.BossTools.Dormazain:StartHoverOverCopy(AZPBTDormazainRightEditBoxes[i]) end)
-        AZPBTDormazainRightEditBoxes[i]:SetScript("OnLeave", function() AZP.BossTools.Dormazain:StopHoverOverCopy(AZPBTDormazainRightEditBoxes[i]) end)
+        AZPBTDormazainRightEditBoxes[i]:SetScript("OnEnter", function() AZP.BossTools.Sanctum.Dormazain:StartHoverOverCopy(AZPBTDormazainRightEditBoxes[i]) end)
+        AZPBTDormazainRightEditBoxes[i]:SetScript("OnLeave", function() AZP.BossTools.Sanctum.Dormazain:StopHoverOverCopy(AZPBTDormazainRightEditBoxes[i]) end)
         AZPBTDormazainRightEditBoxes[i]:SetScript("OnMouseDown", function() AZPBTDormazainRightEditBoxes[i].EditBox:SetFocus() end)
         AZPBTDormazainRightEditBoxes[i].EditBox = CreateFrame("EditBox", nil, AZPBTDormazainRightEditBoxes[i], "InputBoxTemplate BackdropTemplate")
         AZPBTDormazainRightEditBoxes[i].EditBox:SetSize(100, 25)
         AZPBTDormazainRightEditBoxes[i].EditBox:SetPoint("CENTER", 0, 0)
         AZPBTDormazainRightEditBoxes[i].EditBox:SetFrameLevel(5)
         AZPBTDormazainRightEditBoxes[i].EditBox:SetAutoFocus(false)
-        AZPBTDormazainRightEditBoxes[i].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.Dormazain:OnEditFocusLost("Right", i) end)
-        AZPBTDormazainRightEditBoxes[i].EditBox:SetScript("OnTextSet", function() AZP.BossTools.Dormazain:OnEditFocusLost("Right", i) end)
+        AZPBTDormazainRightEditBoxes[i].EditBox:SetScript("OnEditFocusLost", function() AZP.BossTools.Sanctum.Dormazain:OnEditFocusLost("Right", i) end)
+        AZPBTDormazainRightEditBoxes[i].EditBox:SetScript("OnTextSet", function() AZP.BossTools.Sanctum.Dormazain:OnEditFocusLost("Right", i) end)
         AZPBTDormazainRightEditBoxes[i].EditBox:SetBackdrop({
             bgFile = "Interface/Tooltips/UI-Tooltip-Background",
             insets = { left = -4, right = 1, top = 6, bottom = 6 },
@@ -294,8 +294,8 @@ function AZP.BossTools.Dormazain:FillOptionsPanel(frameToFill)
             insets = { left = 2, right = 2, top = 2, bottom = 2 },
         })
         curFrame:SetBackdropColor(1, 1, 1, 1)
-        curFrame:SetScript("OnMouseDown", function() GemFrame = curFrame AZP.BossTools.Dormazain:StartHoveringCopy() end)
-        curFrame:SetScript("OnMouseUp", function() AZP.BossTools.Dormazain:StopHoveringCopy() end)
+        curFrame:SetScript("OnMouseDown", function() GemFrame = curFrame AZP.BossTools.Sanctum.Dormazain:StartHoveringCopy() end)
+        curFrame:SetScript("OnMouseUp", function() AZP.BossTools.Sanctum.Dormazain:StopHoveringCopy() end)
 
         curFrame.NameLabel = curFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
         curFrame.NameLabel:SetSize(85, 20)
@@ -313,7 +313,7 @@ function AZP.BossTools.Dormazain:FillOptionsPanel(frameToFill)
     frameToFill:Hide()
 end
 
-function AZP.BossTools.Dormazain:RefreshNames()
+function AZP.BossTools.Sanctum.Dormazain:RefreshNames()
     local allUnitNames = {}
     local allNameLabels = DormazainOptions.AllNamesFrame.allNameLabels
 
@@ -343,8 +343,8 @@ function AZP.BossTools.Dormazain:RefreshNames()
                 insets = { left = 2, right = 2, top = 2, bottom = 2 },
             })
             curFrame:SetBackdropColor(1, 1, 1, 1)
-            curFrame:SetScript("OnMouseDown", function() GemFrame = curFrame AZP.BossTools.Dormazain:StartHoveringCopy() end)
-            curFrame:SetScript("OnMouseUp", function() AZP.BossTools.Dormazain:StopHoveringCopy() end)
+            curFrame:SetScript("OnMouseDown", function() GemFrame = curFrame AZP.BossTools.Sanctum.Dormazain:StartHoveringCopy() end)
+            curFrame:SetScript("OnMouseUp", function() AZP.BossTools.Sanctum.Dormazain:StopHoveringCopy() end)
 
             curFrame.NameLabel = curFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
             curFrame.NameLabel:SetSize(85, 20)
@@ -358,7 +358,7 @@ function AZP.BossTools.Dormazain:RefreshNames()
     end
 end
 
-function AZP.BossTools.Dormazain:OnEditFocusLost(position, chains)
+function AZP.BossTools.Sanctum.Dormazain:OnEditFocusLost(position, chains)
     local editBoxFrame = nil
     local chainsSet = string.format("Chain%d", chains)
     if position == "Left" then
@@ -379,7 +379,7 @@ function AZP.BossTools.Dormazain:OnEditFocusLost(position, chains)
                     local curGUID = UnitGUID("raid" .. k)
                     AZPBTDormazainGUIDs[curGUID] = curName
                     AssignedPlayers[chainsSet][position] = curGUID
-                    AZP.BossTools.Dormazain:UpdateMainFrame()
+                    AZP.BossTools.Sanctum.Dormazain:UpdateMainFrame()
                 end
             end
         end
@@ -392,7 +392,7 @@ function AZP.BossTools.Dormazain:OnEditFocusLost(position, chains)
     AZPBTDormazainChains = AssignedPlayers
 end
 
-function AZP.BossTools.Dormazain:ShareAssignees()
+function AZP.BossTools.Sanctum.Dormazain:ShareAssignees()
     for ring, players in pairs(AssignedPlayers) do
         if players ~= nil then
             local message = string.format("%s:%s:%s:%s", ring, players.Left or "", players.Mid or "", players.Right or "")
@@ -401,7 +401,7 @@ function AZP.BossTools.Dormazain:ShareAssignees()
     end
 end
 
-function AZP.BossTools.Dormazain:CacheRaidNames()
+function AZP.BossTools.Sanctum.Dormazain:CacheRaidNames()
     if IsInRaid() == true then
         for k = 1, 40 do
             local curName = GetRaidRosterInfo(k)
@@ -416,7 +416,7 @@ function AZP.BossTools.Dormazain:CacheRaidNames()
     end
 end
 
-function AZP.BossTools.Dormazain:UpdateMainFrame()
+function AZP.BossTools.Sanctum.Dormazain:UpdateMainFrame()
     if IsInRaid() == false then
         print("BossTools Dormazain only works in raid.")
         return
@@ -469,19 +469,19 @@ function AZP.BossTools.Dormazain:UpdateMainFrame()
     end
 end
 
-function AZP.BossTools.Dormazain:ReceiveAssignees(receiveAssignees)
+function AZP.BossTools.Sanctum.Dormazain:ReceiveAssignees(receiveAssignees)
     local chains, left, mid, right = string.match(receiveAssignees, "([^:]*):([^:]*):([^:]*):([^:]*)")
     if left == "" then left = nil end
     if mid == "" then mid = nil end
     if right == "" then right = nil end
     AssignedPlayers[chains] = {Left = left, Mid = mid, Right = right}
     AZPBTDormazainChains = AssignedPlayers
-    AZP.BossTools.Dormazain:UpdateMainFrame()
+    AZP.BossTools.Sanctum.Dormazain:UpdateMainFrame()
 
     AZPBTDormazainChains = AssignedPlayers
 end
 
-function AZP.BossTools.Dormazain:StartHoveringCopy()
+function AZP.BossTools.Sanctum.Dormazain:StartHoveringCopy()
     dragging = true
     local v1, v2, v3, v4, v5 = GemFrame:GetPoint()
     previousPoint = {v1, v2, v3, v4, v5}
@@ -498,7 +498,7 @@ function AZP.BossTools.Dormazain:StartHoveringCopy()
     end)
 end
 
-function AZP.BossTools.Dormazain:StopHoveringCopy()
+function AZP.BossTools.Sanctum.Dormazain:StopHoveringCopy()
     GemFrame:SetScript("OnUpdate", nil)
     if previousParent ~= nil then
         if dragging == true then
@@ -513,47 +513,47 @@ function AZP.BossTools.Dormazain:StopHoveringCopy()
     GemFrame = nil
 end
 
-function AZP.BossTools.Dormazain:StartHoverOverCopy(SocketFrame)
+function AZP.BossTools.Sanctum.Dormazain:StartHoverOverCopy(SocketFrame)
     if dragging == true then
         GemFrame.parent = SocketFrame
         SocketFrame.EditBox:SetBackdropColor(0.25, 1, 0.25, 1)
     end
 end
 
-function AZP.BossTools.Dormazain:StopHoverOverCopy(SocketFrame)
+function AZP.BossTools.Sanctum.Dormazain:StopHoverOverCopy(SocketFrame)
     SocketFrame.EditBox:SetBackdropColor(1, 1, 1, 1)
     if GemFrame ~= nil then if GemFrame.parent ~= nil then GemFrame.parent = nil end end
 end
 
-function AZP.BossTools.Dormazain:ShowHideFrame()
+function AZP.BossTools.Sanctum.Dormazain:ShowHideFrame()
     if DormazainFrame:IsShown() == true then DormazainFrame:Hide() DormazainOptions.ShowHideButton:SetText("Show Frame!")
     elseif DormazainFrame:IsShown() == false then DormazainFrame:Show() DormazainOptions.ShowHideButton:SetText("Hide Frame!") end
 end
 
-function AZP.BossTools.Dormazain:OnEvent(self, event, ...)
+function AZP.BossTools.Sanctum.Dormazain:OnEvent(self, event, ...)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-        AZP.BossTools.Dormazain.Events:CombatLogEventUnfiltered(...)
+        AZP.BossTools.Sanctum.Dormazain.Events:CombatLogEventUnfiltered(...)
     elseif event == "CHAT_MSG_ADDON" then
-        AZP.BossTools.Dormazain.Events:ChatMsgAddon(...)
+        AZP.BossTools.Sanctum.Dormazain.Events:ChatMsgAddon(...)
     elseif event == "ENCOUNTER_END" then
-        AZP.BossTools.Dormazain.Events:EncounterEnd(...)
+        AZP.BossTools.Sanctum.Dormazain.Events:EncounterEnd(...)
     elseif event == "ENCOUNTER_START" then
-        AZP.BossTools.Dormazain.Events:EncounterStart(...)
+        AZP.BossTools.Sanctum.Dormazain.Events:EncounterStart(...)
     elseif event == "GROUP_ROSTER_UPDATE" then
-        AZP.BossTools.Dormazain.Events:GroupRosterUpdate(...)
+        AZP.BossTools.Sanctum.Dormazain.Events:GroupRosterUpdate(...)
     end
 end
 
-function AZP.BossTools.Dormazain.Events:CombatLogEventUnfiltered(...)
+function AZP.BossTools.Sanctum.Dormazain.Events:CombatLogEventUnfiltered(...)
     local _, SubEvent, _, _, _, _, _, _, _, _, _, SpellID = CombatLogGetCurrentEventInfo()
     if SubEvent == "SPELL_AURA_APPLIED" then
         if SpellID == AZP.BossTools.IDs.Dormazain.Spell.WarmongerShackles then
-            AZP.BossTools.Dormazain.Events:WarmongerShackles()
+            AZP.BossTools.Sanctum.Dormazain.Events:WarmongerShackles()
         end
     end
 end
 
-function AZP.BossTools.Dormazain.Events:EncounterEnd(...)
+function AZP.BossTools.Sanctum.Dormazain.Events:EncounterEnd(...)
     ChainsCount = 0
     if BossEnergyTicker ~= nil then
         BossEnergyTicker:Cancel()
@@ -561,18 +561,18 @@ function AZP.BossTools.Dormazain.Events:EncounterEnd(...)
     end
 end
 
-function AZP.BossTools.Dormazain.Events:EncounterStart(encounterID, encounterName, difficultyID, groupSize)
+function AZP.BossTools.Sanctum.Dormazain.Events:EncounterStart(encounterID, encounterName, difficultyID, groupSize)
     if encounterID == 2434 then
         local unitRole = UnitGroupRolesAssigned("player")
         local _, _, _, _, isHeroic = GetDifficultyInfo(GetRaidDifficultyID())
         if unitRole == "TANK" and isHeroic == true then
             BossEnergySecondCounter = 0
-            BossEnergyTicker = C_Timer.NewTicker(1, function() BossEnergySecondCounter = BossEnergySecondCounter + 1 AZP.BossTools.Dormazain:TrackEnergy() end)
+            BossEnergyTicker = C_Timer.NewTicker(1, function() BossEnergySecondCounter = BossEnergySecondCounter + 1 AZP.BossTools.Sanctum.Dormazain:TrackEnergy() end)
         end
     end
 end
 
-function AZP.BossTools.Dormazain.Events:WarmongerShackles()
+function AZP.BossTools.Sanctum.Dormazain.Events:WarmongerShackles()
     ChainsCount = ChainsCount + 1
     local curChain = string.format("Chain%s", ChainsCount)
     local curGUID = UnitGUID("PLAYER")
@@ -587,20 +587,21 @@ function AZP.BossTools.Dormazain.Events:WarmongerShackles()
     end
 end
 
-function AZP.BossTools.Dormazain.Events:ChatMsgAddon(...)
+function AZP.BossTools.Sanctum.Dormazain.Events:ChatMsgAddon(...)
     local prefix, payload, _, sender = ...
     if prefix == "AZPDORMINFO" then
-        AZP.BossTools.Dormazain:CacheRaidNames()
-        AZP.BossTools.Dormazain:ReceiveAssignees(payload)
+        AZP.BossTools.Sanctum.Dormazain:CacheRaidNames()
+        AZP.BossTools.Sanctum.Dormazain:ReceiveAssignees(payload)
         AZP.BossTools:ShowReceiveFrame(sender, "Sanctum", "Dormazain")
+        AZP.BossTools.ReceiveFrame:Show()
     end
 end
 
-function AZP.BossTools.Dormazain.Events:GroupRosterUpdate(...)
-    AZP.BossTools.Dormazain:RefreshNames()
+function AZP.BossTools.Sanctum.Dormazain.Events:GroupRosterUpdate(...)
+    AZP.BossTools.Sanctum.Dormazain:RefreshNames()
 end
 
-function AZP.BossTools.Dormazain:TrackEnergy()
+function AZP.BossTools.Sanctum.Dormazain:TrackEnergy()
     local bossMaxEnergy = UnitPowerMax("boss1")
     local bossCurrentEnergy = UnitPower("boss1")
     local bossPercentHealth = (bossCurrentEnergy / bossMaxEnergy) * 100
@@ -616,9 +617,9 @@ function AZP.BossTools.Dormazain:TrackEnergy()
     end
 end
 
-function AZP.BossTools.Dormazain:DumpTable()
+function AZP.BossTools.Sanctum.Dormazain:DumpTable()
     DevTools_Dump(BossEnertyTimeStamps)
 end
 
 
-AZP.BossTools.Dormazain:OnLoadSelf()
+AZP.BossTools.Sanctum.Dormazain:OnLoadSelf()

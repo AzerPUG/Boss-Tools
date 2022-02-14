@@ -35,7 +35,7 @@ AZP.BossTools.BossInfo =
             Name = "Tarragrue",
             ID = 2423,
             Index = 1,
-            Active = "Soon",
+            Active = false,
             FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Tarragrue.blp"),
             Hero = "10%",
         },

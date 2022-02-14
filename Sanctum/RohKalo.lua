@@ -1,8 +1,8 @@
 if AZP == nil then AZP = {} end
 if AZP.VersionControl == nil then AZP.VersionControl = {} end
 
-if AZP.BossTools.RohKalo == nil then AZP.BossTools.RohKalo = {} end
-if AZP.BossTools.RohKalo.Events == nil then AZP.BossTools.RohKalo.Events = {} end
+if AZP.BossTools.Sanctum.RohKalo == nil then AZP.BossTools.Sanctum.RohKalo = {} end
+if AZP.BossTools.Sanctum.RohKalo.Events == nil then AZP.BossTools.Sanctum.RohKalo.Events = {} end
 
 local AssignedPlayers = {}
 local AZPBossToolsRohKaloOptionPanel = nil
@@ -26,32 +26,32 @@ local BuffSide = "Diamond"
 
 local optionHeader = "|cFF00FFFFBossTools RohKalo|r"
 
-function AZP.BossTools.RohKalo:CheckIDs()
+function AZP.BossTools.Sanctum.RohKalo:CheckIDs()
     if AZPBTRKIDs == nil then AZPBTRKIDs = {SpellID = 351969, BuffID = 354964} end
     -- Testing Purposes: SpellID = 5221, BuffID = 768 (CatForm and Shred)
 end
 
-function AZP.BossTools.RohKalo:OnLoadBoth()
+function AZP.BossTools.Sanctum.RohKalo:OnLoadBoth()
     for i = 1, 6 do
         AssignedPlayers[string.format( "Ring%d",i )] = {}
     end
-    AZP.BossTools.RohKalo:CreateMainFrame()
+    AZP.BossTools.Sanctum.RohKalo:CreateMainFrame()
 end
 
--- function AZP.BossTools.RohKalo:OnLoadCore()
---     AZP.BossTools.RohKalo:OnLoadBoth()
---     AZP.Core:RegisterEvents("COMBAT_LOG_EVENT_UNFILTERED", function(...) AZP.BossTools.RohKalo.Events:CombatLogEventUnfiltered(...) end)
---     AZP.Core:RegisterEvents("VARIABLES_LOADED", function(...) AZP.BossTools.RohKalo.Events:VariablesLoaded(...) end)
---     AZP.Core:RegisterEvents("CHAT_MSG_ADDON", function(...) AZP.BossTools.RohKalo.Events:ChatMsgAddonInterrupts(...) end)
+-- function AZP.BossTools.Sanctum.RohKalo:OnLoadCore()
+--     AZP.BossTools.Sanctum.RohKalo:OnLoadBoth()
+--     AZP.Core:RegisterEvents("COMBAT_LOG_EVENT_UNFILTERED", function(...) AZP.BossTools.Sanctum.RohKalo.Events:CombatLogEventUnfiltered(...) end)
+--     AZP.Core:RegisterEvents("VARIABLES_LOADED", function(...) AZP.BossTools.Sanctum.RohKalo.Events:VariablesLoaded(...) end)
+--     AZP.Core:RegisterEvents("CHAT_MSG_ADDON", function(...) AZP.BossTools.Sanctum.RohKalo.Events:ChatMsgAddonInterrupts(...) end)
 
 --     AZP.OptionsPanels:RemovePanel("BossTools RohKalo")
 --     AZP.OptionsPanels:Generic("BossTools RohKalo", optionHeader, function(frame)
 --         AZPBossTools.RohKaloOptionPanel = frame
---         AZP.BossTools.RohKalo:FillOptionsPanel(frame)
+--         AZP.BossTools.Sanctum.RohKalo:FillOptionsPanel(frame)
 --     end)
 -- end
 
-function AZP.BossTools.RohKalo:GetPlayersWithHeroicBuff()
+function AZP.BossTools.Sanctum.RohKalo:GetPlayersWithHeroicBuff()
     local players = {}
     for i = 1, 40 do
         local unit = string.format("raid%d", i)
@@ -68,7 +68,7 @@ function AZP.BossTools.RohKalo:GetPlayersWithHeroicBuff()
     return players
 end
 
-function AZP.BossTools.RohKalo:ConcatTable(dest, ...)
+function AZP.BossTools.Sanctum.RohKalo:ConcatTable(dest, ...)
     for i = 1, select("#", ...) do
         local t = select(i, ...)
         for _,v in ipairs(t) do
@@ -77,10 +77,10 @@ function AZP.BossTools.RohKalo:ConcatTable(dest, ...)
     end
 end
 
-function AZP.BossTools.RohKalo:OrganizePlayers()
+function AZP.BossTools.Sanctum.RohKalo:OrganizePlayers()
     local tanks, healers, dps = {}, {}, {}
     local alphas, betas = {}, {}
-    local players = AZP.BossTools.RohKalo:GetPlayersWithHeroicBuff()
+    local players = AZP.BossTools.Sanctum.RohKalo:GetPlayersWithHeroicBuff()
     local OwnGUID = UnitGUID("player")
     table.sort(players, function(a,b) return a.GUID > b.GUID end)
     for _, player in ipairs(players) do
@@ -98,7 +98,7 @@ function AZP.BossTools.RohKalo:OrganizePlayers()
     end
 
     local bigList = {}
-    AZP.BossTools.RohKalo:ConcatTable(bigList, dps, tanks, healers)
+    AZP.BossTools.Sanctum.RohKalo:ConcatTable(bigList, dps, tanks, healers)
     newBuffScanRequest = false
 
     local numPlayers = #bigList
@@ -122,12 +122,12 @@ function AZP.BossTools.RohKalo:OrganizePlayers()
                 AssignedPlayers[string.format( "Ring%d",i )].Beta = betas[i]
             end
         end
-        AZP.BossTools.RohKalo:CacheRaidNames()
-        AZP.BossTools.RohKalo:UpdateRohKaloFrame()
+        AZP.BossTools.Sanctum.RohKalo:CacheRaidNames()
+        AZP.BossTools.Sanctum.RohKalo:UpdateRohKaloFrame()
     end
 end
 
-function AZP.BossTools.RohKalo:OnLoadSelf()
+function AZP.BossTools.Sanctum.RohKalo:OnLoadSelf()
     C_ChatInfo.RegisterAddonMessagePrefix("AZPVERSIONS")
     C_ChatInfo.RegisterAddonMessagePrefix("AZPRKHHelp")
     C_ChatInfo.RegisterAddonMessagePrefix("AZPRKHINFO")
@@ -138,7 +138,7 @@ function AZP.BossTools.RohKalo:OnLoadSelf()
     EventFrame:RegisterEvent("VARIABLES_LOADED")
     EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-    EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.RohKalo:OnEvent(...) end)
+    EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Sanctum.RohKalo:OnEvent(...) end)
 
     AZPBossToolsRohKaloOptionPanel = CreateFrame("FRAME", nil)
     AZPBossToolsRohKaloOptionPanel.name = "|cFF00FFFFRoh-Kalo|r"
@@ -161,8 +161,8 @@ function AZP.BossTools.RohKalo:OnLoadSelf()
         "Twitch: www.twitch.tv/azerpug\n|r"
     )
 
-    AZP.BossTools.RohKalo:FillOptionsPanel(AZPBossToolsRohKaloOptionPanel)
-    AZP.BossTools.RohKalo:OnLoadBoth()
+    AZP.BossTools.Sanctum.RohKalo:FillOptionsPanel(AZPBossToolsRohKaloOptionPanel)
+    AZP.BossTools.Sanctum.RohKalo:OnLoadBoth()
 
     UpdateFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
     UpdateFrame:SetPoint("CENTER", 0, 250)
@@ -191,12 +191,12 @@ function AZP.BossTools.RohKalo:OnLoadSelf()
     UpdateFrame:Hide()
 end
 
-function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
+function AZP.BossTools.Sanctum.RohKalo:FillOptionsPanel(frameToFill)
     frameToFill.LockMoveButton = CreateFrame("Button", nil, frameToFill, "UIPanelButtonTemplate")
     frameToFill.LockMoveButton:SetSize(100, 25)
     frameToFill.LockMoveButton:SetPoint("TOPRIGHT", -75, -50)
     frameToFill.LockMoveButton:SetText("Share List")
-    frameToFill.LockMoveButton:SetScript("OnClick", function() AZP.BossTools.RohKalo:ShareAssignees() end )
+    frameToFill.LockMoveButton:SetScript("OnClick", function() AZP.BossTools.Sanctum.RohKalo:ShareAssignees() end )
 
     frameToFill.LockMoveButton = CreateFrame("Button", nil, frameToFill, "UIPanelButtonTemplate")
     frameToFill.LockMoveButton:SetSize(100, 25)
@@ -218,7 +218,7 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
     frameToFill.ShowHideButton:SetSize(100, 25)
     frameToFill.ShowHideButton:SetPoint("TOPRIGHT", -75, -150)
     frameToFill.ShowHideButton:SetText("Hide Frame!")
-    frameToFill.ShowHideButton:SetScript("OnClick", function () AZP.BossTools.RohKalo:ShowHideFrame() end)
+    frameToFill.ShowHideButton:SetScript("OnClick", function () AZP.BossTools.Sanctum.RohKalo:ShowHideFrame() end)
 
     frameToFill.CallOfEternityFrame = CreateFrame("Frame", nil, frameToFill)
     frameToFill.CallOfEternityFrame:SetSize(100, 50)
@@ -259,7 +259,7 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
 
         AssigneesFrame.editbox:SetScript("OnEditFocusLost",
         function()
-            AZP.BossTools.RohKalo:OnEditFocusLost("Alpha", i)
+            AZP.BossTools.Sanctum.RohKalo:OnEditFocusLost("Alpha", i)
         end)
     end
 
@@ -280,7 +280,7 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
 
         BackUpsFrame.editbox:SetScript("OnEditFocusLost",
         function()
-            AZP.BossTools.RohKalo:OnEditFocusLost("Beta", i)
+            AZP.BossTools.Sanctum.RohKalo:OnEditFocusLost("Beta", i)
         end)
     end
 
@@ -292,7 +292,7 @@ function AZP.BossTools.RohKalo:FillOptionsPanel(frameToFill)
     frameToFill:Hide()
 end
 
-function AZP.BossTools.RohKalo:CreateMainFrame()
+function AZP.BossTools.Sanctum.RohKalo:CreateMainFrame()
     AZP.BossTools.BossFrames.RohKalo = CreateFrame("FRAME", nil, UIPanel, "BackdropTemplate")
     AZP.BossTools.BossFrames.RohKalo:SetSize(175, 150)
     AZP.BossTools.BossFrames.RohKalo:SetPoint("TOPLEFT", 100, -200)
@@ -317,13 +317,13 @@ function AZP.BossTools.RohKalo:CreateMainFrame()
     AZP.BossTools.BossFrames.RohKalo.HelpButton:SetSize(75, 20)
     AZP.BossTools.BossFrames.RohKalo.HelpButton:SetPoint("TOP", 40, -30)
     AZP.BossTools.BossFrames.RohKalo.HelpButton:SetText("I Need Help!")
-    AZP.BossTools.BossFrames.RohKalo.HelpButton:SetScript("OnClick", function() AZP.BossTools.RohKalo:RequestHelp() end)
+    AZP.BossTools.BossFrames.RohKalo.HelpButton:SetScript("OnClick", function() AZP.BossTools.Sanctum.RohKalo:RequestHelp() end)
 
     AZP.BossTools.BossFrames.RohKalo.SafeButton = CreateFrame("BUTTON", nil, AZP.BossTools.BossFrames.RohKalo, "UIPanelButtonTemplate")
     AZP.BossTools.BossFrames.RohKalo.SafeButton:SetSize(75, 20)
     AZP.BossTools.BossFrames.RohKalo.SafeButton:SetPoint("TOP", -40, -30)
     AZP.BossTools.BossFrames.RohKalo.SafeButton:SetText("I Can Solo!")
-    AZP.BossTools.BossFrames.RohKalo.SafeButton:SetScript("OnClick", function() AZP.BossTools.RohKalo:OrganizePlayers() end)
+    AZP.BossTools.BossFrames.RohKalo.SafeButton:SetScript("OnClick", function() AZP.BossTools.Sanctum.RohKalo:OrganizePlayers() end)
 
     AZP.BossTools.BossFrames.RohKalo.LeftLabels = {}
     AZP.BossTools.BossFrames.RohKalo.RightLabels = {}
@@ -343,26 +343,26 @@ function AZP.BossTools.RohKalo:CreateMainFrame()
     AZP.BossTools.BossFrames.RohKalo.closeButton = CreateFrame("Button", nil, AZP.BossTools.BossFrames.RohKalo, "UIPanelCloseButton")
     AZP.BossTools.BossFrames.RohKalo.closeButton:SetSize(20, 21)
     AZP.BossTools.BossFrames.RohKalo.closeButton:SetPoint("TOPRIGHT", AZP.BossTools.BossFrames.RohKalo, "TOPRIGHT", 2, 2)
-    AZP.BossTools.BossFrames.RohKalo.closeButton:SetScript("OnClick", function() AZP.BossTools.RohKalo:ShowHideFrame() end)
+    AZP.BossTools.BossFrames.RohKalo.closeButton:SetScript("OnClick", function() AZP.BossTools.Sanctum.RohKalo:ShowHideFrame() end)
 end
 
-function AZP.BossTools.RohKalo.Events:CombatLogEventUnfiltered(...)
+function AZP.BossTools.Sanctum.RohKalo.Events:CombatLogEventUnfiltered(...)
     local v1, combatEvent, v3, UnitGUID, casterName, v6, v7, destGUID, destName, v10, v11, spellID, v13, v14, v15 = CombatLogGetCurrentEventInfo()
     if combatEvent == "SPELL_AURA_APPLIED" then
         if spellID == AZPBTRKIDs.BuffID then
             if newBuffScanRequest == false then
                 newBuffScanRequest = true
-                C_Timer.After(1, function() AZP.BossTools.RohKalo:OrganizePlayers() end)
+                C_Timer.After(1, function() AZP.BossTools.Sanctum.RohKalo:OrganizePlayers() end)
             end
         elseif spellID == 350554 then
             if RKAnnounceCoE == true then
-                C_Timer.After(1, function() AZP.BossTools.RohKalo:CallOfEternity() end)
+                C_Timer.After(1, function() AZP.BossTools.Sanctum.RohKalo:CallOfEternity() end)
             end
         end
     end
 end
 
-function AZP.BossTools.RohKalo:CallOfEternity()
+function AZP.BossTools.Sanctum.RohKalo:CallOfEternity()
     local SideIcon = nil
     if BuffSide == "Circle" then SideIcon = "\124TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3.png:0\124t" BuffSide = "Diamond" end
     if BuffSide == "Diamond" then SideIcon = "\124TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2.png:0\124t" BuffSide = "Circle" end
@@ -376,52 +376,53 @@ function AZP.BossTools.RohKalo:CallOfEternity()
     end
 end
 
-function AZP.BossTools.RohKalo.Events:VariablesLoaded(...)
-    AZP.BossTools.RohKalo:LoadSavedVars()
-    AZP.BossTools.RohKalo:ShareVersion()
-    AZP.BossTools.RohKalo:CheckIDs()
+function AZP.BossTools.Sanctum.RohKalo.Events:VariablesLoaded(...)
+    AZP.BossTools.Sanctum.RohKalo:LoadSavedVars()
+    AZP.BossTools.Sanctum.RohKalo:ShareVersion()
+    AZP.BossTools.Sanctum.RohKalo:CheckIDs()
     AZPBossToolsRohKaloOptionPanel.CallOfEternityFrame.CoECheckBox:SetChecked(RKAnnounceCoE)
 end
 
-function AZP.BossTools.RohKalo.Events:ChatMsgAddon(...)
+function AZP.BossTools.Sanctum.RohKalo.Events:ChatMsgAddon(...)
     local prefix, payload, _, sender = ...
     if prefix == "AZPRKHINFO" then
-        AZP.BossTools.RohKalo:ReceiveAssignees(payload)
-        AZP.BossTools.RohKalo:CacheRaidNames()
+        AZP.BossTools.Sanctum.RohKalo:ReceiveAssignees(payload)
+        AZP.BossTools.Sanctum.RohKalo:CacheRaidNames()
         AZP.BossTools:ShowReceiveFrame(sender, "Sanctum", "RohKalo")
+        AZP.BossTools.ReceiveFrame:Show()
     elseif prefix == "AZPRKHHelp" then
-        AZP.BossTools.RohKalo:HelpRequested(payload)
-        AZP.BossTools.RohKalo:CacheRaidNames()
+        AZP.BossTools.Sanctum.RohKalo:HelpRequested(payload)
+        AZP.BossTools.Sanctum.RohKalo:CacheRaidNames()
     elseif prefix == "AZPRKHIDChange" and sender == "Tex-Ravencrest" then
         local field, ID = string.match(payload, "([^=]+)=([0-9]*)")
         AZPBTRKIDs[field] = tonumber(ID)
     end
 end
 
-function AZP.BossTools.RohKalo.Events:ChatMsgAddonVersion(...)
+function AZP.BossTools.Sanctum.RohKalo.Events:ChatMsgAddonVersion(...)
     local prefix, payload, _, sender = ...
     if prefix == "AZPVERSIONS" then
-        -- local version = AZP.BossTools.RohKalo:GetSpecificAddonVersion(payload, "BT")
+        -- local version = AZP.BossTools.Sanctum.RohKalo:GetSpecificAddonVersion(payload, "BT")
         -- if version ~= nil then
-        --     AZP.BossTools.RohKalo:ReceiveVersion(version)
+        --     AZP.BossTools.Sanctum.RohKalo:ReceiveVersion(version)
         -- end
     end
 end
 
-function AZP.BossTools.RohKalo:LoadSavedVars()
+function AZP.BossTools.Sanctum.RohKalo:LoadSavedVars()
     if AZPBossToolsRohKaloLocation == nil then
         AZPBossToolsRohKaloLocation = {"CENTER", nil, nil, 0, 0}
     end
 
     if AZPBTRohKalo ~= nil then
-        AZP.BossTools.RohKalo:CacheRaidNames()
+        AZP.BossTools.Sanctum.RohKalo:CacheRaidNames()
         AssignedPlayers = AZPBTRohKalo
         for i = 1, 6 do
             if AssignedPlayers[string.format("Ring%d", i)] == nil then
                 AssignedPlayers[string.format("Ring%d", i)] = {}
             end
         end
-        AZP.BossTools.RohKalo:UpdateRohKaloFrame()
+        AZP.BossTools.Sanctum.RohKalo:UpdateRohKaloFrame()
     end
     AZP.BossTools.BossFrames.RohKalo:SetPoint(AZPBossToolsRohKaloLocation[1], AZPBossToolsRohKaloLocation[4], AZPBossToolsRohKaloLocation[5])
 
@@ -444,7 +445,7 @@ function AZP.BossTools.RohKalo:LoadSavedVars()
     end
 end
 
-function AZP.BossTools.RohKalo:ShowHideFrame()
+function AZP.BossTools.Sanctum.RohKalo:ShowHideFrame()
     if AZP.BossTools.BossFrames.RohKalo:IsShown() then
         AZP.BossTools.BossFrames.RohKalo:Hide()
         AZPBossToolsRohKaloOptionPanel.ShowHideButton:SetText("Show RohKalo!")
@@ -456,7 +457,7 @@ function AZP.BossTools.RohKalo:ShowHideFrame()
     end
 end
 
-function AZP.BossTools.RohKalo:RequestHelp()
+function AZP.BossTools.Sanctum.RohKalo:RequestHelp()
     local ownGUID = UnitGUID("player")
     for _, players in pairs(AssignedPlayers) do
         if players.Alpha == ownGUID then
@@ -465,7 +466,7 @@ function AZP.BossTools.RohKalo:RequestHelp()
     end
 end
 
-function AZP.BossTools.RohKalo:HelpRequested(requestedGUID)
+function AZP.BossTools.Sanctum.RohKalo:HelpRequested(requestedGUID)
     local ownGUID = UnitGUID("player")
     if requestedGUID == ownGUID then
         local ringRequested = nil
@@ -478,13 +479,13 @@ function AZP.BossTools.RohKalo:HelpRequested(requestedGUID)
     end
 end
 
-function AZP.BossTools.RohKalo:SaveLocation()
+function AZP.BossTools.Sanctum.RohKalo:SaveLocation()
     local temp = {}
     temp[1], temp[2], temp[3], temp[4], temp[5] = AZP.BossTools.BossFrames.RohKalo:GetPoint()
     AZPBossToolsRohKaloLocation = temp
 end
 
-function AZP.BossTools.RohKalo:CacheRaidNames()
+function AZP.BossTools.Sanctum.RohKalo:CacheRaidNames()
     if IsInRaid() == true then
         for k = 1, 40 do
             local curName = GetRaidRosterInfo(k)
@@ -499,7 +500,7 @@ function AZP.BossTools.RohKalo:CacheRaidNames()
     end
 end
 
-function AZP.BossTools.RohKalo:OnEditFocusLost(role, ring)
+function AZP.BossTools.Sanctum.RohKalo:OnEditFocusLost(role, ring)
     local editBoxFrame = nil
     local ringName = string.format("Ring%d", ring)
     if role == "Alpha" then
@@ -518,7 +519,7 @@ function AZP.BossTools.RohKalo:OnEditFocusLost(role, ring)
                     local curGUID = UnitGUID("raid" .. k)
                     AZPBossToolsRohKaloGUIDs[curGUID] = curName
                     AssignedPlayers[ringName][role] = curGUID
-                    AZP.BossTools.RohKalo:UpdateRohKaloFrame()
+                    AZP.BossTools.Sanctum.RohKalo:UpdateRohKaloFrame()
                 end
             end
         end
@@ -531,7 +532,7 @@ function AZP.BossTools.RohKalo:OnEditFocusLost(role, ring)
     AZPBTRohKalo = AssignedPlayers
 end
 
-function AZP.BossTools.RohKalo:ShareAssignees()
+function AZP.BossTools.Sanctum.RohKalo:ShareAssignees()
     for ring, players in pairs(AssignedPlayers) do
         if players ~= nil then
             local message = string.format("%s:%s:%s", ring, players.Alpha or "", players.Beta or "" )
@@ -540,7 +541,7 @@ function AZP.BossTools.RohKalo:ShareAssignees()
     end
 end
 
-function AZP.BossTools.RohKalo:UpdateRohKaloFrame()
+function AZP.BossTools.Sanctum.RohKalo:UpdateRohKaloFrame()
     if IsInRaid() == false then
         print("BossTools RohKalo only works in raid.")
         return
@@ -584,15 +585,15 @@ function AZP.BossTools.RohKalo:UpdateRohKaloFrame()
     AZP.BossTools.BossFrames.RohKalo.Header:SetText(headerText)
 end
 
-function AZP.BossTools.RohKalo:ReceiveAssignees(receiveAssignees)
+function AZP.BossTools.Sanctum.RohKalo:ReceiveAssignees(receiveAssignees)
     local ring, alpha, beta = string.match(receiveAssignees, "([^:]*):([^:]*):([^:]*)")
     if alpha == "" then alpha = nil end
     if beta == "" then beta = nil end
     AssignedPlayers[ring] = {Alpha = alpha, Beta = beta}
-    AZP.BossTools.RohKalo:UpdateRohKaloFrame()
+    AZP.BossTools.Sanctum.RohKalo:UpdateRohKaloFrame()
 end
 
-function AZP.BossTools.RohKalo:ShareVersion()
+function AZP.BossTools.Sanctum.RohKalo:ShareVersion()
     -- local versionString = string.format("|BT:%d|", AZP.VersionControl["BossTools RohKalo"])
     -- if UnitInBattleground("player") ~= nil then
     --     -- BG stuff?
@@ -610,7 +611,7 @@ function AZP.BossTools.RohKalo:ShareVersion()
     -- end
 end
 
-function AZP.BossTools.RohKalo:ReceiveVersion(version)
+function AZP.BossTools.Sanctum.RohKalo:ReceiveVersion(version)
     if version > AZP.VersionControl["BossTools RohKalo"] then
         if (not HaveShowedUpdateNotification) then
             HaveShowedUpdateNotification = true
@@ -625,7 +626,7 @@ function AZP.BossTools.RohKalo:ReceiveVersion(version)
     end
 end
 
-function AZP.BossTools.RohKalo:GetSpecificAddonVersion(versionString, addonWanted)
+function AZP.BossTools.Sanctum.RohKalo:GetSpecificAddonVersion(versionString, addonWanted)
     local pattern = "|([A-Z]+):([0-9]+)|"
     local index = 1
     while index < #versionString do
@@ -638,17 +639,17 @@ function AZP.BossTools.RohKalo:GetSpecificAddonVersion(versionString, addonWante
     end
 end
 
-function AZP.BossTools.RohKalo:OnEvent(self, event, ...)
+function AZP.BossTools.Sanctum.RohKalo:OnEvent(self, event, ...)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-        AZP.BossTools.RohKalo.Events:CombatLogEventUnfiltered(...)
+        AZP.BossTools.Sanctum.RohKalo.Events:CombatLogEventUnfiltered(...)
     elseif event == "VARIABLES_LOADED" then
-        AZP.BossTools.RohKalo.Events:VariablesLoaded(...)
+        AZP.BossTools.Sanctum.RohKalo.Events:VariablesLoaded(...)
     elseif event == "CHAT_MSG_ADDON" then
-        AZP.BossTools.RohKalo.Events:ChatMsgAddonVersion(...)
-        AZP.BossTools.RohKalo.Events:ChatMsgAddon(...)
+        AZP.BossTools.Sanctum.RohKalo.Events:ChatMsgAddonVersion(...)
+        AZP.BossTools.Sanctum.RohKalo.Events:ChatMsgAddon(...)
     elseif event == "GROUP_ROSTER_UPDATE" then
-        AZP.BossTools.RohKalo:ShareVersion()
+        AZP.BossTools.Sanctum.RohKalo:ShareVersion()
     end
 end
 
-AZP.BossTools.RohKalo:OnLoadSelf()
+AZP.BossTools.Sanctum.RohKalo:OnLoadSelf()
