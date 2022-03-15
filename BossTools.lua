@@ -178,12 +178,12 @@ function AZP.BossTools:CreateSepulcherSelectorFrame()
 
     local BossWidth, BossHeight = 100, 75
 
-    for Boss, Info in pairs(AZP.BossTools.BossInfo.Sanctum) do
+    for Boss, Info in pairs(AZP.BossTools.BossInfo.Sepulcher) do
         if Boss ~= "Background" then
             if Info.Active ~= false then
                 local curFrame = CreateFrame("FRAME", nil, AZPBossToolsSepulcherFrame)
                 curFrame:SetSize(BossWidth, BossHeight)
-                curFrame:SetScript("OnMouseDown", function() if AZP.BossTools.BossFrames[Boss] ~= nil then AZPBossToolsSepulcherFrame:Hide() AZP.BossTools.BossFrames[Boss]:Show() end end)
+                curFrame:SetScript("OnMouseDown", function() if AZP.BossTools.BossFrames[Boss] ~= nil then  AZPBossToolsSepulcherFrame:Hide() AZP.BossTools.BossFrames[Boss]:Show() end end)
                 curFrame.Button = curFrame:CreateTexture(nil, "ARTWORK")
                 curFrame.Button:SetSize(curFrame:GetWidth(), 55)
                 curFrame.Button:SetPoint("BOTTOM", 0, 0)
@@ -361,12 +361,12 @@ end
 
 AZP.BossTools.OnLoad()
 
-AZP.SlashCommands["BT"] = function()
+AZP.SlashCommands["BTA"] = function()
     -- if AZPBossToolsSepulcherFrame ~= nil then AZPBossToolsSepulcherFrame:Show() end
     if AZPBossToolsSanctumFrame ~= nil then AZPBossToolsSanctumFrame:Show() end
 end
 
-AZP.SlashCommands["BTA"] = function()
+AZP.SlashCommands["BT"] = function()
     -- if AZPBossToolsSanctumFrame ~= nil then AZPBossToolsSanctumFrame:Show() end
     if AZPBossToolsSepulcherFrame ~= nil then AZPBossToolsSepulcherFrame:Show() end
 end

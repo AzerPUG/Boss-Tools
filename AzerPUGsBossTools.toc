@@ -9,6 +9,9 @@ SlashCommands.lua
 DataTable.lua
 BossTools.lua
 
+Sepulcher/HeroReminder.lua
+Sepulcher/Skolex.lua
+
 Sanctum/HeroReminder.lua
 Sanctum/Tarragrue.lua
 Sanctum/TheEye.lua
@@ -16,4 +19,3 @@ Sanctum/Dormazain.lua
 Sanctum/RohKalo.lua
 Sanctum/KelThuzad.lua
 
-Sepulcher/HeroReminder.lua

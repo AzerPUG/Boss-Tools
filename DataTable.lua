@@ -9,6 +9,14 @@ AZP.BossTools.MawPowers =
 
 AZP.BossTools.IDs =
 {
+    Sepulcher =
+    {
+        Skolex =
+        {
+            Retch = 360092,
+            Burrow = 359770,
+        },
+    },
     TheEye =
     {
         Spell =
@@ -23,6 +31,18 @@ AZP.BossTools.IDs =
             WarmongerShackles = 350415,
         },
     },
+}
+
+AZP.BossTools.Markers =
+{
+          Star = "\124TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1.png:14\124t",
+        Circle = "\124TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2.png:14\124t",
+    GayDiamond = "\124TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3.png:14\124t",
+      Triangle = "\124TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4.png:14\124t",
+          Moon = "\124TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5.png:14\124t",
+        Square = "\124TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6.png:14\124t",
+         Cross = "\124TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7.png:14\124t",
+         Skull = "\124TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8.png:14\124t",
 }
 
 AZP.BossTools.BossInfo =
@@ -143,16 +163,16 @@ AZP.BossTools.BossInfo =
             Index = 1,
             Active = false,
             FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-VigilantGuardian.blp"),
-            Hero = "Undetermined",
+            Hero = "P3",
         },
         Skolex =
         {
             Name = "Skolex",
             ID = 0,
             Index = 6,
-            Active = false,
+            Active = true,
             FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Skolex.blp"),
-            Hero = "Undetermined",
+            Hero = "Pull",
         },
         XyMox =
         {
@@ -161,16 +181,16 @@ AZP.BossTools.BossInfo =
             Index = 3,
             Active = false,
             FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-ArtificerXymox_Sepulcher.blp"),
-            Hero = "Undetermined",
+            Hero = "P3",
         },
         Dausegne =
         {
             Name = "Dausegne",
             ID = 0,
             Index = 2,
-            Active = false,
+            Active = "Soon",
             FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Dausegne.blp"),
-            Hero = "Undetermined",
+            Hero = "Pull",
         },
         Pantheon =
         {
@@ -179,7 +199,7 @@ AZP.BossTools.BossInfo =
             Index = 4,
             Active = false,
             FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-PrototypePantheon.blp"),
-            Hero = "Undetermined",
+            Hero = "P3",
         },
         Lihuvim =
         {
@@ -188,25 +208,25 @@ AZP.BossTools.BossInfo =
             Index = 5,
             Active = false,
             FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Lihuvim.blp"),
-            Hero = "Undetermined",
+            Hero = "Pull",
         },
         Halondrus =
         {
             Name = "Halondrus",
             ID = 0,
             Index = 7,
-            Active = false,
+            Active = "Soon",
             FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Halondrus.blp"),
-            Hero = "Undetermined",
+            Hero = "P3",
         },
         Anduin =
         {
             Name = "Anduin",
             ID = 0,
             Index = 8,
-            Active = false,
+            Active = "Soon",
             FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-AnduinShadowlands.blp"),
-            Hero = "Undetermined",
+            Hero = "P1.5",
         },
         LordsOfDread =
         {
@@ -224,7 +244,7 @@ AZP.BossTools.BossInfo =
             Index = 10,
             Active = false,
             FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Rygelon.blp"),
-            Hero = "Undetermined",
+            Hero = "Pull",
         },
         TheJailer =
         {
