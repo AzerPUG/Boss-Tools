@@ -396,7 +396,7 @@ function AZP.BossTools.Sepulcher.Skolex:UpdateMainFrame()
     local playerGUID = UnitGUID("player")
     AZPBTSkolexSides = AssignedPlayers
 
-    for i = 1, 20 do
+    for i = 1, 3 do
         local Diamond = AssignedPlayers.Diamond[i]
         local Square = AssignedPlayers.Square[i]
 
