@@ -11,6 +11,10 @@ AZP.BossTools.IDs =
 {
     Sepulcher =
     {
+        DeSausage =
+        {
+            Barrage = 360960,
+        },
         Skolex =
         {
             Retch = 360092,
