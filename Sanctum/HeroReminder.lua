@@ -91,10 +91,6 @@ end
 
 AZP.BossTools.Sanctum.HeroReminder.OnLoad()
 
-AZP.SlashCommands["HR"] = function()
-    AZP.BossTools.Sanctum.HeroReminder:ShowHideFrame()
-end
-
 AZP.SlashCommands["hr"] = AZP.SlashCommands["HR"]
 AZP.SlashCommands["Hero"] = AZP.SlashCommands["HR"]
 AZP.SlashCommands["hero"] = AZP.SlashCommands["HR"]

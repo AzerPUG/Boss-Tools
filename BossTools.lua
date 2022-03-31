@@ -1,7 +1,7 @@
 if AZP == nil then AZP = {} end
 if AZP.VersionControl == nil then AZP.VersionControl = {} end
 
-AZP.VersionControl["BossTools"] = 19
+AZP.VersionControl["BossTools"] = 20
 if AZP.BossTools == nil then AZP.BossTools = {} end
 if AZP.BossTools.Events == nil then AZP.BossTools.Events = {} end
 
@@ -362,12 +362,10 @@ end
 AZP.BossTools.OnLoad()
 
 AZP.SlashCommands["BTA"] = function()
-    -- if AZPBossToolsSepulcherFrame ~= nil then AZPBossToolsSepulcherFrame:Show() end
     if AZPBossToolsSanctumFrame ~= nil then AZPBossToolsSanctumFrame:Show() end
 end
 
 AZP.SlashCommands["BT"] = function()
-    -- if AZPBossToolsSanctumFrame ~= nil then AZPBossToolsSanctumFrame:Show() end
     if AZPBossToolsSepulcherFrame ~= nil then AZPBossToolsSepulcherFrame:Show() end
 end
 
