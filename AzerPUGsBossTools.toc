@@ -11,7 +11,7 @@ BossTools.lua
 
 Sepulcher/HeroReminder.lua
 Sepulcher/Skolex.lua
-Sepulcher/Panteon.lua
+Sepulcher/Pantheon.lua
 
 Sanctum/HeroReminder.lua
 Sanctum/Tarragrue.lua
@@ -19,4 +19,3 @@ Sanctum/TheEye.lua
 Sanctum/Dormazain.lua
 Sanctum/RohKalo.lua
 Sanctum/KelThuzad.lua
-

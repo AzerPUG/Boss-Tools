@@ -1,48 +1,48 @@
 if AZP == nil then AZP = {} end
 if AZP.VersionControl == nil then AZP.VersionControl = {} end
 
-if AZP.BossTools.Sepulcher.Panteon == nil then AZP.BossTools.Sepulcher.Panteon = {} end
-if AZP.BossTools.Sepulcher.Panteon.Events == nil then AZP.BossTools.Sepulcher.Panteon.Events = {} end
+if AZP.BossTools.Sepulcher.Pantheon == nil then AZP.BossTools.Sepulcher.Pantheon = {} end
+if AZP.BossTools.Sepulcher.Pantheon.Events == nil then AZP.BossTools.Sepulcher.Pantheon.Events = {} end
 
 local EventFrame = nil
 local BossHealthTicker = nil
 local CurrentBoss = ""
 
-function AZP.BossTools.Sepulcher.Panteon:OnLoadSelf()
+function AZP.BossTools.Sepulcher.Pantheon:OnLoadSelf()
     EventFrame = CreateFrame("FRAME", nil)
     EventFrame:RegisterEvent("ENCOUNTER_START")
     EventFrame:RegisterEvent("ENCOUNTER_END")
-    EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Sepulcher.Panteon:OnEvent(...) end)
+    EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Sepulcher.Pantheon:OnEvent(...) end)
 end
 
 
 
-function AZP.BossTools.Sepulcher.Panteon:OnEvent(self, event, ...)
+function AZP.BossTools.Sepulcher.Pantheon:OnEvent(self, event, ...)
     if event == "ENCOUNTER_END" then
-        AZP.BossTools.Sepulcher.Panteon.Events:EncounterEnd(...)
+        AZP.BossTools.Sepulcher.Pantheon.Events:EncounterEnd(...)
     elseif event == "ENCOUNTER_START" then
-        AZP.BossTools.Sepulcher.Panteon.Events:EncounterStart(...)
+        AZP.BossTools.Sepulcher.Pantheon.Events:EncounterStart(...)
     end
 end
 
-function AZP.BossTools.Sepulcher.Panteon.Events:EncounterEnd(...)
+function AZP.BossTools.Sepulcher.Pantheon.Events:EncounterEnd(...)
     if BossHealthTicker ~= nil then
         BossHealthTicker:Cancel()
         BossHealthTicker = nil
     end
 end
 
-function AZP.BossTools.Sepulcher.Panteon.Events:EncounterStart(encounterID, encounterName, difficultyID, groupSize)
+function AZP.BossTools.Sepulcher.Pantheon.Events:EncounterStart(encounterID, encounterName, difficultyID, groupSize)
     if encounterID == 2544 then
         local unitRole = UnitGroupRolesAssigned("player")
         local _, _, _, _, isHeroic = GetDifficultyInfo(GetRaidDifficultyID())
         if unitRole == "DAMAGER" and isHeroic == true then
-            BossHealthTicker = C_Timer.NewTicker(5, function() AZP.BossTools.Sepulcher.Panteon:TrackHealth() end)
+            BossHealthTicker = C_Timer.NewTicker(5, function() AZP.BossTools.Sepulcher.Pantheon:TrackHealth() end)
         end
     end
 end
 
-function AZP.BossTools.Sepulcher.Panteon:TrackHealth()
+function AZP.BossTools.Sepulcher.Pantheon:TrackHealth()
     local lowestHealth = nil
     local highestHealth = nil
     for bossNum=1,4 do
@@ -84,4 +84,4 @@ function AZP.BossTools.Sepulcher.Panteon:TrackHealth()
     end
 end
 
-AZP.BossTools.Sepulcher.Panteon:OnLoadSelf()
+AZP.BossTools.Sepulcher.Pantheon:OnLoadSelf()
