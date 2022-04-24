@@ -11,6 +11,7 @@ BossTools.lua
 
 Sepulcher/HeroReminder.lua
 Sepulcher/Skolex.lua
+Sepulcher/Panteon.lua
 
 Sanctum/HeroReminder.lua
 Sanctum/Tarragrue.lua
