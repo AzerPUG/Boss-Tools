@@ -8,6 +8,7 @@
 SlashCommands.lua
 DataTable.lua
 BossTools.lua
+GenericBossTool.lua
 
 Sepulcher/HeroReminder.lua
 Sepulcher/Skolex.lua
