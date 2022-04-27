@@ -7,10 +7,11 @@ if AZP.BossTools.Sepulcher.Pantheon.Events == nil then AZP.BossTools.Sepulcher.P
 local EventFrame = nil
 local BossHealthTicker = nil
 local CurrentBoss = ""
+local ReconstructionCastCount = 0
 
 function AZP.BossTools.Sepulcher.Pantheon:OnLoadSelf()
     EventFrame = CreateFrame("FRAME", nil)
-    EventFrame:RegisterEvent("ENCOUNTER_START")
+    EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     EventFrame:RegisterEvent("ENCOUNTER_END")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Sepulcher.Pantheon:OnEvent(...) end)
 end
@@ -18,10 +19,10 @@ end
 
 
 function AZP.BossTools.Sepulcher.Pantheon:OnEvent(self, event, ...)
-    if event == "ENCOUNTER_END" then
+    if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+        AZP.BossTools.Sepulcher.Pantheon.Events:CombatLogEventUnfiltered(...)
+    elseif event == "ENCOUNTER_END" then
         AZP.BossTools.Sepulcher.Pantheon.Events:EncounterEnd(...)
-    elseif event == "ENCOUNTER_START" then
-        AZP.BossTools.Sepulcher.Pantheon.Events:EncounterStart(...)
     end
 end
 
@@ -29,16 +30,6 @@ function AZP.BossTools.Sepulcher.Pantheon.Events:EncounterEnd(...)
     if BossHealthTicker ~= nil then
         BossHealthTicker:Cancel()
         BossHealthTicker = nil
-    end
-end
-
-function AZP.BossTools.Sepulcher.Pantheon.Events:EncounterStart(encounterID, encounterName, difficultyID, groupSize)
-    if encounterID == 2544 then
-        local unitRole = UnitGroupRolesAssigned("player")
-        local _, _, _, _, isHeroic = GetDifficultyInfo(GetRaidDifficultyID())
-        if unitRole == "DAMAGER" and isHeroic == true then
-            BossHealthTicker = C_Timer.NewTicker(5, function() AZP.BossTools.Sepulcher.Pantheon:TrackHealth() end)
-        end
     end
 end
 
@@ -80,6 +71,22 @@ function AZP.BossTools.Sepulcher.Pantheon:TrackHealth()
         if(CurrentBoss ~= highestHealth.Boss) then
             CurrentBoss = highestHealth.Boss
             AZP.BossTools:WarnPlayer(UnitName(highestHealth.Boss))
+        end
+    end
+end
+
+function AZP.BossTools.Sepulcher.Pantheon.Events:CombatLogEventUnfiltered(...)
+    local _, SubEvent, _, _, _, _, _, _, _, _, _, SpellID = CombatLogGetCurrentEventInfo()
+    if SpellID == AZP.BossTools.IDs.Sepulcher.Pantheon.Reconstruction then
+        if SubEvent == "SPELL_CAST_SUCCESS" then
+            ReconstructionCastCount = ReconstructionCastCount + 1
+            if ReconstructionCastCount == 8 then
+                local unitRole = UnitGroupRolesAssigned("player")
+                local _, _, _, _, isHeroic = GetDifficultyInfo(GetRaidDifficultyID())
+                if unitRole == "DAMAGER" and isHeroic == true then
+                    BossHealthTicker = C_Timer.NewTicker(5, function() AZP.BossTools.Sepulcher.Pantheon:TrackHealth() end)
+                end
+            end
         end
     end
 end

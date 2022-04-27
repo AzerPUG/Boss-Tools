@@ -20,6 +20,9 @@ AZP.BossTools.IDs =
             Retch = 360092,
             Burrow = 359770,
         },
+        Pantheon = {
+            Reconstruction = 361300,
+        }
     },
     TheEye =
     {
@@ -35,6 +38,7 @@ AZP.BossTools.IDs =
             WarmongerShackles = 350415,
         },
     },
+    
 }
 
 AZP.BossTools.Markers =
