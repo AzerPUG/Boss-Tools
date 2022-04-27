@@ -31,12 +31,13 @@ function AZP.BossTools.Sepulcher.Pantheon.Events:EncounterEnd(...)
         BossHealthTicker:Cancel()
         BossHealthTicker = nil
     end
+    ReconstructionCastCount = 0
 end
 
 function AZP.BossTools.Sepulcher.Pantheon:TrackHealth()
     local lowestHealth = nil
     local highestHealth = nil
-    for bossNum=1,4 do
+    for bossNum = 1, 4 do
         local bossId = string.format("boss%d", bossNum)
         local health = UnitHealth(bossId)
         local maxHealth = UnitHealthMax(bossId)
