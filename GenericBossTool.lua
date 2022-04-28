@@ -55,6 +55,7 @@ function AZP.BossTools.Generic:OnLoadSelf()
     EventFrame = CreateFrame("FRAME", nil)
     EventFrame:RegisterEvent("CHAT_MSG_ADDON")
     EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
+    EventFrame:RegisterEvent("VARIABLES_LOADED")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Generic:OnEvent(...) end)
 
     AZP.BossTools.Generic:OnLoadBoth()
@@ -105,6 +106,8 @@ function AZP.BossTools.Generic:FillMainFrame()
             if AZPBTGenericAssignedPlayers[iRow][iCol] == "-" then
                 GenericBTFrame.GenericLabels[iRow][iCol]:SetText("-")
             else
+                --print("GUID:", AZPBTGenericAssignedPlayers[iRow][iCol])
+                --print("Name:", AZPBTGenericGUIDs[AZPBTGenericAssignedPlayers[iRow][iCol]])
                 GenericBTFrame.GenericLabels[iRow][iCol]:SetText(AZPBTGenericGUIDs[AZPBTGenericAssignedPlayers[iRow][iCol]])
             end
         end
@@ -192,7 +195,6 @@ function AZP.BossTools.Generic:FillOptionsPanel(frameToFill)
         numCols = tonumber(frameToFill.ColumnEditBox:GetText())
         AZPBTGenericEditBoxes = {}
         AZPBTGenericAssignedPlayers = {}
-        AZPBTGenericGUIDs = {}
         for iRow = 1, numRows do
             AZPBTGenericEditBoxes[#AZPBTGenericEditBoxes + 1] = {}
             AZPBTGenericAssignedPlayers[iRow] = {}
@@ -313,11 +315,12 @@ function AZP.BossTools.Generic:ShareAssignees()
         FoundRaidIDs = string.format("%s:", FoundRaidIDs)
     end
     C_ChatInfo.SendAddonMessage("AZPGENERICINFO", FoundRaidIDs ,"RAID", 1)
-    print("FoundRaidIDs:", FoundRaidIDs)
+    --print("FoundRaidIDs:", FoundRaidIDs)
     return FoundRaidIDs
 end
 
 function AZP.BossTools.Generic:ReceiveAssignees(receiveAssignees)
+    --print("receiveAssignees:", receiveAssignees)
     local RaidIDs = {}
     local iRow = 0
     for RowText in string.gmatch(receiveAssignees, "[^:]+") do
@@ -335,6 +338,7 @@ function AZP.BossTools.Generic:ReceiveAssignees(receiveAssignees)
     end
 
     AZPBTGenericAssignedPlayers = RaidIDs
+    --DevTools_Dump(AZPBTGenericAssignedPlayers)
     AZP.BossTools.Generic:FillMainFrame()
 end
 
@@ -379,8 +383,8 @@ end
 
 function AZP.BossTools.Generic:StopHoverOverCopy(iRow, iCol)
     local curFrame = AZPBTGenericEditBoxes[iRow][iCol]
-    if curFrame == nil then print("curFrame == nil") end
-    if curFrame.EditBox == nil then print("curFrame.EditBox == nil") end
+    --if curFrame == nil then print("curFrame == nil") end
+    --if curFrame.EditBox == nil then print("curFrame.EditBox == nil") end
     curFrame.EditBox:SetBackdropColor(1, 1, 1, 1)
     if GemFrame ~= nil then if GemFrame.parent ~= nil then GemFrame.parent = nil end end
 end
@@ -405,10 +409,13 @@ function AZP.BossTools.Generic:OnEditFocusLost(iRow, iCol)
     else
         table.remove(AZPBTGenericAssignedPlayers[iRow], iCol)
     end
+    AZP.BossTools.Generic:FillMainFrame()
 end
 
 function AZP.BossTools.Generic:OnEvent(_, event, ...)
-    if event == "CHAT_MSG_ADDON" then
+    if event == "VARIABLES_LOADED" then
+        AZP.BossTools.Generic:RefreshNames()
+    elseif event == "CHAT_MSG_ADDON" then
         AZP.BossTools.Generic.Events:ChatMsgAddon(...)
     elseif event == "GROUP_ROSTER_UPDATE" then
         AZP.BossTools.Generic.Events:GroupRosterUpdate(...)
@@ -418,7 +425,6 @@ end
 function AZP.BossTools.Generic.Events:ChatMsgAddon(...)
     local prefix, payload, _, sender = ...
     if prefix == "AZPGENERICINFO" then
-        print("AZPGENERICINFO AddOn Message Detected!")
         --AZP.BossTools.Generic:CacheRaidNames()
         AZP.BossTools.Generic:ReceiveAssignees(payload)
         --AZP.BossTools:ShowReceiveFrame(sender, "Generic")
@@ -440,6 +446,8 @@ function AZP.BossTools.Generic:RefreshNames()
         if name ~= nil then
             local _, _, classIndex = UnitClass("RAID"..i)
             allUnitNames[i] = {name, classIndex}
+            local curGUID = UnitGUID("RAID" .. i)
+            AZPBTGenericGUIDs[curGUID] = name
         end
     end
 
@@ -470,6 +478,7 @@ function AZP.BossTools.Generic:RefreshNames()
         curFrame.NameLabel.Name = curNameClass[1]
         curFrame:Show()
     end
+
 end
 
 function AZP.BossTools.Generic.Events:GroupRosterUpdate(...)
