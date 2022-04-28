@@ -427,6 +427,51 @@ function AZP.BossTools.Generic.Events:ChatMsgAddon(...)
     end
 end
 
+function AZP.BossTools.Generic:RefreshNames()
+    local allUnitNames = {}
+    local allNameLabels = GenericOptions.AllNamesFrame.allNameLabels
+
+    for _, frame in ipairs(allNameLabels) do
+        frame:Hide()
+    end
+
+    for i = 1, 40 do
+        local name = UnitName("RAID"..i)
+        if name ~= nil then
+            local _, _, classIndex = UnitClass("RAID"..i)
+            allUnitNames[i] = {name, classIndex}
+        end
+    end
+
+    for Index, curNameClass in pairs(allUnitNames) do
+        local curFrame = allNameLabels[Index]
+        if curFrame == nil then
+            curFrame = CreateFrame("FRAME", nil, GenericOptions.AllNamesFrame, "BackdropTemplate")
+            allNameLabels[Index] = curFrame
+            curFrame:SetSize(85, 20)
+            curFrame:SetPoint("TOP", 0, -18 * Index + 15)
+            curFrame:SetBackdrop({
+                bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+                edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+                edgeSize = 10,
+                insets = { left = 2, right = 2, top = 2, bottom = 2 },
+            })
+            curFrame:SetBackdropColor(1, 1, 1, 1)
+            curFrame:SetScript("OnMouseDown", function() GemFrame = curFrame AZP.BossTools.GenericOptions:StartHoveringCopy() end)
+            curFrame:SetScript("OnMouseUp", function() AZP.BossTools.GenericOptions:StopHoveringCopy() end)
+
+            curFrame.NameLabel = curFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+            curFrame.NameLabel:SetSize(85, 20)
+            curFrame.NameLabel:SetPoint("CENTER", 0, 0)
+        end
+        local _, _, _, curClassColor = AZP.BossTools:GetClassColor(curNameClass[2])
+        if curClassColor == nil then return end
+        curFrame.NameLabel:SetText(string.format("\124cFF%s%s\124r", curClassColor, curNameClass[1]))
+        curFrame.NameLabel.Name = curNameClass[1]
+        curFrame:Show()
+    end
+end
+
 function AZP.BossTools.Generic.Events:GroupRosterUpdate(...)
     AZP.BossTools.Generic:RefreshNames(...)
 end
