@@ -261,7 +261,7 @@ AZP.BossTools.BossInfo =
             Index = 11,
             Active = false,
             FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Jailer.blp"),
-            Hero = "Undetermined",
+            Hero = "P3",
         },
     }
 }
