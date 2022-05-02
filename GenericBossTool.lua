@@ -96,7 +96,7 @@ function AZP.BossTools.Generic:FillMainFrame()
         Rows = iRow
         GenericBTFrame.GenericLabels[#GenericBTFrame.GenericLabels + 1] = {}
         for iCol = 1, #AZPBTGenericAssignedPlayers[iRow] do
-            Cols = iCol
+            if iCol > Cols then Cols = iCol end
             if GenericBTFrame.GenericLabels[iRow][iCol] == nil then
                 GenericBTFrame.GenericLabels[iRow][iCol] = GenericBTFrame:CreateFontString("GenericBTFrame", "ARTWORK", "GameFontNormal")
             end
@@ -199,7 +199,7 @@ function AZP.BossTools.Generic:FillOptionsPanel(frameToFill)
             AZPBTGenericEditBoxes[#AZPBTGenericEditBoxes + 1] = {}
             AZPBTGenericAssignedPlayers[iRow] = {}
             for iCol = 1, numCols do
-                AZPBTGenericAssignedPlayers[iRow][iCol] = {}
+                AZPBTGenericAssignedPlayers[iRow][iCol] = "-"
                 local curFrame = CreateFrame("FRAME", nil, frameToFill)
                 curFrame:SetSize(75, 25)
                 curFrame:SetPoint("TOPLEFT", 85 * (iCol - 1) + 20, -25 * iRow - 75)
@@ -292,12 +292,12 @@ function AZP.BossTools.Generic:ShareAssignees()
     local FoundRaidIDs = nil
     for iRow = 1, #AZPBTGenericAssignedPlayers do
         for iCol = 1, #AZPBTGenericAssignedPlayers[iRow] do
-            if #AZPBTGenericAssignedPlayers[iRow][iCol] == 0 then
+            if AZPBTGenericAssignedPlayers[iRow][iCol] == "-" then
                 if FoundRaidIDs == nil then
-                    FoundRaidIDs = string.format("%d", 0)
+                    FoundRaidIDs = "0"
                 else
-                    if iCol == 1 then FoundRaidIDs = string.format("%s%d", FoundRaidIDs, 0)
-                    else FoundRaidIDs = string.format("%s,%d", FoundRaidIDs, 0) end
+                    if iCol == 1 then FoundRaidIDs = string.format("%s0", FoundRaidIDs)
+                    else FoundRaidIDs = string.format("%s,0", FoundRaidIDs) end
                 end
             else
                 for raidID = 1, 40 do
