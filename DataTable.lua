@@ -243,7 +243,7 @@ AZP.BossTools.BossInfo =
             Index = 9,
             Active = false,
             FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-LordsOfDread.blp"),
-            Hero = "Pull",
+            Hero = "1st Unto Darkness",
         },
         Rygelon =
         {

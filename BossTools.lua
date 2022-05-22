@@ -370,7 +370,7 @@ AZP.SlashCommands["BT"] = function()
 end
 
 AZP.SlashCommands["bt"] = AZP.SlashCommands["BT"]
-AZP.SlashCommands["boos tools"] = AZP.SlashCommands["BT"]
+AZP.SlashCommands["boss tools"] = AZP.SlashCommands["BT"]
 AZP.SlashCommands["Boss Tools"] = AZP.SlashCommands["BT"]
 AZP.SlashCommands["bosstools"] = AZP.SlashCommands["BT"]
 AZP.SlashCommands["BossTools"] = AZP.SlashCommands["BT"]

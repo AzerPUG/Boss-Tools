@@ -15,7 +15,6 @@ Sepulcher/Skolex.lua
 Sepulcher/Pantheon.lua
 
 Sanctum/HeroReminder.lua
-Sanctum/Tarragrue.lua
 Sanctum/TheEye.lua
 Sanctum/Dormazain.lua
 Sanctum/RohKalo.lua
