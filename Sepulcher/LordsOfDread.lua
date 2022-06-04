@@ -41,7 +41,7 @@ function AZP.BossTools.Sepulcher.LordsOfDread:OnLoadSelf()
     AZP.BossTools.BossFrames.LordsOfDread.closeButton:SetSize(20, 21)
     AZP.BossTools.BossFrames.LordsOfDread.closeButton:SetPoint("TOPRIGHT", AZP.BossTools.BossFrames.LordsOfDread, "TOPRIGHT", 2, 2)
     AZP.BossTools.BossFrames.LordsOfDread.closeButton:SetScript("OnClick", function() AZP.BossTools.BossFrames.LordsOfDread:Hide() end)
-    
+
     AZP.BossTools.BossFrames.LordsOfDread.Header = AZP.BossTools.BossFrames.LordsOfDread:CreateFontString("AZP.BossTools.BossFrames.LordsOfDread", "ARTWORK", "GameFontNormal")
     AZP.BossTools.BossFrames.LordsOfDread.Header:SetSize(AZP.BossTools.BossFrames.LordsOfDread:GetWidth(), 25)
     AZP.BossTools.BossFrames.LordsOfDread.Header:SetPoint("TOP", 0, -5)
@@ -89,7 +89,7 @@ function AZP.BossTools.Sepulcher.LordsOfDread.Events:ChatMsgAddon(...)
                     return
                 end
                 tinsert(AZP.BossTools.Sepulcher.LordsOfDread.Targets, payload)
-                SetRaidTarget(payload, 6 + #AZP.BossTools.Sepulcher.LordsOfDread.Targets)
+                SetRaidTarget(payload, 9 - #AZP.BossTools.Sepulcher.LordsOfDread.Targets)
             end
 
             if currentVoting.votees == nil then currentVoting.votees = {} end
