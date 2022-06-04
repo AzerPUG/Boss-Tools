@@ -22,7 +22,11 @@ AZP.BossTools.IDs =
         },
         Pantheon = {
             Reconstruction = 361300,
-        }
+        },
+        LordsOfDread = {
+            Infiltration = 360417,
+            Encounter = 2543,
+        },
     },
     TheEye =
     {
@@ -241,7 +245,7 @@ AZP.BossTools.BossInfo =
             Name = "Lords Of Dread",
             ID = 0,
             Index = 9,
-            Active = false,
+            Active = true,
             FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-LordsOfDread.blp"),
             Hero = "1st Unto Darkness",
         },

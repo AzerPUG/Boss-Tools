@@ -3,7 +3,7 @@
 ## Author: Tex & AzerPUG Gaming Community (www.azerpug.com/discord)
 ## Notes: Boss Tools for Raid and Dungeon Encounters, by AzerPUG (Tex)
 ## Version: SL 9.2.5 (For actual addon version, check BossTools.lua)
-## SavedVariables: AZPBossTools AZPBTTheEyeSides AZPBTDormazainChains AZPBTRohKalo AZPAZPShownLocked AZPBTRKIDs RKAnnounceCoE AZPBTSylvTimers
+## SavedVariables: AZPBossTools AZPBTTheEyeSides AZPBTDormazainChains AZPBTRohKalo AZPAZPShownLocked AZPBTRKIDs RKAnnounceCoE AZPBTSylvTimers AZPBTLordsOfDreadVotes
 
 SlashCommands.lua
 DataTable.lua
@@ -13,6 +13,7 @@ GenericBossTool.lua
 Sepulcher/HeroReminder.lua
 Sepulcher/Skolex.lua
 Sepulcher/Pantheon.lua
+Sepulcher/LordsOfDread.lua
 
 Sanctum/HeroReminder.lua
 Sanctum/TheEye.lua
