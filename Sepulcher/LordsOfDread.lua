@@ -63,6 +63,7 @@ function AZP.BossTools.Sepulcher.LordsOfDread:OnEvent(self, event, ...)
 end
 
 function AZP.BossTools.Sepulcher.LordsOfDread.Events:ChatMsgAddon(...)
+    if UnitIsGroupLeader("player") ~= true then return end
     local prefix, payload, _, sender = ...
     if prefix == "AZPDreadVote" then
         if currentVoting == nil then
@@ -98,6 +99,7 @@ function AZP.BossTools.Sepulcher.LordsOfDread.Events:CombatLogEventUnfiltered(..
 end
 
 function AZP.BossTools.Sepulcher.LordsOfDread.Events:EncounterStart(ID)
+    if UnitIsGroupLeader("player") ~= true then return end
     if ID == AZP.BossTools.IDs.Sepulcher.LordsOfDread.Encounter then
         currentPull = {}
 
@@ -110,6 +112,7 @@ function AZP.BossTools.Sepulcher.LordsOfDread.Events:EncounterStart(ID)
 end
 
 function AZP.BossTools.Sepulcher.LordsOfDread.Events:End(ID)
+    if UnitIsGroupLeader("player") ~= true then return end
     if ID == AZP.BossTools.IDs.Sepulcher.LordsOfDread.Encounter then
         currentPull = false;
     end
