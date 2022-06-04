@@ -35,7 +35,13 @@ function AZP.BossTools.Sepulcher.LordsOfDread:OnLoadSelf()
     AZP.BossTools.BossFrames.LordsOfDread:RegisterForDrag("LeftButton")
     AZP.BossTools.BossFrames.LordsOfDread:SetScript("OnDragStart", AZP.BossTools.BossFrames.LordsOfDread.StartMoving)
     AZP.BossTools.BossFrames.LordsOfDread:SetScript("OnDragStop", function() AZP.BossTools.BossFrames.LordsOfDread:StopMovingOrSizing() end)
+    AZP.BossTools.BossFrames.LordsOfDread:Hide()
 
+    AZP.BossTools.BossFrames.LordsOfDread.closeButton = CreateFrame("Button", nil, AZP.BossTools.BossFrames.LordsOfDread, "UIPanelCloseButton")
+    AZP.BossTools.BossFrames.LordsOfDread.closeButton:SetSize(20, 21)
+    AZP.BossTools.BossFrames.LordsOfDread.closeButton:SetPoint("TOPRIGHT", AZP.BossTools.BossFrames.LordsOfDread, "TOPRIGHT", 2, 2)
+    AZP.BossTools.BossFrames.LordsOfDread.closeButton:SetScript("OnClick", function() AZP.BossTools.BossFrames.LordsOfDread:Hide() end)
+    
     AZP.BossTools.BossFrames.LordsOfDread.Header = AZP.BossTools.BossFrames.LordsOfDread:CreateFontString("AZP.BossTools.BossFrames.LordsOfDread", "ARTWORK", "GameFontNormal")
     AZP.BossTools.BossFrames.LordsOfDread.Header:SetSize(AZP.BossTools.BossFrames.LordsOfDread:GetWidth(), 25)
     AZP.BossTools.BossFrames.LordsOfDread.Header:SetPoint("TOP", 0, -5)
@@ -70,11 +76,14 @@ function AZP.BossTools.Sepulcher.LordsOfDread.Events:ChatMsgAddon(...)
             print(string.format("Received vote from %s, but no vote is currently in progress.", sender))
         else
             if currentVoting[payload] == nil then 
-                currentVoting[payload] = 1
+                currentVoting[payload] = {sender}
             else
-                currentVoting[payload] = currentVoting[payload] + 1
+                if not tContains(currentVoting[payload], sender) then
+                    tinsert(currentVoting[payload], sender)
+                end
+
             end
-            if currentVoting[payload] >= 3 and not tContains(AZP.BossTools.Sepulcher.LordsOfDread.Targets, payload) then
+            if #currentVoting[payload] >= 3 and not tContains(AZP.BossTools.Sepulcher.LordsOfDread.Targets, payload) then
                 if(#AZP.BossTools.Sepulcher.LordsOfDread.Targets == 2) then
                     print("Vote for infiltrator failed, too many targets.")
                     return
@@ -84,7 +93,7 @@ function AZP.BossTools.Sepulcher.LordsOfDread.Events:ChatMsgAddon(...)
             end
 
             if currentVoting.votees == nil then currentVoting.votees = {} end
-            tinsert(currentVoting.votees, {sender = sender, payload = payload})
+            tinsert(currentVoting.votees, {sender = sender, payload = payload, time = GetTime()})
         end
     end
 end
@@ -105,7 +114,6 @@ function AZP.BossTools.Sepulcher.LordsOfDread.Events:EncounterStart(ID)
 
         if AZPBTLordsOfDreadVotes == nil then AZPBTLordsOfDreadVotes = {} end
         tinsert(AZPBTLordsOfDreadVotes, currentPull)
-
         AZP.BossTools.Sepulcher.LordsOfDread.Targets = {}
         AZP.BossTools.BossFrames.LordsOfDread:Show()
     end
@@ -128,6 +136,7 @@ function AZP.BossTools.Sepulcher.LordsOfDread.Events:Infiltration()
         for _,player in ipairs(AZP.BossTools.Sepulcher.LordsOfDread.Targets) do
             SetRaidTarget(player, 0)
         end
+        AZP.BossTools.Sepulcher.LordsOfDread.Targets = {}
     end)
 end
 
