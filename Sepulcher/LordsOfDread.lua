@@ -119,6 +119,11 @@ function AZP.BossTools.Sepulcher.LordsOfDread.Events:EncounterStart(ID)
     end
 end
 
+function AZP.BossTools.Sepulcher.LordsOfDread.Events:EncounterEnd(ID)
+    currentPull = nil
+    currentVoting = nil
+end
+
 function AZP.BossTools.Sepulcher.LordsOfDread.Events:End(ID)
     if UnitIsGroupLeader("player") ~= true then return end
     if ID == AZP.BossTools.IDs.Sepulcher.LordsOfDread.Encounter then
