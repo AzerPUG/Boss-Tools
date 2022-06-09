@@ -44,7 +44,7 @@ function AZP.BossTools.Sepulcher.LordsOfDread:OnLoadSelf()
 
     AZP.BossTools.BossFrames.LordsOfDread.Header = AZP.BossTools.BossFrames.LordsOfDread:CreateFontString("AZP.BossTools.BossFrames.LordsOfDread", "ARTWORK", "GameFontNormal")
     AZP.BossTools.BossFrames.LordsOfDread.Header:SetSize(AZP.BossTools.BossFrames.LordsOfDread:GetWidth(), 25)
-    AZP.BossTools.BossFrames.LordsOfDread.Header:SetPoint("TOP", 0, -5)
+    AZP.BossTools.BossFrames.LordsOfDread.Header:SetPoint("TOP", 0, 0)
     AZP.BossTools.BossFrames.LordsOfDread.Header:SetText("Vote Infiltrator")
 
     AZP.BossTools.BossFrames.LordsOfDread.HelpButton = CreateFrame("BUTTON", nil, AZP.BossTools.BossFrames.LordsOfDread, "UIPanelButtonTemplate")
@@ -75,16 +75,15 @@ function AZP.BossTools.Sepulcher.LordsOfDread.Events:ChatMsgAddon(...)
         if currentVoting == nil then
             print(string.format("Received vote from %s, but no vote is currently in progress.", sender))
         else
-            if currentVoting[payload] == nil then 
+            if currentVoting[payload] == nil then
                 currentVoting[payload] = {sender}
             else
                 if not tContains(currentVoting[payload], sender) then
                     tinsert(currentVoting[payload], sender)
                 end
-
             end
             if #currentVoting[payload] >= 3 and not tContains(AZP.BossTools.Sepulcher.LordsOfDread.Targets, payload) then
-                if(#AZP.BossTools.Sepulcher.LordsOfDread.Targets == 2) then
+                if #AZP.BossTools.Sepulcher.LordsOfDread.Targets == 2 then
                     print("Vote for infiltrator failed, too many targets.")
                     return
                 end
