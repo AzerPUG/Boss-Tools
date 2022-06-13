@@ -42,7 +42,6 @@ AZP.BossTools.IDs =
             WarmongerShackles = 350415,
         },
     },
-    
 }
 
 AZP.BossTools.Markers =
@@ -236,7 +235,7 @@ AZP.BossTools.BossInfo =
             Name = "Anduin",
             ID = 0,
             Index = 8,
-            Active = "Soon",
+            Active = true,
             FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-AnduinShadowlands.blp"),
             Hero = "P1.5",
         },
