@@ -24,7 +24,7 @@ AZP.BossTools.IDs =
             Reconstruction = 361300,
         },
         LordsOfDread = {
-            Infiltration = 360417,
+            Infiltration = 360717,
             Encounter = 2543,
         },
     },
