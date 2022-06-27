@@ -108,7 +108,10 @@ function AZP.BossTools.Generic:FillMainFrame()
             else
                 --print("GUID:", AZPBTGenericAssignedPlayers[iRow][iCol])
                 --print("Name:", AZPBTGenericGUIDs[AZPBTGenericAssignedPlayers[iRow][iCol]])
-                GenericBTFrame.GenericLabels[iRow][iCol]:SetText(AZPBTGenericGUIDs[AZPBTGenericAssignedPlayers[iRow][iCol]])
+                local curClassID = AZP.BossTools:GetClassIndexFromGUID(AZPBTGenericAssignedPlayers[iRow][iCol])
+                local _, _, _, curClassColor = AZP.BossTools:GetClassColor(curClassID)
+                local curName = AZPBTGenericGUIDs[AZPBTGenericAssignedPlayers[iRow][iCol]]
+                GenericBTFrame.GenericLabels[iRow][iCol]:SetText(string.format("\124cFF%s%s\124r", curClassColor, curName))
             end
         end
     end
