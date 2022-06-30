@@ -43,6 +43,7 @@ function AZP.BossTools.Sepulcher.Skolex:OnLoadSelf()
     EventFrame:RegisterEvent("CHAT_MSG_ADDON")
     EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    EventFrame:RegisterEvent("ENCOUNTER_END")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Sepulcher.Skolex:OnEvent(...) end)
 
     AZP.BossTools.Sepulcher.Skolex:OnLoadBoth()
@@ -478,11 +479,14 @@ function AZP.BossTools.Sepulcher.Skolex:OnEvent(self, event, ...)
         AZP.BossTools.Sepulcher.Skolex.Events:ChatMsgAddon(...)
     elseif event == "GROUP_ROSTER_UPDATE" then
         AZP.BossTools.Sepulcher.Skolex.Events:GroupRosterUpdate(...)
+    elseif event == "ENCOUNTER_END" then
+        BurrowAmount = 0
+        RetchAmount = 0
     end
 end
 
 --[[
-
+    Reset at 2.
     Start - Diamond Quadrant
     Retch + 1 - 1 - Square Quadrant
     Retch + 1 - 2 - Stack Diamond
@@ -491,6 +495,7 @@ end
     Retch + 1 - 2 - Stack Diamond
     Burrow Boss move to Diamond - Change Diamond to old boss location.
 
+    Reset at 3.
     Start - Diamond Quadrant
     Retch + 1 - 1 - Square Quadrant
     Retch + 1 - 2 - Diamond Quadrant
@@ -499,6 +504,19 @@ end
     Retch + 1 - 1 - Diamond Quadrant
     Retch + 1 - 2 - Square Quadrant
     Retch + 1 - 3 - Stack Diamond
+    Burrow Boss move to Diamond - Change Diamond to old boss location.
+
+    Reset at 4.
+    Start - Diamond Quadrant
+    Retch + 1 - 1 - Square Quadrant
+    Retch + 1 - 2 - Diamond Quadrant
+    Retch + 1 - 3 - Square Quadrant
+    Retch + 1 - 4 - Stack Diamond
+    Burrow Boss move to Diamond - Change Diamond to old boss location.
+    Retch + 1 - 1 - Square Quadrant
+    Retch + 1 - 2 - Diamond Quadrant
+    Retch + 1 - 3 - Square Quadrant
+    Retch + 1 - 4 - Stack Diamond
     Burrow Boss move to Diamond - Change Diamond to old boss location.
 
 ]]
@@ -529,19 +547,6 @@ function AZP.BossTools.Sepulcher.Skolex.Events:Retch()
     end
 
     AZP.BossTools:WarnPlayer(printText)
-
-    -- local curGUID = UnitGUID("PLAYER")
-    -- local side = nil
-    -- if tContains(AZPBTSkolexSides.Diamond, curGUID) then
-    --     side = "Diamond"
-    -- elseif tContains(AZPBTSkolexSides.Square, curGUID) then
-    --     side = "Square"
-    -- end
-
-    -- if side ~= nil then
-    --     local warnText = string.format("SplitPhase! Go %s!", side)  -- ("SplitPhase! Go %s%S%s!", marker, side, marker)
-    --     AZP.BossTools:WarnPlayer(warnText)
-    -- end
 end
 
 function AZP.BossTools.Sepulcher.Skolex.Events:Burrow()
