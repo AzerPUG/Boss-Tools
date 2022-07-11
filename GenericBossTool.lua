@@ -5,6 +5,7 @@ if AZP.BossTools.Generic == nil then AZP.BossTools.Generic = {} end
 if AZP.BossTools.Generic.Events == nil then AZP.BossTools.Generic.Events = {} end
 
 local AZPBTGenericAssignedPlayers, AZPBTGenericGUIDs, AZPBTGenericEditBoxes = {}, {}, {}
+local AZPGenericOptions = nil
 
 local rows, cols = 0, 0
 
@@ -14,28 +15,28 @@ local dragging, previousParent, previousPoint = false, nil, {}
 local GemFrame = nil
 
 function AZP.BossTools.Generic:OnLoadBoth()
-    GenericOptions = CreateFrame("FRAME", nil, UIParent, "BackdropTemplate")
-    GenericOptions:SetSize(700, 400)
-    GenericOptions:SetPoint("CENTER", 0, 0)
-    GenericOptions:SetBackdrop({
+    AZPGenericOptions = CreateFrame("FRAME", nil, UIParent, "BackdropTemplate")
+    AZPGenericOptions:SetSize(700, 400)
+    AZPGenericOptions:SetPoint("CENTER", 0, 0)
+    AZPGenericOptions:SetBackdrop({
         bgFile = "Interface/Tooltips/UI-Tooltip-Background",
         edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
         edgeSize = 12,
         insets = { left = 2, right = 2, top = 2, bottom = 2 },
     })
-    GenericOptions:SetBackdropColor(1, 1, 1, 1)
-    GenericOptions:EnableMouse(true)
-    GenericOptions:SetMovable(true)
-    GenericOptions:RegisterForDrag("LeftButton")
-    GenericOptions:SetScript("OnDragStart", GenericOptions.StartMoving)
-    GenericOptions:SetScript("OnDragStop", function() GenericOptions:StopMovingOrSizing() end)
-    AZP.BossTools.Generic:FillOptionsPanel(GenericOptions)
+    AZPGenericOptions:SetBackdropColor(1, 1, 1, 1)
+    AZPGenericOptions:EnableMouse(true)
+    AZPGenericOptions:SetMovable(true)
+    AZPGenericOptions:RegisterForDrag("LeftButton")
+    AZPGenericOptions:SetScript("OnDragStart", AZPGenericOptions.StartMoving)
+    AZPGenericOptions:SetScript("OnDragStop", function() AZPGenericOptions:StopMovingOrSizing() end)
+    AZP.BossTools.Generic:FillOptionsPanel(AZPGenericOptions)
 
     local AZPBossToolsSepulcherFrame = AZP.BossTools.AZPBossToolsSepulcherFrame
     AZPBossToolsSepulcherFrame.GenericButton = CreateFrame("Button", nil, AZPBossToolsSepulcherFrame)
     AZPBossToolsSepulcherFrame.GenericButton:SetSize(20, 20)
     AZPBossToolsSepulcherFrame.GenericButton:SetPoint("TOPLEFT", AZPBossToolsSepulcherFrame, "TOPLEFT", 3, -23)
-    AZPBossToolsSepulcherFrame.GenericButton:SetScript("OnClick", function() AZPBossToolsSepulcherFrame:Hide() GenericOptions:Show() end)
+    AZPBossToolsSepulcherFrame.GenericButton:SetScript("OnClick", function() AZPBossToolsSepulcherFrame:Hide() AZPGenericOptions:Show() end)
     AZPBossToolsSepulcherFrame.GenericButton.Texture = AZPBossToolsSepulcherFrame.GenericButton:CreateTexture(nil, "ARTWORK")
     AZPBossToolsSepulcherFrame.GenericButton.Texture:SetSize(20, 20)
     AZPBossToolsSepulcherFrame.GenericButton.Texture:SetPoint("CENTER", 0, 0)
@@ -438,7 +439,7 @@ end
 
 function AZP.BossTools.Generic:RefreshNames()
     local allUnitNames = {}
-    local allNameLabels = GenericOptions.AllNamesFrame.allNameLabels
+    local allNameLabels = AZPGenericOptions.AllNamesFrame.allNameLabels
 
     for _, frame in ipairs(allNameLabels) do
         frame:Hide()
@@ -457,7 +458,7 @@ function AZP.BossTools.Generic:RefreshNames()
     for Index, curNameClass in pairs(allUnitNames) do
         local curFrame = allNameLabels[Index]
         if curFrame == nil then
-            curFrame = CreateFrame("FRAME", nil, GenericOptions.AllNamesFrame, "BackdropTemplate")
+            curFrame = CreateFrame("FRAME", nil, AZPGenericOptions.AllNamesFrame, "BackdropTemplate")
             allNameLabels[Index] = curFrame
             curFrame:SetSize(85, 20)
             curFrame:SetPoint("TOP", 0, -18 * Index + 15)
@@ -468,8 +469,8 @@ function AZP.BossTools.Generic:RefreshNames()
                 insets = { left = 2, right = 2, top = 2, bottom = 2 },
             })
             curFrame:SetBackdropColor(1, 1, 1, 1)
-            curFrame:SetScript("OnMouseDown", function() GemFrame = curFrame AZP.BossTools.GenericOptions:StartHoveringCopy() end)
-            curFrame:SetScript("OnMouseUp", function() AZP.BossTools.GenericOptions:StopHoveringCopy() end)
+            curFrame:SetScript("OnMouseDown", function() GemFrame = curFrame AZP.BossTools.Generic:StartHoveringCopy() end)
+            curFrame:SetScript("OnMouseUp", function() AZP.BossTools.Generic:StopHoveringCopy() end)
 
             curFrame.NameLabel = curFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
             curFrame.NameLabel:SetSize(85, 20)
