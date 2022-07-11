@@ -410,8 +410,9 @@ function AZP.BossTools.Generic:OnEditFocusLost(iRow, iCol)
             end
         end
     else
-        table.remove(AZPBTGenericAssignedPlayers[iRow], iCol)
+        AZPBTGenericAssignedPlayers[iRow][iCol] = "-"
     end
+    
     AZP.BossTools.Generic:FillMainFrame()
 end
 
