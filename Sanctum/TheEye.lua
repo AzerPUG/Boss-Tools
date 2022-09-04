@@ -544,6 +544,9 @@ function AZP.BossTools.Sanctum.TheEye.Events:CombatLogEventUnfiltered(...)
 end
 
 function AZP.BossTools.Sanctum.TheEye.Events:StygianEjection()
+    if AZPBTTheEyeSides == nil then
+        return
+    end
     local curGUID = UnitGUID("PLAYER")
     local side = nil
     if tContains(AZPBTTheEyeSides.Left, curGUID) then
