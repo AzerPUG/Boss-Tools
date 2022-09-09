@@ -482,6 +482,7 @@ function AZP.BossTools.Sepulcher.Skolex:OnEvent(self, event, ...)
     elseif event == "ENCOUNTER_END" then
         BurrowAmount = 0
         RetchAmount = 0
+        CurrentMarker = "Diamond"
     end
 end
 
