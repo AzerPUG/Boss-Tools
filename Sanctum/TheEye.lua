@@ -40,6 +40,7 @@ function AZP.BossTools.Sanctum.TheEye:OnLoadSelf()
     EventFrame:RegisterEvent("CHAT_MSG_ADDON")
     EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    EventFrame:RegisterEvent("ENCOUNTER_END")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Sanctum.TheEye:OnEvent(...) end)
 
     AZP.BossTools.Sanctum.TheEye:OnLoadBoth()
@@ -524,6 +525,12 @@ function AZP.BossTools.Sanctum.TheEye:StopHoverOverCopy(SocketFrame)
     if GemFrame ~= nil then if GemFrame.parent ~= nil then GemFrame.parent = nil end end
 end
 
+function AZP.BossTools.Sanctum.TheEye.Events:EncounterEnd(_, _, _, _, success)
+    if success == true then
+        AZPBTTheEyeSides = nil
+    end
+end
+
 function AZP.BossTools.Sanctum.TheEye:OnEvent(self, event, ...)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
         AZP.BossTools.Sanctum.TheEye.Events:CombatLogEventUnfiltered(...)
@@ -531,6 +538,8 @@ function AZP.BossTools.Sanctum.TheEye:OnEvent(self, event, ...)
         AZP.BossTools.Sanctum.TheEye.Events:ChatMsgAddon(...)
     elseif event == "GROUP_ROSTER_UPDATE" then
         AZP.BossTools.Sanctum.TheEye.Events:GroupRosterUpdate(...)
+    elseif event == "ENCOUNTER_END" then
+        AZP.BossTools.Sanctum.TheEye.Events:EncounterEnd(...)
     end
 end
 

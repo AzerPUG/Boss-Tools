@@ -553,11 +553,14 @@ function AZP.BossTools.Sanctum.Dormazain.Events:CombatLogEventUnfiltered(...)
     end
 end
 
-function AZP.BossTools.Sanctum.Dormazain.Events:EncounterEnd(...)
+function AZP.BossTools.Sanctum.Dormazain.Events:EncounterEnd(_, _, _, _, success)
     ChainsCount = 0
     if BossEnergyTicker ~= nil then
         BossEnergyTicker:Cancel()
         BossEnergyTicker = nil
+    end
+    if success == true then
+        AZPBTDormazainChains = nil
     end
 end
 

@@ -138,6 +138,7 @@ function AZP.BossTools.Sanctum.RohKalo:OnLoadSelf()
     EventFrame:RegisterEvent("VARIABLES_LOADED")
     EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
     EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    EventFrame:RegisterEvent("ENCOUNTER_END")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Sanctum.RohKalo:OnEvent(...) end)
 
     AZPBossToolsRohKaloOptionPanel = CreateFrame("FRAME", nil)
@@ -639,6 +640,12 @@ function AZP.BossTools.Sanctum.RohKalo:GetSpecificAddonVersion(versionString, ad
     end
 end
 
+function AZP.BossTools.Sanctum.RohKalo.Events:EncounterEnd(_, _, _, _, success)
+    if success == true then
+        AZPBTRohKalo = nil
+    end
+end
+
 function AZP.BossTools.Sanctum.RohKalo:OnEvent(self, event, ...)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
         AZP.BossTools.Sanctum.RohKalo.Events:CombatLogEventUnfiltered(...)
@@ -649,6 +656,8 @@ function AZP.BossTools.Sanctum.RohKalo:OnEvent(self, event, ...)
         AZP.BossTools.Sanctum.RohKalo.Events:ChatMsgAddon(...)
     elseif event == "GROUP_ROSTER_UPDATE" then
         AZP.BossTools.Sanctum.RohKalo:ShareVersion()
+    elseif event == "ENCOUNTER_END" then
+        AZP.BossTools.Sanctum.RohKalo.Events:EncounterEnd(...)
     end
 end
 

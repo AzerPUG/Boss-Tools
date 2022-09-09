@@ -39,6 +39,7 @@ function AZP.BossTools.Sepulcher.Anduin:OnLoadSelf()
     EventFrame = CreateFrame("FRAME", nil)
     EventFrame:RegisterEvent("CHAT_MSG_ADDON")
     EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
+    EventFrame:RegisterEvent("ENCOUNTER_END")
     EventFrame:SetScript("OnEvent", function(...) AZP.BossTools.Sepulcher.Anduin:OnEvent(...) end)
 
     AZP.BossTools.Sepulcher.Anduin:OnLoadBoth()
@@ -414,11 +415,19 @@ function AZP.BossTools.Sepulcher.Anduin:StopHoverOverCopy(SocketFrame)
     if GemFrame ~= nil then if GemFrame.parent ~= nil then GemFrame.parent = nil end end
 end
 
+function AZP.BossTools.Sepulcher.Anduin.Events:EncounterEnd(_, _, _, _, success)
+    if success == true then
+        AZPBTAnduinGroups = nil
+    end
+end
+
 function AZP.BossTools.Sepulcher.Anduin:OnEvent(self, event, ...)
     if event == "CHAT_MSG_ADDON" then
         AZP.BossTools.Sepulcher.Anduin.Events:ChatMsgAddon(...)
     elseif event == "GROUP_ROSTER_UPDATE" then
         AZP.BossTools.Sepulcher.Anduin.Events:GroupRosterUpdate(...)
+    elseif event == "ENCOUNTER_END" then
+        AZP.BossTools.Sepulcher.Anduin.Events:EncounterEnd(...)
     end
 end
 
