@@ -386,3 +386,16 @@ AZP.SlashCommands["boos tools old"] = AZP.SlashCommands["BTA"]
 AZP.SlashCommands["Boss Tools Old"] = AZP.SlashCommands["BTA"]
 AZP.SlashCommands["bosstoolsold"] = AZP.SlashCommands["BTA"]
 AZP.SlashCommands["BossToolsOld"] = AZP.SlashCommands["BTA"]
+
+
+-- Remove in next version, temporary fix to remove old data.
+local EventFrame = CreateFrame("Frame")
+EventFrame:RegisterEvent("VARIABLES_LOADED")
+EventFrame:SetScript("OnEvent", function ()
+    AZPBTTheEyeSides = nil
+    AZPBTDormazainChains = nil
+    AZPBTRohKalo = nil
+    RKAnnounceCoE = nil
+    AZPBTLordsOfDreadVotes = nil
+    AZPBTAnduinGroups = nil
+end)
