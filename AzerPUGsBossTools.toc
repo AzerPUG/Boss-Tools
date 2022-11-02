@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: |cFF00FFFFAzerPUG's|r |cFFFF00FFBoss Tools|r
 ## Author: Tex & AzerPUG Gaming Community (www.azerpug.com/discord)
 ## Notes: Boss Tools for Raid and Dungeon Encounters, by AzerPUG (Tex)
