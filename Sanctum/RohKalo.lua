@@ -437,7 +437,7 @@ function AZP.BossTools.Sanctum.RohKalo:LoadSavedVars()
         AZP.BossTools.BossFrames.RohKalo:SetMovable(true)
     end
 
-    if AZPAZPShownLocked[2] then
+    if AZPAZPShownLocked[2] == false or AZPAZPShownLocked[2] == nil then
         AZP.BossTools.BossFrames.RohKalo:Hide()
         AZPBossToolsRohKaloOptionPanel.ShowHideButton:SetText("Show RohKalo!")
     else
