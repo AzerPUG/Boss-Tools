@@ -341,6 +341,7 @@ function AZP.BossTools:GetClassColor(classIndex)
     elseif classIndex == 10 then return 0.00, 1.00, 0.60, "00FF98"      -- Monk
     elseif classIndex == 11 then return 1.00, 0.49, 0.04, "FF7C0A"      -- Druid
     elseif classIndex == 12 then return 0.64, 0.19, 0.79, "A330C9"      -- Demon Hunter
+    elseif classIndex == 13 then return 0.20, 0.58, 0.50, "33937F"      -- Evoker
     end
 end
 
