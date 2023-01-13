@@ -20,6 +20,7 @@ local soundID = 8959
 local soundChannel = 1
 
 function AZP.BossTools.OnLoad()
+    print("loading bosjetools frame")
     AZP.BossTools.ParentOptionFrame = CreateFrame("FRAME", nil)
     AZP.BossTools.ParentOptionFrame.name = "|cFF00FFFFAzerPUG's BossTools|r"
     InterfaceOptions_AddCategory(AZP.BossTools.ParentOptionFrame)
@@ -33,6 +34,7 @@ function AZP.BossTools.OnLoad()
     AZP.BossTools.ParentOptionFrame.SubHeader:SetText("Options Panel")
 
     AZP.BossTools:CreateVaultSelectorFrame()
+    print("Created Vault Selector Frame")
     --AZP.BossTools:CreateSanctumSelectorFrame()
     --AZP.BossTools:CreateSepulcherSelectorFrame()
     AZP.BossTools:CreatePopUpFrame()
@@ -69,6 +71,7 @@ function AZP.BossTools:ApplyTaintFix()
 end
 
 function AZP.BossTools:CreateVaultSelectorFrame()
+    print("A")
     AZPBossToolsVaultFrame = CreateFrame("FRAME", nil, UIParent, "BackdropTemplate")
     AZPBossToolsVaultFrame:SetPoint("CENTER", 0, 0)
     AZPBossToolsVaultFrame.Background = AZPBossToolsVaultFrame:CreateTexture(nil, "ARTWORK")
@@ -93,7 +96,7 @@ function AZP.BossTools:CreateVaultSelectorFrame()
     AZPBossToolsVaultFrame.SubHeader:SetText("Vault of the Incarnates\nBoss Selector Frame")
 
     local BossWidth, BossHeight = 100, 75
-
+    print("B")
     for Boss, Info in pairs(AZP.BossTools.BossInfo.Vault) do
         if Boss ~= "Background" then
             if Info.Active ~= false then
@@ -123,6 +126,8 @@ function AZP.BossTools:CreateVaultSelectorFrame()
         end
     end
 
+    print("C")
+
     local iconsPerRow = {math.floor(#AZP.BossTools.BossIcons.Vault / 2), math.ceil(#AZP.BossTools.BossIcons.Vault / 2)}
     local FrameWidth = (iconsPerRow[2] * 85 + 25)
     if FrameWidth < 280 then FrameWidth = 280 end
@@ -130,7 +135,17 @@ function AZP.BossTools:CreateVaultSelectorFrame()
     AZPBossToolsVaultFrame.Background:SetSize(AZPBossToolsVaultFrame:GetWidth() - 5, AZPBossToolsVaultFrame:GetHeight() - 5)
 
     table.sort(AZP.BossTools.BossIcons.Vault, function(a,b) return a.Index < b.Index end)
+    
+    AZPBossToolsVaultFrame.closeButton = CreateFrame("Button", nil, AZPBossToolsVaultFrame, "UIPanelCloseButton")
+    AZPBossToolsVaultFrame.closeButton:SetSize(20, 21)
+    AZPBossToolsVaultFrame.closeButton:SetPoint("TOPRIGHT", AZPBossToolsVaultFrame, "TOPRIGHT", 1, 2)
+    AZPBossToolsVaultFrame.closeButton:SetScript("OnClick", function() AZPBossToolsVaultFrame:Hide() end)
 
+    DevTools_Dump(AZPBossToolsVaultFrame)
+    print("Derp Derp Derp!")
+    AZP.BossTools.AZPBossToolsVaultFrame = AZPBossToolsVaultFrame
+    AZPBossToolsVaultFrame:Hide()
+    
     if #AZP.BossTools.BossIcons.Vault == 0 then return
     elseif #AZP.BossTools.BossIcons.Vault > 0 then
         for i = 1, #AZP.BossTools.BossIcons.Vault do
@@ -142,15 +157,6 @@ function AZP.BossTools:CreateVaultSelectorFrame()
         end
     end
 
-    AZPBossToolsVaultFrame.closeButton = CreateFrame("Button", nil, AZPBossToolsVaultFrame, "UIPanelCloseButton")
-    AZPBossToolsVaultFrame.closeButton:SetSize(20, 21)
-    AZPBossToolsVaultFrame.closeButton:SetPoint("TOPRIGHT", AZPBossToolsVaultFrame, "TOPRIGHT", 1, 2)
-    AZPBossToolsVaultFrame.closeButton:SetScript("OnClick", function() AZPBossToolsVaultFrame:Hide() end)
-
-    DevTools_Dump(AZPBossToolsVaultFrame)
-    print("Derp Derp Derp!")
-    AZP.BossTools.AZPBossToolsVaultFrame = AZPBossToolsVaultFrame
-    AZPBossToolsVaultFrame:Hide()
 end
 
 -- function AZP.BossTools:CreateSanctumSelectorFrame()
