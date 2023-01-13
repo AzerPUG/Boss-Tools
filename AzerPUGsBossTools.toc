@@ -10,14 +10,4 @@ DataTable.lua
 BossTools.lua
 GenericBossTool.lua
 
-Sepulcher/HeroReminder.lua
-Sepulcher/Skolex.lua
-Sepulcher/Pantheon.lua
-Sepulcher/Anduin.lua
-Sepulcher/LordsOfDread.lua
-
-Sanctum/HeroReminder.lua
-Sanctum/TheEye.lua
-Sanctum/Dormazain.lua
-Sanctum/RohKalo.lua
-Sanctum/KelThuzad.lua
+Vault/Razageth.lua

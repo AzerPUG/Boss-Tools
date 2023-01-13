@@ -32,20 +32,17 @@ function AZP.BossTools.Generic:OnLoadBoth()
     AZPGenericOptions:SetScript("OnDragStop", function() AZPGenericOptions:StopMovingOrSizing() end)
     AZP.BossTools.Generic:FillOptionsPanel(AZPGenericOptions)
 
-    local AZPBossToolsSepulcherFrame = AZP.BossTools.AZPBossToolsSepulcherFrame
-    AZPBossToolsSepulcherFrame.GenericButton = CreateFrame("Button", nil, AZPBossToolsSepulcherFrame)
-    AZPBossToolsSepulcherFrame.GenericButton:SetSize(20, 20)
-    AZPBossToolsSepulcherFrame.GenericButton:SetPoint("TOPLEFT", AZPBossToolsSepulcherFrame, "TOPLEFT", 3, -23)
-    AZPBossToolsSepulcherFrame.GenericButton:SetScript("OnClick", function() AZPBossToolsSepulcherFrame:Hide() AZPGenericOptions:Show() end)
-    AZPBossToolsSepulcherFrame.GenericButton.Texture = AZPBossToolsSepulcherFrame.GenericButton:CreateTexture(nil, "ARTWORK")
-    AZPBossToolsSepulcherFrame.GenericButton.Texture:SetSize(20, 20)
-    AZPBossToolsSepulcherFrame.GenericButton.Texture:SetPoint("CENTER", 0, 0)
-    AZPBossToolsSepulcherFrame.GenericButton.Texture:SetTexture(GetFileIDFromPath("Interface/BUTTONS/UI-AttributeButton-Encourage-Up"))
+    DevTools_Dump(AZP.BossTools.AZPBossToolsVaultFrame)
 
-    -- Interface\BUTTONS\AdventureGuideMicrobuttonAlert
-    -- Interface\BUTTONS\UI-PlusButton-Up
-    -- Interface\BUTTONS\UI-AttributeButton-Encourage-Up
-    -- Interface\BUTTONS\UI-AttributeButton-Encourage-Up
+    local AZPBossToolsVaultFrame = AZP.BossTools.AZPBossToolsVaultFrame
+    AZPBossToolsVaultFrame.GenericButton = CreateFrame("Button", nil, AZPBossToolsVaultFrame)
+    AZPBossToolsVaultFrame.GenericButton:SetSize(20, 20)
+    AZPBossToolsVaultFrame.GenericButton:SetPoint("TOPLEFT", AZPBossToolsVaultFrame, "TOPLEFT", 3, -23)
+    AZPBossToolsVaultFrame.GenericButton:SetScript("OnClick", function() AZPBossToolsVaultFrame:Hide() AZPGenericOptions:Show() end)
+    AZPBossToolsVaultFrame.GenericButton.Texture = AZPBossToolsVaultFrame.GenericButton:CreateTexture(nil, "ARTWORK")
+    AZPBossToolsVaultFrame.GenericButton.Texture:SetSize(20, 20)
+    AZPBossToolsVaultFrame.GenericButton.Texture:SetPoint("CENTER", 0, 0)
+    AZPBossToolsVaultFrame.GenericButton.Texture:SetTexture(GetFileIDFromPath("Interface/BUTTONS/UI-AttributeButton-Encourage-Up"))
 
     AZP.BossTools.Generic:CreateMainFrame()
 end
@@ -107,8 +104,6 @@ function AZP.BossTools.Generic:FillMainFrame()
             if AZPBTGenericAssignedPlayers[iRow][iCol] == "-" then
                 GenericBTFrame.GenericLabels[iRow][iCol]:SetText("-")
             else
-                --print("GUID:", AZPBTGenericAssignedPlayers[iRow][iCol])
-                --print("Name:", AZPBTGenericGUIDs[AZPBTGenericAssignedPlayers[iRow][iCol]])
                 local curClassID = AZP.BossTools:GetClassIndexFromGUID(AZPBTGenericAssignedPlayers[iRow][iCol])
                 local _, _, _, curClassColor = AZP.BossTools:GetClassColor(curClassID)
                 local curName = AZPBTGenericGUIDs[AZPBTGenericAssignedPlayers[iRow][iCol]]
