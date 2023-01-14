@@ -620,9 +620,4 @@ function AZP.BossTools.Sanctum.Dormazain:TrackEnergy()
     end
 end
 
-function AZP.BossTools.Sanctum.Dormazain:DumpTable()
-    DevTools_Dump(BossEnertyTimeStamps)
-end
-
-
 AZP.BossTools.Sanctum.Dormazain:OnLoadSelf()

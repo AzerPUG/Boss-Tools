@@ -4,6 +4,8 @@ if AZP.VersionControl == nil then AZP.VersionControl = {} end
 if AZP.BossTools.Vault.Razageth == nil then AZP.BossTools.Vault.Razageth = {} end
 if AZP.BossTools.Vault.Razageth.Events == nil then AZP.BossTools.Vault.Razageth.Events = {} end
 
+local AZPBTRazIDs = {DebuffMin = 394579, DebuffPlus = 394576}
+
 local AssignedPlayers = {}
 local AZPBossToolsRazagethOptionPanel = nil
 local AZPBossToolsRazagethGUIDs, AZPBossToolsRazagethAlphaEditBoxes, AZPBossToolsRazagethBetaEditBoxes = {}, {}, {}
@@ -18,13 +20,6 @@ local HaveShowedUpdateNotification = false
 if RKAnnounceCoE == nil then RKAnnounceCoE = false end
 
 local optionHeader = "|cFF00FFFFBossTools Razageth|r"
-
-function AZP.BossTools.Vault.Razageth:CheckIDs()
-    if AZPBTRazIDs == nil then AZPBTRazIDs = {DebuffMin = 394579, DebuffPlus = 394576} end
-end
--- AZP.BossTools.Vault.Razageth:CompareIDs(394579)
--- AZP.BossTools.Vault.Razageth:CompareIDs(394576)
-
 
 function AZP.BossTools.Vault.Razageth:GetPlayersWithHeroicBuff()
     local players = {}
@@ -247,21 +242,21 @@ function AZP.BossTools.Vault.Razageth:FillOptionsPanel(frameToFill)
 end
 
 function AZP.BossTools.Vault.Razageth:CreateMainFrame()
-    local TempFrame1 = CreateFrame("Frame", nil, UIParent, "BasicFrameTemplateWithInset")
-    TempFrame1:SetSize(100, 100)
-    TempFrame1:SetPoint("CENTER", -75, 0)
-    TempFrame1:EnableMouse(true)
-    TempFrame1:SetScript("OnMouseDown", function() AZP.BossTools.Vault.Razageth:CompareIDs(394579) end)
+    -- local TempFrame1 = CreateFrame("Frame", nil, UIParent, "BasicFrameTemplateWithInset")
+    -- TempFrame1:SetSize(100, 100)
+    -- TempFrame1:SetPoint("CENTER", -75, 0)
+    -- TempFrame1:EnableMouse(true)
+    -- TempFrame1:SetScript("OnMouseDown", function() AZP.BossTools.Vault.Razageth:CompareIDs(394579) end)
 
-    local TempFrame2 = CreateFrame("Frame", nil, UIParent, "BasicFrameTemplateWithInset")
-    TempFrame2:SetSize(100, 100)
-    TempFrame2:SetPoint("CENTER", 75, 0)
-    TempFrame2:EnableMouse(true)
-    TempFrame2:SetScript("OnMouseDown", function() AZP.BossTools.Vault.Razageth:CompareIDs(394576) end)
+    -- local TempFrame2 = CreateFrame("Frame", nil, UIParent, "BasicFrameTemplateWithInset")
+    -- TempFrame2:SetSize(100, 100)
+    -- TempFrame2:SetPoint("CENTER", 75, 0)
+    -- TempFrame2:EnableMouse(true)
+    -- TempFrame2:SetScript("OnMouseDown", function() AZP.BossTools.Vault.Razageth:CompareIDs(394576) end)
 
     AZP.BossTools.BossFrames.Razageth = CreateFrame("FRAME", nil, UIParent)
-    AZP.BossTools.BossFrames.Razageth:SetSize(175, 150)
-    AZP.BossTools.BossFrames.Razageth:SetPoint("TOPLEFT", 100, -200)
+    AZP.BossTools.BossFrames.Razageth:SetSize(150, 75)
+    AZP.BossTools.BossFrames.Razageth:SetPoint("TOP", 0, -200)
     AZP.BossTools.BossFrames.Razageth:EnableMouse(true)
     AZP.BossTools.BossFrames.Razageth:SetMovable(true)
     AZP.BossTools.BossFrames.Razageth:RegisterForDrag("LeftButton")
@@ -269,29 +264,33 @@ function AZP.BossTools.Vault.Razageth:CreateMainFrame()
     AZP.BossTools.BossFrames.Razageth:SetScript("OnDragStop", function() AZP.BossTools.BossFrames.Razageth:StopMovingOrSizing() end)
 
     AZP.BossTools.BossFrames.Razageth.Icon = AZP.BossTools.BossFrames.Razageth:CreateTexture(nil, "ARTWORK")
-    AZP.BossTools.BossFrames.Razageth.Icon:SetSize(50, 50)
+    AZP.BossTools.BossFrames.Razageth.Icon:SetSize(75, 75)
     AZP.BossTools.BossFrames.Razageth.Icon:SetPoint("LEFT", 0, 0)
     AZP.BossTools.BossFrames.Razageth.Icon:SetTexture(394579)
 
     AZP.BossTools.BossFrames.Razageth.Marker = AZP.BossTools.BossFrames.Razageth:CreateTexture(nil, "ARTWORK")
-    AZP.BossTools.BossFrames.Razageth.Marker:SetSize(50, 50)
+    AZP.BossTools.BossFrames.Razageth.Marker:SetSize(75, 75)
     AZP.BossTools.BossFrames.Razageth.Marker:SetPoint("LEFT", AZP.BossTools.BossFrames.Razageth.Icon, "RIGHT", 5, 0)
     AZP.BossTools.BossFrames.Razageth.Marker:SetTexture(394581)
 
     --AZP.BossTools.BossFrames.Razageth:Hide()
+    AZP.BossTools.BossFrames.Razageth.Icon:Hide()
+    AZP.BossTools.BossFrames.Razageth.Marker:Hide()
 end
 
 function AZP.BossTools.Vault.Razageth:CompareIDs(curID)
     if curID == AZPBTRazIDs.DebuffMin then
-        AZP.BossTools.BossFrames.Razageth:Show()
+        AZP.BossTools.BossFrames.Razageth.Icon:Show()
+        AZP.BossTools.BossFrames.Razageth.Marker:Show()
         AZP.BossTools.BossFrames.Razageth.Icon:SetTexture(135768)
         AZP.BossTools.BossFrames.Razageth.Marker:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcon_7")
-        C_Timer.After(5, function() AZP.BossTools.BossFrames.Razageth:Hide() end)
+        C_Timer.After(10, function() AZP.BossTools.BossFrames.Razageth.Icon:Hide() AZP.BossTools.BossFrames.Razageth.Marker:Hide() end)
     elseif curID == AZPBTRazIDs.DebuffPlus then
-        AZP.BossTools.BossFrames.Razageth:Show()
+        AZP.BossTools.BossFrames.Razageth.Icon:Show()
+        AZP.BossTools.BossFrames.Razageth.Marker:Show()
         AZP.BossTools.BossFrames.Razageth.Icon:SetTexture(135769)
         AZP.BossTools.BossFrames.Razageth.Marker:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcon_6")
-        C_Timer.After(5, function() AZP.BossTools.BossFrames.Razageth:Hide() end)
+        C_Timer.After(10, function() AZP.BossTools.BossFrames.Razageth.Icon:Hide() AZP.BossTools.BossFrames.Razageth.Marker:Hide() end)
     end
 end
 
@@ -303,35 +302,25 @@ function AZP.BossTools.Vault.Razageth.Events:CombatLogEventUnfiltered(...)
 end
 
 function AZP.BossTools.Vault.Razageth.Events:VariablesLoaded(...)
-    AZP.BossTools.Vault.Razageth:LoadSavedVars()
-    AZP.BossTools.Vault.Razageth:ShareVersion()
-    AZP.BossTools.Vault.Razageth:CheckIDs()
-    AZPBossToolsRazagethOptionPanel.CallOfEternityFrame.CoECheckBox:SetChecked(RKAnnounceCoE)
+    -- AZP.BossTools.Vault.Razageth:LoadSavedVars()
+    -- AZP.BossTools.Vault.Razageth:ShareVersion()
+    -- AZP.BossTools.Vault.Razageth:CheckIDs()
+    -- AZPBossToolsRazagethOptionPanel.CallOfEternityFrame.CoECheckBox:SetChecked(RKAnnounceCoE)
 end
 
-function AZP.BossTools.Vault.Razageth.Events:ChatMsgAddon(...)
-    local prefix, payload, _, sender = ...
-    if prefix == "AZPRKHINFO" then
-        AZP.BossTools.Vault.Razageth:ReceiveAssignees(payload)
-        AZP.BossTools.Vault.Razageth:CacheRaidNames()
-        AZP.BossTools:ShowReceiveFrame(sender, "Vault", "Razageth")
-        AZP.BossTools.ReceiveFrame:Show()
-    elseif prefix == "AZPRKHHelp" then
-        AZP.BossTools.Vault.Razageth:HelpRequested(payload)
-        AZP.BossTools.Vault.Razageth:CacheRaidNames()
-    elseif prefix == "AZPRKHIDChange" and sender == "Tex-Ravencrest" then
-        local field, ID = string.match(payload, "([^=]+)=([0-9]*)")
-        AZPBTRazIDs[field] = tonumber(ID)
-    end
-end
-
--- function AZP.BossTools.Vault.Razageth.Events:ChatMsgAddonVersion(...)
+-- function AZP.BossTools.Vault.Razageth.Events:ChatMsgAddon(...)
 --     local prefix, payload, _, sender = ...
---     if prefix == "AZPVERSIONS" then
---         local version = AZP.BossTools.Vault.Razageth:GetSpecificAddonVersion(payload, "BT")
---         if version ~= nil then
---             AZP.BossTools.Vault.Razageth:ReceiveVersion(version)
---         end
+--     if prefix == "AZPRKHINFO" then
+--         AZP.BossTools.Vault.Razageth:ReceiveAssignees(payload)
+--         AZP.BossTools.Vault.Razageth:CacheRaidNames()
+--         AZP.BossTools:ShowReceiveFrame(sender, "Vault", "Razageth")
+--         AZP.BossTools.ReceiveFrame:Show()
+--     elseif prefix == "AZPRKHHelp" then
+--         AZP.BossTools.Vault.Razageth:HelpRequested(payload)
+--         AZP.BossTools.Vault.Razageth:CacheRaidNames()
+--     elseif prefix == "AZPRKHIDChange" and sender == "Tex-Ravencrest" then
+--         local field, ID = string.match(payload, "([^=]+)=([0-9]*)")
+--         AZPBTRazIDs[field] = tonumber(ID)
 --     end
 -- end
 
@@ -383,187 +372,119 @@ function AZP.BossTools.Vault.Razageth:ShowHideFrame()
     end
 end
 
-function AZP.BossTools.Vault.Razageth:RequestHelp()
-    local ownGUID = UnitGUID("player")
-    for _, players in pairs(AssignedPlayers) do
-        if players.Alpha == ownGUID then
-            C_ChatInfo.SendAddonMessage("AZPRKHHelp", players.Beta ,"RAID", 1)
-        end
-    end
-end
-
-function AZP.BossTools.Vault.Razageth:HelpRequested(requestedGUID)
-    local ownGUID = UnitGUID("player")
-    if requestedGUID == ownGUID then
-        local ringRequested = nil
-        for ring, players in pairs(AssignedPlayers) do
-            if players.Beta == ownGUID then
-                ringRequested = ring
-            end
-        end
-        AZP.BossTools:WarnPlayer(string.format("|cFFFF0000Help on %s!|r", ringRequested))
-    end
-end
-
 function AZP.BossTools.Vault.Razageth:SaveLocation()
     local temp = {}
     temp[1], temp[2], temp[3], temp[4], temp[5] = AZP.BossTools.BossFrames.Razageth:GetPoint()
     AZPBossToolsRazagethLocation = temp
 end
 
-function AZP.BossTools.Vault.Razageth:CacheRaidNames()
-    if IsInRaid() == true then
-        for k = 1, 40 do
-            local curName = GetRaidRosterInfo(k)
-            if curName ~= nil then
-                if string.find(curName, "-") then
-                    curName = string.match(curName, "(.+)-")
-                end
-                local curGUID = UnitGUID("raid" .. k)
-                AZPBossToolsRazagethGUIDs[curGUID] = curName
-            end
-        end
-    end
-end
+-- function AZP.BossTools.Vault.Razageth:CacheRaidNames()
+--     if IsInRaid() == true then
+--         for k = 1, 40 do
+--             local curName = GetRaidRosterInfo(k)
+--             if curName ~= nil then
+--                 if string.find(curName, "-") then
+--                     curName = string.match(curName, "(.+)-")
+--                 end
+--                 local curGUID = UnitGUID("raid" .. k)
+--                 AZPBossToolsRazagethGUIDs[curGUID] = curName
+--             end
+--         end
+--     end
+-- end
 
-function AZP.BossTools.Vault.Razageth:OnEditFocusLost(role, ring)
-    local editBoxFrame = nil
-    local ringName = string.format("Ring%d", ring)
-    if role == "Alpha" then
-        editBoxFrame = AZPBossToolsRazagethAlphaEditBoxes[ring]
-    else
-        editBoxFrame = AZPBossToolsRazagethBetaEditBoxes[ring]
-    end
-    if (editBoxFrame.editbox:GetText() ~= nil and editBoxFrame.editbox:GetText() ~= "") then
-        for k = 1, 40 do
-            local curName = GetRaidRosterInfo(k)
-            if curName ~= nil then
-                if string.find(curName, "-") then
-                    curName = string.match(curName, "(.+)-")
-                end
-                if curName == editBoxFrame.editbox:GetText() then
-                    local curGUID = UnitGUID("raid" .. k)
-                    AZPBossToolsRazagethGUIDs[curGUID] = curName
-                    AssignedPlayers[ringName][role] = curGUID
-                    AZP.BossTools.Vault.Razageth:UpdateRazagethFrame()
-                end
-            end
-        end
-    else
-        if AssignedPlayers[ringName] ~= nil then
-            AssignedPlayers[ringName][role] = nil
-        end
-    end
+-- function AZP.BossTools.Vault.Razageth:OnEditFocusLost(role, ring)
+--     local editBoxFrame = nil
+--     local ringName = string.format("Ring%d", ring)
+--     if role == "Alpha" then
+--         editBoxFrame = AZPBossToolsRazagethAlphaEditBoxes[ring]
+--     else
+--         editBoxFrame = AZPBossToolsRazagethBetaEditBoxes[ring]
+--     end
+--     if (editBoxFrame.editbox:GetText() ~= nil and editBoxFrame.editbox:GetText() ~= "") then
+--         for k = 1, 40 do
+--             local curName = GetRaidRosterInfo(k)
+--             if curName ~= nil then
+--                 if string.find(curName, "-") then
+--                     curName = string.match(curName, "(.+)-")
+--                 end
+--                 if curName == editBoxFrame.editbox:GetText() then
+--                     local curGUID = UnitGUID("raid" .. k)
+--                     AZPBossToolsRazagethGUIDs[curGUID] = curName
+--                     AssignedPlayers[ringName][role] = curGUID
+--                     AZP.BossTools.Vault.Razageth:UpdateRazagethFrame()
+--                 end
+--             end
+--         end
+--     else
+--         if AssignedPlayers[ringName] ~= nil then
+--             AssignedPlayers[ringName][role] = nil
+--         end
+--     end
 
-    AZPBTRazageth = AssignedPlayers
-end
+--     AZPBTRazageth = AssignedPlayers
+-- end
 
-function AZP.BossTools.Vault.Razageth:ShareAssignees()
-    for ring, players in pairs(AssignedPlayers) do
-        if players ~= nil then
-            local message = string.format("%s:%s:%s", ring, players.Alpha or "", players.Beta or "" )
-            C_ChatInfo.SendAddonMessage("AZPRKHINFO", message ,"RAID", 1)
-        end
-    end
-end
+-- function AZP.BossTools.Vault.Razageth:ShareAssignees()
+--     for ring, players in pairs(AssignedPlayers) do
+--         if players ~= nil then
+--             local message = string.format("%s:%s:%s", ring, players.Alpha or "", players.Beta or "" )
+--             C_ChatInfo.SendAddonMessage("AZPRKHINFO", message ,"RAID", 1)
+--         end
+--     end
+-- end
 
-function AZP.BossTools.Vault.Razageth:UpdateRazagethFrame()
-    if IsInRaid() == false then
-        print("BossTools Razageth only works in raid.")
-        return
-    end
-    local playerGUID = UnitGUID("player")
-    local headerText = "Not Assigned"
+-- function AZP.BossTools.Vault.Razageth:UpdateRazagethFrame()
+--     if IsInRaid() == false then
+--         print("BossTools Razageth only works in raid.")
+--         return
+--     end
+--     local playerGUID = UnitGUID("player")
+--     local headerText = "Not Assigned"
 
-    for i = 1, 6 do
-        local ring = AssignedPlayers[string.format( "Ring%d", i)]
-        local alpha = ring.Alpha
-        local beta = ring.Beta
+--     for i = 1, 6 do
+--         local ring = AssignedPlayers[string.format( "Ring%d", i)]
+--         local alpha = ring.Alpha
+--         local beta = ring.Beta
 
-        if alpha ~= nil then
-            local name = AZPBossToolsRazagethGUIDs[alpha]
-            if name == nil then name = "" end
-            AZP.BossTools.BossFrames.Razageth.LeftLabels[i]:SetText(name)
-            AZPBossToolsRazagethAlphaEditBoxes[i].editbox:SetText(name)
-        else
-            AZPBossToolsRazagethAlphaEditBoxes[i].editbox:SetText("")
-            AZP.BossTools.BossFrames.Razageth.LeftLabels[i]:SetText("")
-        end
-        if beta ~= nil then
-            local name = AZPBossToolsRazagethGUIDs[beta]
-            if name == nil then name = "" end
-            AZP.BossTools.BossFrames.Razageth.RightLabels[i]:SetText(name)
-            AZPBossToolsRazagethBetaEditBoxes[i].editbox:SetText(name)
-        else
-            AZPBossToolsRazagethBetaEditBoxes[i].editbox:SetText("")
-            AZP.BossTools.BossFrames.Razageth.RightLabels[i]:SetText("")
-        end
+--         if alpha ~= nil then
+--             local name = AZPBossToolsRazagethGUIDs[alpha]
+--             if name == nil then name = "" end
+--             AZP.BossTools.BossFrames.Razageth.LeftLabels[i]:SetText(name)
+--             AZPBossToolsRazagethAlphaEditBoxes[i].editbox:SetText(name)
+--         else
+--             AZPBossToolsRazagethAlphaEditBoxes[i].editbox:SetText("")
+--             AZP.BossTools.BossFrames.Razageth.LeftLabels[i]:SetText("")
+--         end
+--         if beta ~= nil then
+--             local name = AZPBossToolsRazagethGUIDs[beta]
+--             if name == nil then name = "" end
+--             AZP.BossTools.BossFrames.Razageth.RightLabels[i]:SetText(name)
+--             AZPBossToolsRazagethBetaEditBoxes[i].editbox:SetText(name)
+--         else
+--             AZPBossToolsRazagethBetaEditBoxes[i].editbox:SetText("")
+--             AZP.BossTools.BossFrames.Razageth.RightLabels[i]:SetText("")
+--         end
 
-        if alpha == playerGUID then
-            headerText = string.format( "Alpha %d", i )
-        end
+--         if alpha == playerGUID then
+--             headerText = string.format( "Alpha %d", i )
+--         end
 
-        if beta == playerGUID then 
-            headerText = string.format( "Beta %d", i )
-        end
-    end
+--         if beta == playerGUID then 
+--             headerText = string.format( "Beta %d", i )
+--         end
+--     end
 
-    AZP.BossTools.BossFrames.Razageth.Header:SetText(headerText)
-end
+--     AZP.BossTools.BossFrames.Razageth.Header:SetText(headerText)
+-- end
 
-function AZP.BossTools.Vault.Razageth:ReceiveAssignees(receiveAssignees)
-    local ring, alpha, beta = string.match(receiveAssignees, "([^:]*):([^:]*):([^:]*)")
-    if alpha == "" then alpha = nil end
-    if beta == "" then beta = nil end
-    AssignedPlayers[ring] = {Alpha = alpha, Beta = beta}
-    AZP.BossTools.Vault.Razageth:UpdateRazagethFrame()
-end
-
-function AZP.BossTools.Vault.Razageth:ShareVersion()
-    -- local versionString = string.format("|BT:%d|", AZP.VersionControl["BossTools Razageth"])
-    -- if UnitInBattleground("player") ~= nil then
-    --     -- BG stuff?
-    -- else
-    --     if IsInGroup() then
-    --         if IsInRaid() then
-    --             C_ChatInfo.SendAddonMessage("AZPVERSIONS", versionString ,"RAID", 1)
-    --         else
-    --             C_ChatInfo.SendAddonMessage("AZPVERSIONS", versionString ,"PARTY", 1)
-    --         end
-    --     end
-    --     if IsInGuild() then
-    --         C_ChatInfo.SendAddonMessage("AZPVERSIONS", versionString ,"GUILD", 1)
-    --     end
-    -- end
-end
-
-function AZP.BossTools.Vault.Razageth:ReceiveVersion(version)
-    if version > AZP.VersionControl["BossTools Razageth"] then
-        if (not HaveShowedUpdateNotification) then
-            HaveShowedUpdateNotification = true
-            UpdateFrame:Show()
-            UpdateFrame.text:SetText(
-                "Please download the new version through the CurseForge app.\n" ..
-                "Or use the CurseForge website to download it manually!\n\n" .. 
-                "Newer Version: v" .. version .. "\n" .. 
-                "Your version: v" .. AZP.VersionControl["BossTools Razageth"]
-            )
-        end
-    end
-end
-
-function AZP.BossTools.Vault.Razageth:GetSpecificAddonVersion(versionString, addonWanted)
-    local pattern = "|([A-Z]+):([0-9]+)|"
-    local index = 1
-    while index < #versionString do
-        local _, endPos = string.find(versionString, pattern, index)
-        local addon, version = string.match(versionString, pattern, index)
-        index = endPos + 1
-        if addon == addonWanted then
-            return tonumber(version)
-        end
-    end
-end
+-- function AZP.BossTools.Vault.Razageth:ReceiveAssignees(receiveAssignees)
+--     local ring, alpha, beta = string.match(receiveAssignees, "([^:]*):([^:]*):([^:]*)")
+--     if alpha == "" then alpha = nil end
+--     if beta == "" then beta = nil end
+--     AssignedPlayers[ring] = {Alpha = alpha, Beta = beta}
+--     AZP.BossTools.Vault.Razageth:UpdateRazagethFrame()
+-- end
 
 function AZP.BossTools.Vault.Razageth.Events:EncounterEnd(_, _, _, _, success)
     if success == true then
@@ -577,10 +498,9 @@ function AZP.BossTools.Vault.Razageth:OnEvent(self, event, ...)
     elseif event == "VARIABLES_LOADED" then
         AZP.BossTools.Vault.Razageth.Events:VariablesLoaded(...)
     elseif event == "CHAT_MSG_ADDON" then
-        --AZP.BossTools.Vault.Razageth.Events:ChatMsgAddonVersion(...)
-        AZP.BossTools.Vault.Razageth.Events:ChatMsgAddon(...)
+        -- AZP.BossTools.Vault.Razageth.Events:ChatMsgAddon(...)
     elseif event == "GROUP_ROSTER_UPDATE" then
-        AZP.BossTools.Vault.Razageth:ShareVersion()
+        -- AZP.BossTools.Vault.Razageth:ShareVersion()
     elseif event == "ENCOUNTER_END" then
         AZP.BossTools.Vault.Razageth.Events:EncounterEnd(...)
     end

@@ -32,8 +32,6 @@ function AZP.BossTools.Generic:OnLoadBoth()
     AZPGenericOptions:SetScript("OnDragStop", function() AZPGenericOptions:StopMovingOrSizing() end)
     AZP.BossTools.Generic:FillOptionsPanel(AZPGenericOptions)
 
-    DevTools_Dump(AZP.BossTools.AZPBossToolsVaultFrame)
-
     local AZPBossToolsVaultFrame = AZP.BossTools.AZPBossToolsVaultFrame
     AZPBossToolsVaultFrame.GenericButton = CreateFrame("Button", nil, AZPBossToolsVaultFrame)
     AZPBossToolsVaultFrame.GenericButton:SetSize(20, 20)
@@ -337,7 +335,6 @@ function AZP.BossTools.Generic:ReceiveAssignees(receiveAssignees)
     end
 
     AZPBTGenericAssignedPlayers = RaidIDs
-    --DevTools_Dump(AZPBTGenericAssignedPlayers)
     AZP.BossTools.Generic:FillMainFrame()
 end
 

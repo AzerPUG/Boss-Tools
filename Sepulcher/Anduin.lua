@@ -331,8 +331,6 @@ function AZP.BossTools.Sepulcher.Anduin:ReceiveAssignees(receiveAssignees)
         table.insert(AssignedPlayers[2], UnitGUID(string.format("raid%d", RaidID)))
     end
 
-    DevTools_Dump(AssignedPlayers)
-
     AZP.BossTools.Sepulcher.Anduin:UpdateMainFrame()
 end
 
