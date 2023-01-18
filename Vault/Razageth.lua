@@ -295,9 +295,11 @@ function AZP.BossTools.Vault.Razageth:CompareIDs(curID)
 end
 
 function AZP.BossTools.Vault.Razageth.Events:CombatLogEventUnfiltered(...)
-    local _, combatEvent, _, _, _, _, _, _, _, _, _, spellID = CombatLogGetCurrentEventInfo()
+    local _, combatEvent, _, _, _, _, _, DestGUIUD, _, _, _, spellID = CombatLogGetCurrentEventInfo()
     if combatEvent == "SPELL_AURA_APPLIED" then
-        AZP.BossTools.Vault.Razageth:CompareIDs(spellID)
+        if DestGUIUD == UnitGUID("PLAYER") then
+            AZP.BossTools.Vault.Razageth:CompareIDs(spellID)
+        end
     end
 end
 
