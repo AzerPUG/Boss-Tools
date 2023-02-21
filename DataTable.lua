@@ -61,6 +61,15 @@ AZP.BossTools.BossInfo =
     Vault =
     {
         Background = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-LOREBG-VaultoftheIncarnates"),
+        Grimtotem =
+        {
+            Name = "Grimtotem",
+            ID = 2423,
+            Index = 1,
+            Active = false,
+            FileID = GetFileIDFromPath("Interface\\ENCOUNTERJOURNAL\\UI-EJ-BOSS-Razageth.blp"),
+            Hero = "10%",
+        },
         Razageth =
         {
             Name = "Razageth",

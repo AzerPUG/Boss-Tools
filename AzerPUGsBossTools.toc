@@ -10,4 +10,5 @@ DataTable.lua
 BossTools.lua
 GenericBossTool.lua
 
+Vault/Grimtotem.lua
 Vault/Razageth.lua
