@@ -56,10 +56,19 @@ function AZP.BossTools.Vault.Grimtotem:CreateMainFrame()
     AZP.BossTools.BossFrames.Grimtotem.Text:Hide()
 end
 
-function AZP.BossTools.Vault.Grimtotem:CompareIDs(curID)
+function AZP.BossTools.Vault.Grimtotem:CompareIDs()
+    local fireBuffPresent = false
+    for i = 1, 40 do
+        local _, _, _, _, _, _, _, _, _, spellID = UnitDebuff("player", i)
+        if spellID == AZPBTGrimIDs.DebuffFire then
+            fireBuffPresent = true
+        end
+    end
+
     AZP.BossTools.BossFrames.Grimtotem.Icon:Show()
     AZP.BossTools.BossFrames.Grimtotem.Text:Show()
-    if curID == AZPBTGrimIDs.DebuffFire then
+
+    if fireBuffPresent == true then
         AZP.BossTools.BossFrames.Grimtotem.Icon:SetTexture("Interface/ICONS/spell_fire_moltenblood")
         AZP.BossTools.BossFrames.Grimtotem.MarkerL:Show()
         AZP.BossTools.BossFrames.Grimtotem.Text:SetText("LEFT")
@@ -75,10 +84,10 @@ function AZP.BossTools.Vault.Grimtotem:CompareIDs(curID)
 end
 
 function AZP.BossTools.Vault.Grimtotem.Events:CombatLogEventUnfiltered(...)
-    local _, combatEvent, _, _, _, _, _, DestGUIUD, _, _, _, spellID = CombatLogGetCurrentEventInfo()
+    local _, combatEvent, _, _, _, _, _, _, _, _, _, spellID = CombatLogGetCurrentEventInfo()
     if combatEvent == "SPELL_AURA_APPLIED" then
-        if DestGUIUD == UnitGUID("PLAYER") then
-            AZP.BossTools.Vault.Grimtotem:CompareIDs(spellID)
+        if spellID == AZPBTGrimIDs.DebuffFire then
+            AZP.BossTools.Vault.Grimtotem:CompareIDs()
         end
     end
 end
