@@ -21,11 +21,11 @@ function AZP.BossTools.Vault.Razageth:CreateMainFrame()
     AZP.BossTools.BossFrames.Razageth = CreateFrame("FRAME", nil, UIParent)
     AZP.BossTools.BossFrames.Razageth:SetSize(150, 75)
     AZP.BossTools.BossFrames.Razageth:SetPoint("TOP", 0, -200)
-    AZP.BossTools.BossFrames.Razageth:EnableMouse(true)
-    AZP.BossTools.BossFrames.Razageth:SetMovable(true)
-    AZP.BossTools.BossFrames.Razageth:RegisterForDrag("LeftButton")
-    AZP.BossTools.BossFrames.Razageth:SetScript("OnDragStart", AZP.BossTools.BossFrames.Razageth.StartMoving)
-    AZP.BossTools.BossFrames.Razageth:SetScript("OnDragStop", function() AZP.BossTools.BossFrames.Razageth:StopMovingOrSizing() end)
+    -- AZP.BossTools.BossFrames.Razageth:EnableMouse(true)
+    -- AZP.BossTools.BossFrames.Razageth:SetMovable(true)
+    -- AZP.BossTools.BossFrames.Razageth:RegisterForDrag("LeftButton")
+    -- AZP.BossTools.BossFrames.Razageth:SetScript("OnDragStart", AZP.BossTools.BossFrames.Razageth.StartMoving)
+    -- AZP.BossTools.BossFrames.Razageth:SetScript("OnDragStop", function() AZP.BossTools.BossFrames.Razageth:StopMovingOrSizing() end)
 
     AZP.BossTools.BossFrames.Razageth.Icon = AZP.BossTools.BossFrames.Razageth:CreateTexture(nil, "ARTWORK")
     AZP.BossTools.BossFrames.Razageth.Icon:SetSize(75, 75)
@@ -69,8 +69,6 @@ end
 function AZP.BossTools.Vault.Razageth:OnEvent(self, event, ...)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
         AZP.BossTools.Vault.Razageth.Events:CombatLogEventUnfiltered(...)
-    elseif event == "ENCOUNTER_END" then
-        AZP.BossTools.Vault.Razageth.Events:EncounterEnd(...)
     end
 end
 
